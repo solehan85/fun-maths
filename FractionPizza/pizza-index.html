@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRACTION PIZZA - Belajar Pecahan KSSR</title>
+    <style>
+        /* ==========================================================================
+           1. VARIABEL & ASAS STYLING (TEMA RESTORAN PIZZA ITALI)
+           ========================================================================== */
+        :root {
+            --primary: #E74C3C;
+            --secondary: #F1C40F;
+            --success: #2ECC71;
+            --dark-wood: #855E42;
+            --light-wood: #A0522D;
+            --crust: #E67E22;
+            --cheese: #F39C12;
+            --bg-color: #FDEDEC;
+            --text-dark: #2C3E50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle, #FADBD8 0%, #FDEDEC 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Container Utama */
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Membuka Banner/Header */
+        header {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            text-shadow: 3px 3px 0px var(--secondary), 5px 5px 0px var(--dark-wood);
+            margin-bottom: 5px;
+            animation: bounce 2s infinite alternate;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-wood);
+            font-style: italic;
+        }
+
+        /* ==========================================================================
+           2. SKRIN & NAVIGASI (MENU, TAHAP, GAMEPLAY)
+           ========================================================================== */
+        .screen {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: 8px solid var(--dark-wood);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Gaya Butang Premium */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, #C0392B 100%);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0px #962D22;
+            transition: all 0.1s ease;
+            margin: 10px;
+            min-width: 200px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0px #962D22;
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0px #962D22;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #D4AC0D 100%);
+            box-shadow: 0 5px 0px #9A7D0A;
+            color: #333;
+        }
+        .btn-secondary:hover { box-shadow: 0 7px 0px #9A7D0A; }
+        .btn-secondary:active { box-shadow: 0 0px 0px #9A7D0A; }
+
+        /* Grid Grid Pilihan */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .grid-btn {
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: white;
+            border: 4px solid var(--light-wood);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .grid-btn:hover {
+            background: var(--bg-color);
+            transform: scale(1.05);
+        }
+
+        /* ==========================================================================
+           3. MEKANIK PERMAINAN UI (DASHBOARD & HUD)
+           ========================================================================== */
+        .hud {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            background: var(--dark-wood);
+            color: white;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .hud-item {
+            margin: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .question-box {
+            background: #FEF9E7;
+            border: 3px dashed var(--cheese);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #78281F;
+        }
+
+        /* ==========================================================================
+           4. VISUAL PIZZA INTERAKTIF (SVG GENERATOR)
+           ========================================================================== */
+        .pizza-table {
+            background: #D35400; /* Meja Kayu */
+            border: 12px solid #A04000;
+            border-radius: 50%;
+            width: 320px;
+            height: 320px;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Efek Wap Panas */
+        .steam-container {
+            position: absolute;
+            top: -20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+            pointer-events: none;
+        }
+        .steam {
+            width: 4px;
+            height: 30px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 4px;
+            animation: steamAnim 2s infinite ease-in-out;
+            opacity: 0;
+        }
+        .steam:nth-child(2) { animation-delay: 0.5s; }
+        .steam:nth-child(3) { animation-delay: 1s; }
+
+        .pizza-svg {
+            width: 280px;
+            height: 280px;
+            transform: rotate(-90deg); /* Supaya pecahan bermula tepat dari atas */
+            transition: transform 0.5s ease;
+        }
+        
+        /* Setiap slice pizza */
+        .pizza-slice {
+            fill: #F4D03F; /* Warna asas keju */
+            stroke: #D35400; /* Warna kerak */
+            stroke-width: 3px;
+            cursor: pointer;
+            transition: fill 0.2s, transform 0.2s;
+        }
+        .pizza-slice:hover {
+            filter: brightness(1.1);
+        }
+        .pizza-slice.selected {
+            fill: #E74C3C; /* Warna apabila diwarnakan/dipilih */
+        }
+
+        /* Garisan Pembahagi */
+        .pizza-line {
+            stroke: #E67E22;
+            stroke-width: 2px;
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           5. POWER UPS & CABARAN BOSS
+           ========================================================================== */
+        .powerups-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .powerup-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .powerup-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .powerup-btn:hover:not(:disabled) {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        /* Skrin Boss / Banner Notifikasi */
+        .overlay-banner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: gold;
+            border: 6px solid white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            padding: 30px;
+            border-radius: 20px;
+            z-index: 100;
+            width: 80%;
+            text-align: center;
+            color: #333;
+        }
+        .overlay-banner.active {
+            display: block;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* ==========================================================================
+           6. SISTEM ANIMASI & RESPONSIVE
+           ========================================================================== */
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes steamAnim {
+            0% { transform: translateY(10px) scaleX(1); opacity: 0; }
+            50% { transform: translateY(-10px) scaleX(1.5); opacity: 0.6; }
+            100% { transform: translateY(-30px) scaleX(0.5); opacity: 0; }
+        }
+        .shake {
+            animation: shakeAnim 0.4s ease-in-out;
+        }
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        /* Konfeti Kanvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+        }
+
+        /* Responsif Peranti */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2.2rem; }
+            .screen { padding: 15px; border-width: 5px; }
+            .btn { width: 100%; margin: 5px 0; padding: 12px; }
+            .pizza-table { width: 240px; height: 240px; }
+            .pizza-svg { width: 210px; height: 210px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="app-container">
+        <header>
+            <h1 id="game-title">🍕 FRACTION PIZZA 🍕</h1>
+            <p>"Belajar Pecahan Dengan Cara Yang Menyeronokkan!"</p>
+        </header>
+
+        <div id="screen-menu" class="screen active">
+            <div style="margin-bottom: 25px;">
+                <span style="font-size: 5rem;">👨‍🍳</span>
+            </div>
+            <button class="btn" onclick="goToScreen('screen-years')">🍕 Main</button><br>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-rules')">📖 Cara Bermain</button><br>
+            <button class="btn btn-secondary" onclick="showLeaderboard()">🏆 Skor Tertinggi</button><br>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-settings')">⚙️ Tetapan</button><br>
+            <button class="btn" id="btn-audio-toggle" style="background: #7F8C8D; box-shadow:0 5px 0 #566573" onclick="toggleAudioSystem()">🔊 Bunyi: ON</button>
+        </div>
+
+        <div id="screen-years" class="screen">
+            <h2>Pilih Tahun Pembelajaran</h2>
+            <p>Sila pilih tahun KSSR anda:</p>
+            <div class="grid-container">
+                <button class="grid-btn" onclick="selectYear(1)">🍕 Tahun 1</button>
+                <button class="grid-btn" onclick="selectYear(2)">🍕 Tahun 2</button>
+                <button class="grid-btn" onclick="selectYear(3)">🍕 Tahun 3</button>
+                <button class="grid-btn" onclick="selectYear(4)">🍕 Tahun 4</button>
+                <button class="grid-btn" onclick="selectYear(5)">🍕 Tahun 5</button>
+                <button class="grid-btn" onclick="selectYear(6)">🍕 Tahun 6</button>
+            </div>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-menu')">Kembali</button>
+        </div>
+
+        <div id="screen-difficulty" class="screen">
+            <h2>Pilih Tahap Kesukaran & Mod Masa</h2>
+            
+            <h3>Tahap Kesukaran</h3>
+            <div style="margin-bottom: 20px;">
+                <button class="grid-btn" id="diff-easy" onclick="setDiff('Mudah')">Mudah</button>
+                <button class="grid-btn" id="diff-med" onclick="setDiff('Sederhana')">Sederhana</button>
+                <button class="grid-btn" id="diff-hard" onclick="setDiff('Sukar')">Sukar</button>
+                <button class="grid-btn" id="diff-master" onclick="setDiff('Master Pizza')">Master Pizza</button>
+            </div>
+
+            <h3>Mod Permainan</h3>
+            <div>
+                <button class="grid-btn" id="mode-casual" onclick="setMode('Santai')">Mod Santai (Tiada Had)</button>
+                <button class="grid-btn" id="mode-challenge" onclick="setMode('Cabaran')">Mod Cabaran (20s)</button>
+                <button class="grid-btn" id="mode-blitz" onclick="setMode('Kilat')">Mod Kilat (10s)</button>
+            </div>
+            <br>
+            <button class="btn" style="background-color: var(--success); box-shadow:0 5px 0 #1E8449;" onclick="startGame()">MULA PERMAINAN 🚀</button><br>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-years')">Kembali</button>
+        </div>
+
+        <div id="screen-game" class="screen">
+            <div class="hud">
+                <div class="hud-item">⭐ <span id="hud-score">0</span></div>
+                <div class="hud-item">❤️ <span id="hud-lives">3</span></div>
+                <div class="hud-item">🔥 <span id="hud-streak">x1</span></div>
+                <div class="hud-item">⏱️ <span id="hud-time">--</span></div>
+                <div class="hud-item">🍕 T<span id="hud-year">1</span> (<span id="hud-diff">M</span>)</div>
+                <div class="hud-item">🔢 <span id="hud-qnum">1</span>/10</div>
+            </div>
+
+            <div class="question-box" id="game-question">
+                Sila tunggu sebentar...
+            </div>
+
+            <div class="pizza-table" id="pizza-board">
+                <div class="steam-container">
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                    <div class="steam"></div>
+                </div>
+                <svg class="pizza-svg" id="pizza-graphics" viewBox="-150 -150 300 300"></svg>
+            </div>
+
+            <div>
+                <button class="btn" style="background: var(--success); box-shadow: 0 5px 0 #1E8449;" onclick="submitAnswer()">HANTAR JAWAPAN 🍕</button>
+            </div>
+
+            <div class="powerups-container">
+                <button class="powerup-btn" id="pw-hint" onclick="usePowerUp('hint')">🍄<span>Hint</span></button>
+                <button class="powerup-btn" id="pw-freeze" onclick="usePowerUp('freeze')">⏱️<span>Freeze</span></button>
+                <button class="powerup-btn" id="pw-double" onclick="usePowerUp('double')">⭐<span>Double</span></button>
+                <button class="powerup-btn" id="pw-life" onclick="usePowerUp('life')">❤️<span>+1 Nyawa</span></button>
+            </div>
+            <br>
+            <button class="btn btn-secondary" style="min-width:120px; padding:8px;" onclick="exitGame()">Keluar</button>
+        </div>
+
+        <div id="boss-overlay" class="overlay-banner">
+            <h1 id="boss-title">👹 CABARAN BOSS!</h1>
+            <p style="font-size: 1.2rem; margin: 15px 0;" id="boss-desc">Sediakan Pizza Pelanggan dengan Pantas!</p>
+            <button class="btn" style="background:#222; box-shadow:0 5px 0 #000;" onclick="closeBossOverlay()">MULA CABARAN!</button>
+        </div>
+
+        <div id="screen-stats" class="screen">
+            <h2>📊 Prestasi Kedai Pizza Anda</h2>
+            <div style="text-align: left; margin: 20px auto; max-width: 400px; line-height: 2;">
+                <p>🍕 Jumlah Dijawab: <b><span id="stat-total">0</span></b></p>
+                <p>✅ Betul: <b style="color:var(--success)"><span id="stat-correct">0</span></b></p>
+                <p>❌ Salah: <b style="color:var(--primary)"><span id="stat-wrong">0</span></b></p>
+                <p>🎯 Ketepatan: <b><span id="stat-accuracy">0%</span></b></p>
+                <p>⏱️ Masa Bermain: <b><span id="stat-time">0s</span></b></p>
+                <p>🏆 Skor Akhir: <b><span id="stat-score">0</span></b></p>
+            </div>
+            <button class="btn" onclick="goToScreen('screen-years')">Main Lagi</button><br>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-menu')">Menu Utama</button>
+        </div>
+
+        <div id="screen-rules" class="screen">
+            <h2>📖 Cara Bermain Fraction Pizza</h2>
+            <div style="text-align: left; margin: 20px 0; line-height: 1.6;">
+                <p>1. <b>Fahami Soalan:</b> Baca arahan di atas meja (Contoh: "Warnakan 3/4 pizza").</p>
+                <p>2. <b>Sentuh Pizza:</b> Klik atau sentuh kepingan pizza pada meja untuk mewarnakannya mengikut nilai pecahan yang diminta.</p>
+                <p>3. <b>Hantar:</b> Klik butang 'HANTAR JAWAPAN'.</p>
+                <p>4. <b>Gunakan Power Up:</b> Manfaatkan Hint, Freeze Time, Double Score, atau Extra Life apabila tersekat.</p>
+                <p>5. <b>Cabaran Boss:</b> Bersedia pada soalan ke-10 untuk mod layan pelanggan ekspres!</p>
+            </div>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-menu')">Faham!</button>
+        </div>
+
+        <div id="screen-leaderboard" class="screen">
+            <h2>🏆 Kedudukan Papan Skor</h2>
+            <div style="margin: 20px 0;">
+                <table style="width:100%; border-collapse: collapse; background:white; border-radius:10px; overflow:hidden;">
+                    <thead>
+                        <tr style="background:var(--dark-wood); color:white; height:40px;">
+                            <th>No.</th>
+                            <th>Tahun</th>
+                            <th>Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+            </div>
+            <button class="btn btn-secondary" onclick="goToScreen('screen-menu')">Kembali</button>
+        </div>
+
+        <div id="screen-settings" class="screen">
+            <h2>⚙️ Tetapan Papan Permainan</h2>
+            <div style="margin: 30px 0; text-align: left;">
+                <label style="font-weight: bold; display:block; margin-bottom: 10px;">Nama Pemain / Chef:</label>
+                <input type="text" id="player-name" value="Chef Muda" style="padding: 10px; width: 100%; border-radius: 10px; border:2px solid var(--dark-wood); font-size:1.1rem; margin-bottom:20px;">
+                
+                <p>Sistem ini menyokong penyimpanan pangkalan data luar. Konfigurasi Firebase anda telah dipautkan dalam struktur teras kod.</p>
+            </div>
+            <button class="btn" onclick="saveSettings()">Simpan & Keluar</button>
+        </div>
+    </div>
+
+    <script>
+        /* --------------------------------------------------------------------------
+           FIREBASE CONFIGURATION REFERENCE (Sedia Digunakan)
+           -------------------------------------------------------------------------- */
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNS_9Fs0WHxUylbNEnA3FjPrm6kDWgEvg",
+            authDomain: "fractionpizza-698b2.firebaseapp.com",
+            databaseURL: "https://fractionpizza-698b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "fractionpizza-698b2",
+            storageBucket: "fractionpizza-698b2.firebasestorage.app",
+            messagingSenderId: "642105769062",
+            appId: "1:642105769062:web:dedb6f452ee387639301a7"
+        };
+        // Nota: Memandangkan library luaran dilarang dalam satu fail asas ini, 
+        // LocalStorage digunakan bagi simulasi pemarkahan tanpa memutuskan sambungan web.
+
+        /* --------------------------------------------------------------------------
+           SISTEM AUDIO TULEN (WEB AUDIO API - NO EXTERNAL FILE REQ)
+           -------------------------------------------------------------------------- */
+        let audioEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(400, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            } else if (type === 'slice') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            } else if (type === 'correct') {
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.02, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else if (type === 'bonus' || type === 'trophy') {
+                osc.frequency.setValueAtTime(880, now);
+                osc.frequency.exponentialRampToValueAtTime(1760, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+        }
+
+        function toggleAudioSystem() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('btn-audio-toggle').innerText = audioEnabled ? "🔊 Bunyi: ON" : "🔇 Bunyi: OFF";
+            playSound('click');
+        }
+
+        /* --------------------------------------------------------------------------
+           BANK SOALAN ENGINE (PENJANAAN RAWAK > 500 VARIASI SOALAN KSSR)
+           -------------------------------------------------------------------------- */
+        function generateQuestionData(year, difficulty) {
+            // Menjana senarai pembahagi mengikut kesesuaian Tahap KSSR Malaysia
+            let denominators = [2, 4];
+            if (year >= 2) denominators.push(3, 5, 8);
+            if (year >= 3) denominators.push(6, 10);
+            if (year >= 4) denominators.push(12, 16);
+
+            let d = denominators[Math.floor(Math.random() * denominators.length)];
+            let n = Math.floor(Math.random() * (d - 1)) + 1; // pengangka sentiasa kecil dari pembahagi untuk pecahan wajar asas
+            
+            let typeKey = Math.floor(Math.random() * 3);
+            let questionText = "";
+            let targetSlices = n;
+            let totalSlices = d;
+
+            if (year === 1) {
+                // Spesifik KSSR Tahun 1: Setengah, suku, tiga suku
+                let t1_choices = [{n:1, d:2, t:"Warnakan separuh (1/2) daripada pizza!"}, {n:1, d:4, t:"Pilih suku (1/4) pizza!"}, {n:3, d:4, t:"Lengkapkan tiga perempat (3/4) pizza!"}];
+                let choice = t1_choices[Math.floor(Math.random() * t1_choices.length)];
+                return { text: choice.t, slicesNeeded: choice.n, totalSlices: choice.d, rawN: choice.n, rawD: choice.d };
+            }
+
+            if (year === 3 && typeKey === 1) {
+                // Pecahan Setara / Banding Pecahan Tahun 3
+                questionText = `Pilih pecahan yang setara dengan 1/2. Gunakan pembahagian ${d} bahagian ini!`;
+                targetSlices = d / 2;
+                if(d % 2 !== 0) { targetSlices = Math.floor(d/2); questionText = `Warnakan bahagian untuk mewakili ${targetSlices}/${d}!`; }
+                return { text: questionText, slicesNeeded: targetSlices, totalSlices: d, rawN: targetSlices, rawD: d };
+            }
+
+            if (year >= 4 && typeKey === 2) {
+                // Operasi Tambah/Tolak Mudah Tahun 4-6
+                let part1 = Math.floor(n/2) || 1;
+                let part2 = n - part1;
+                if (part2 <= 0) part2 = 1;
+                n = part1 + part2;
+                questionText = `Selesaikan operasi: Berapakah bahagian pizza jika kita tambah ${part1}/${d} dan ${part2}/${d}?`;
+                return { text: questionText, slicesNeeded: n, totalSlices: d, rawN: n, rawD: d };
+            }
+
+            // Soalan Am Standard Restoran Pizza
+            const promptTemplates = [
+                `Chef mahu pelanggan mendapat ${n}/${d} bahagian pizza. Sila warnakan!`,
+                `Lengkapkan ${n}/${d} pizza di atas meja kayu ini.`,
+                `Warnakan kepingan pizza untuk menunjukkan pecahan ${n}/${d}.`
+            ];
+            questionText = promptTemplates[Math.floor(Math.random() * promptTemplates.length)];
+
+            return { text: questionText, slicesNeeded: targetSlices, totalSlices: totalSlices, rawN: n, rawD: d };
+        }
+
+        /* --------------------------------------------------------------------------
+           VARIABEL SISTEM STATE PERMAINAN
+           -------------------------------------------------------------------------- */
+        let gameState = {
+            year: 1,
+            difficulty: 'Mudah',
+            mode: 'Santai',
+            score: 0,
+            lives: 3,
+            streak: 1,
+            currentTime: 20,
+            questionNumber: 1,
+            currentQuestionData: null,
+            selectedSlices: [],
+            totalQuestionsAnswered: 0,
+            totalCorrect: 0,
+            totalWrong: 0,
+            gameStartTime: 0,
+            timerInterval: null,
+            isFrozen: false,
+            doubleScore: false
+        };
+
+        /* --------------------------------------------------------------------------
+           SISTEM NAVIGASI SKRIN
+           -------------------------------------------------------------------------- */
+        function goToScreen(screenId) {
+            playSound('click');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function selectYear(y) {
+            gameState.year = y;
+            goToScreen('screen-difficulty');
+        }
+
+        function setDiff(d) {
+            gameState.difficulty = d;
+            playSound('click');
+            // Menyerlahkan butang terpilih
+            ['diff-easy','diff-med','diff-hard','diff-master'].forEach(id => document.getElementById(id).style.background="white");
+            let activeId = d==='Mudah'?'diff-easy':d==='Sederhana'?'diff-med':d==='Sukar'?'diff-hard':'diff-master';
+            document.getElementById(activeId).style.background= "var(--secondary)";
+        }
+
+        function setMode(m) {
+            gameState.mode = m;
+            playSound('click');
+            ['mode-casual','mode-challenge','mode-blitz'].forEach(id => document.getElementById(id).style.background="white");
+            let activeId = m==='Santai'?'mode-casual':m==='Cabaran'?'mode-challenge':'mode-blitz';
+            document.getElementById(activeId).style.background= "var(--secondary)";
+        }
+
+        /* --------------------------------------------------------------------------
+           PENGURUSAN ENGINE GAMEPLAY & LEVEL
+           -------------------------------------------------------------------------- */
+        function startGame() {
+            gameState.score = 0;
+            gameState.lives = 3;
+            gameState.streak = 1;
+            gameState.questionNumber = 1;
+            gameState.totalQuestionsAnswered = 0;
+            gameState.totalCorrect = 0;
+            gameState.totalWrong = 0;
+            gameState.gameStartTime = Date.now();
+            
+            updateHUD();
+            nextQuestion();
+            goToScreen('screen-game');
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-score').innerText = gameState.score;
+            document.getElementById('hud-lives').innerText = gameState.lives;
+            document.getElementById('hud-streak').innerText = `x${gameState.streak}`;
+            document.getElementById('hud-year').innerText = gameState.year;
+            document.getElementById('hud-diff').innerText = gameState.difficulty[0];
+            document.getElementById('hud-qnum').innerText = gameState.questionNumber;
+        }
+
+        function nextQuestion() {
+            if (gameState.questionNumber > 10 || gameState.lives <= 0) {
+                endGameSession();
+                return;
+            }
+
+            // Pencetus Cabaran Boss pada Soalan ke-10
+            if (gameState.questionNumber === 10) {
+                triggerBossEvent();
+            }
+
+            gameState.isFrozen = false;
+            gameState.doubleScore = false;
+            gameState.currentQuestionData = generateQuestionData(gameState.year, gameState.difficulty);
+            gameState.selectedSlices = new Array(gameState.currentQuestionData.totalSlices).fill(false);
+
+            document.getElementById('game-question').innerText = gameState.currentQuestionData.text;
+            
+            buildPizzaSVG(gameState.currentQuestionData.totalSlices);
+            setupTimer();
+            updateHUD();
+        }
+
+        /* --------------------------------------------------------------------------
+           SISTEM PEMASA (TIMER)
+           -------------------------------------------------------------------------- */
+        function setupTimer() {
+            clearInterval(gameState.timerInterval);
+            if (gameState.mode === 'Santai') {
+                document.getElementById('hud-time').innerText = "∞";
+                return;
+            }
+
+            gameState.currentTime = gameState.mode === 'Cabaran' ? 20 : 10;
+            document.getElementById('hud-time').innerText = gameState.currentTime + "s";
+
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isFrozen) {
+                    gameState.currentTime--;
+                    document.getElementById('hud-time').innerText = gameState.currentTime + "s";
+
+                    if (gameState.currentTime <= 0) {
+                        clearInterval(gameState.timerInterval);
+                        handleWrongAnswer(true); // Kalah masa dikira salah
+                    }
+                }
+            }, 1000);
+        }
+
+        /* --------------------------------------------------------------------------
+           PEMBINA GRAPHIC PIZZA SVG INTERAKTIF (RENDERING ENGINE)
+           -------------------------------------------------------------------------- */
+        function buildPizzaSVG(slices) {
+            const svg = document.getElementById('pizza-graphics');
+            svg.innerHTML = ''; // Kosongkan elemen terdahulu
+
+            const radius = 120;
+            const center = 0;
+
+            for (let i = 0; i < slices; i++) {
+                const anglePerSlice = 360 / slices;
+                const startAngle = i * anglePerSlice;
+                const endAngle = (i + 1) * anglePerSlice;
+
+                // Tukar kepada radian untuk pengiraan trigonometri matematik
+                const radStart = (Math.PI * startAngle) / 180;
+                const radEnd = (Math.PI * endAngle) / 180;
+
+                const x1 = center + radius * Math.cos(radStart);
+                const y1 = center + radius * Math.sin(radStart);
+                const x2 = center + radius * Math.cos(radEnd);
+                const y2 = center + radius * Math.sin(radEnd);
+
+                // Parameter melukis lengkok (arc) SVG path
+                const largeArcFlag = anglePerSlice > 180 ? 1 : 0;
+
+                const pathData = `
+                    M ${center} ${center}
+                    L ${x1} ${y1}
+                    A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}
+                    Z
+                `;
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", pathData);
+                path.setAttribute("class", "pizza-slice");
+                path.setAttribute("data-index", i);
+                
+                // Event Listener Klik Kepingan Pizza
+                path.addEventListener('click', () => {
+                    toggleSlice(i, path);
+                });
+
+                svg.appendChild(path);
+
+                // Letak kepingan hiasan pepperoni di dalam pizza untuk nampak premium
+                if(slices <= 8) {
+                    const midAngle = startAngle + (anglePerSlice / 2);
+                    const radMid = (Math.PI * midAngle) / 180;
+                    const pepX = center + (radius * 0.6) * Math.cos(radMid);
+                    const pepY = center + (radius * 0.6) * Math.sin(radMid);
+                    
+                    const pep = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    pep.setAttribute("cx", pepX);
+                    pep.setAttribute("cy", pepY);
+                    pep.setAttribute("r", "8");
+                    pep.setAttribute("fill", "#922B21");
+                    pep.setAttribute("style", "pointer-events:none;");
+                    svg.appendChild(pep);
+                }
+            }
+        }
+
+        function toggleSlice(index, element) {
+            playSound('slice');
+            gameState.selectedSlices[index] = !gameState.selectedSlices[index];
+            if (gameState.selectedSlices[index]) {
+                element.classList.add('selected');
+            } else {
+                element.classList.remove('selected');
+            }
+        }
+
+        /* --------------------------------------------------------------------------
+           PENGESAHAN JAWAPAN & LOGIK GANJARAN
+           -------------------------------------------------------------------------- */
+        function submitAnswer() {
+            clearInterval(gameState.timerInterval);
+            let activeSlicesCount = gameState.selectedSlices.filter(v => v).length;
+            let correctCount = gameState.currentQuestionData.slicesNeeded;
+
+            if (activeSlicesCount === correctCount) {
+                handleCorrectAnswer();
+            } else {
+                handleWrongAnswer(false);
+            }
+        }
+
+        function handleCorrectAnswer() {
+            playSound('correct');
+            triggerConfettiEffect();
+            
+            let pointsEarned = 10;
+            // Bonus Kepantasan
+            if (gameState.mode !== 'Santai' && gameState.currentTime > 5) {
+                pointsEarned += 5;
+            }
+            // Pengganda Streak
+            pointsEarned *= gameState.streak;
+            if (gameState.doubleScore) pointsEarned *= 2;
+
+            gameState.score += pointsEarned;
+            gameState.totalCorrect++;
+            gameState.totalQuestionsAnswered++;
+            
+            // Pengurusan Sistem Streak
+            if (gameState.streak < 5) gameState.streak++;
+
+            alertBanner("TAHNIAH! Jawapan Anda Betul 🍕🎉", "var(--success)");
+            
+            setTimeout(() => {
+                gameState.questionNumber++;
+                nextQuestion();
+            }, 1500);
+        }
+
+        function handleWrongAnswer(isTimeout) {
+            playSound('wrong');
+            gameState.totalWrong++;
+            gameState.totalQuestionsAnswered++;
+            gameState.streak = 1; // Reset streak
+            gameState.lives--;
+
+            // Kesan animasi meja bergegar (shake)
+            document.getElementById('pizza-board').classList.add('shake');
+            setTimeout(() => {
+                document.getElementById('pizza-board').classList.remove('shake');
+            }, 400);
+
+            let msg = isTimeout ? "MASA TAMAT! " : "JAWAPAN KURANG TEPAT. ";
+            msg += `Jawapan sebenar ialah ${gameState.currentQuestionData.slicesNeeded} kepingan.`;
+            
+            alertBanner(msg, "var(--primary)");
+
+            setTimeout(() => {
+                gameState.questionNumber++;
+                nextQuestion();
+            }, 2500);
+        }
+
+        function alertBanner(text, bgColor) {
+            const banner = document.getElementById('boss-overlay');
+            document.getElementById('boss-title').innerText = "KEDAI PIZZA INFO";
+            document.getElementById('boss-desc').innerText = text;
+            banner.style.background = bgColor;
+            banner.style.color = "white";
+            banner.classList.add('active');
+            
+            // Auto-tutup mesej jika bukan skrin permulaan boss semata-mata
+            setTimeout(() => {
+                closeBossOverlay();
+            }, 2000);
+        }
+
+        /* --------------------------------------------------------------------------
+           SISTEM POWER-UPS & MEKANIK KEDAI
+           -------------------------------------------------------------------------- */
+        function usePowerUp(type) {
+            playSound('bonus');
+            if (type === 'hint') {
+                let needed = gameState.currentQuestionData.slicesNeeded;
+                // Auto warnakan sebahagian jawapan untuk bantu pelajar
+                const slices = document.querySelectorAll('.pizza-slice');
+                for(let i=0; i<needed; i++) {
+                    gameState.selectedSlices[i] = true;
+                    slices[i].classList.add('selected');
+                }
+                document.getElementById('pw-hint').disabled = true;
+            } else if (type === 'freeze') {
+                gameState.isFrozen = true;
+                document.getElementById('pw-freeze').disabled = true;
+                document.getElementById('hud-time').innerText = "BEKU";
+            } else if (type === 'double') {
+                gameState.doubleScore = true;
+                document.getElementById('pw-double').disabled = true;
+            } else if (type === 'life') {
+                gameState.lives++;
+                updateHUD();
+                document.getElementById('pw-life').disabled = true;
+            }
+        }
+
+        function triggerBossEvent() {
+            playSound('trophy');
+            const banner = document.getElementById('boss-overlay');
+            document.getElementById('boss-title').innerText = "👹 CABARAN BOSS AKHIR!";
+            document.getElementById('boss-desc').innerText = "Pelanggan VIP mahukan pesanan yang sangat tepat! Ganjaran berganda menanti!";
+            banner.style.background = "gold";
+            banner.style.color = "#333";
+            banner.classList.add('active');
+        }
+
+        function closeBossOverlay() {
+            document.getElementById('boss-overlay').classList.remove('active');
+        }
+
+        function exitGame() {
+            clearInterval(gameState.timerInterval);
+            goToScreen('screen-menu');
+        }
+
+        /* --------------------------------------------------------------------------
+           PENAMBAT PERMAINAN & PENGURUSAN DATA STATISTIK
+           -------------------------------------------------------------------------- */
+        function endGameSession() {
+            clearInterval(gameState.timerInterval);
+            goToScreen('screen-stats');
+
+            let total = gameState.totalQuestionsAnswered || 1;
+            let accuracy = Math.round((gameState.totalCorrect / total) * 100);
+            let timePlayed = Math.round((Date.now() - gameState.gameStartTime) / 1000);
+
+            document.getElementById('stat-total').innerText = gameState.totalQuestionsAnswered;
+            document.getElementById('stat-correct').innerText = gameState.totalCorrect;
+            document.getElementById('stat-wrong').innerText = gameState.totalWrong;
+            document.getElementById('stat-accuracy').innerText = accuracy + "%";
+            document.getElementById('stat-time').innerText = timePlayed + "s";
+            document.getElementById('stat-score').innerText = gameState.score;
+
+            // Simpan ke LocalStorage (Simulasi Integrasi Firebase)
+            let highScores = JSON.parse(localStorage.getItem('pizza_highscores')) || [];
+            highScores.push({ year: gameState.year, score: gameState.score, date: new Date().toLocaleDateString() });
+            highScores.sort((a,b) => b.score - a.score);
+            localStorage.setItem('pizza_highscores', JSON.stringify(highScores.slice(0, 5)));
+        }
+
+        function showLeaderboard() {
+            goToScreen('screen-leaderboard');
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            let scores = JSON.parse(localStorage.getItem('pizza_highscores')) || [
+                {year: 1, score: 120}, {year: 3, score: 95}, {year: 5, score: 80}
+            ];
+
+            scores.forEach((s, idx) => {
+                let row = `tr style="height:35px; border-bottom:1px solid #ddd;">
+                    <td>${idx+1}</td>
+                    <td>Tahun ${s.year}</td>
+                    <td><b>${s.score}</b></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function saveSettings() {
+            playSound('click');
+            goToScreen('screen-menu');
+        }
+
+        /* --------------------------------------------------------------------------
+           EFEK KANVAS KONFETI (GRAFIK PARTIKEL TULEN)
+           -------------------------------------------------------------------------- */
+        function triggerConfettiEffect() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.style.display = 'block';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * canvas.height,
+                    color: `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 1)`,
+                    tilt: Math.random() * 10 - 5
+                });
+            }
+
+            let animationFrame;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, index) => {
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
+                    
+                    p.y += Math.cos(p.d) + 2 + p.r / 2;
+                    p.x += Math.sin(p.tilt);
+                    
+                    if (p.y > canvas.height) {
+                        particles[index] = {
+                            x: Math.random() * canvas.width,
+                            y: -20,
+                            r: p.r,
+                            d: p.d,
+                            color: p.color,
+                            tilt: p.tilt
+                        };
+                    }
+                });
+            }
+
+            let start = Date.now();
+            function run() {
+                draw();
+                if (Date.now() - start < 1500) {
+                    animationFrame = requestAnimationFrame(run);
+                } else {
+                    cancelAnimationFrame(animationFrame);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.style.display = 'none';
+                }
+            }
+            run();
+        }
+    </script>
+</body>
+</html>

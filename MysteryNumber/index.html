@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Number - Uji IQ Matematik Anda</title>
+    <aria-label>Mystery Number Math Game</aria-label>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --panel-bg: rgba(255, 255, 255, 0.07);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --secondary: #c084fc;
+            --accent: #2dd4bf;
+            --success: #4ade80;
+            --error: #f87171;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.37);
+            --font-lg: 1.2rem;
+            --font-xl: 1.8rem;
+            --radius: 16px;
+        }
+
+        .light-mode {
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #f3e8ff 100%);
+            --panel-bg: rgba(255, 255, 255, 0.65);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #0284c7;
+            --secondary: #7c3aed;
+            --accent: #0d9488;
+            --success: #16a34a;
+            --error: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            transition: background 0.5s ease, color 0.3s ease;
+            padding: 20px;
+        }
+
+        /* Utility Styles for Glassmorphism */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Typography & Custom Premium Inputs */
+        h1, h2, h3 {
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: var(--font-lg);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            text-decoration: none;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #ffffff;
+            border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+            background: linear-gradient(135deg, var(--primary) 20%, var(--secondary) 100%);
+        }
+
+        /* SVG Icons Styling */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Menu Utama Styles */
+        #main-menu {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .logo-container h1 {
+            font-size: 3.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.5));
+        }
+        .subtitle {
+            font-size: var(--font-lg);
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        /* Grid Selection Layouts */
+        .grid-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        @media(min-width: 480px) {
+            .grid-select { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .grid-item-btn {
+            background: rgba(255,255,255,0.04);
+            border: 2px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .grid-item-btn:hover, .grid-item-btn.selected {
+            border-color: var(--accent);
+            background: rgba(45, 212, 191, 0.15);
+            transform: scale(1.03);
+        }
+
+        /* Papan Kekunci / Jawapan Nombor Grid */
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 5px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.15);
+        }
+        .num-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 15px 5px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .num-card:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+        .num-card.correct {
+            background: var(--success) !important;
+            color: #fff !important;
+            animation: bounce 0.5s ease;
+        }
+        .num-card.wrong {
+            background: var(--error) !important;
+            color: #fff !important;
+            animation: shake 0.4s ease;
+        }
+
+        /* HUD & Game Panel */
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 15px;
+        }
+        .hud-item {
+            font-size: 1rem;
+            font-weight: 600;
+            background: rgba(0,0,0,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Petunjuk / Hints Container */
+        .hints-box {
+            background: rgba(0,0,0,0.15);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            min-height: 120px;
+        }
+        .hint-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            animation: fadeInSlide 0.4s forwards;
+            color: var(--text-main);
+        }
+        .hint-line svg {
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Modals & Popups (Explanation Panel) */
+        .explanation-panel {
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid var(--success);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-top: 15px;
+            animation: fadeInUp 0.3s forwards;
+        }
+        .explanation-title {
+            color: var(--success);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .explanation-item {
+            list-style: none;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Leaderboard & Stats Lists */
+        .data-list {
+            width: 100%;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--panel-border);
+            align-items: center;
+        }
+        .data-row:nth-child(even) {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Profiles, Badges & Achievements Grid */
+        .badge-grid, .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .badge-card, .achievement-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--panel-border);
+            padding: 12px 6px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+        .badge-card.unlocked, .achievement-card.unlocked {
+            opacity: 1;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.01));
+            border-color: var(--secondary);
+            box-shadow: 0 4px 12px rgba(192, 132, 252, 0.2);
+        }
+        .badge-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Floating Score Popup Animation Container */
+        #floating-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .floating-score {
+            position: absolute;
+            color: var(--success);
+            font-size: 2rem;
+            font-weight: 900;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        /* Animation Keyframes */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-80px) scale(1.2); opacity: 0; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar for Premium Feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Canvas for confetti overlay */
+        #canvas-confetti {
+            position: fixed;
+            top:0; left:0; width:100vw; height:100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+
+    <canvas id="canvas-confetti"></canvas>
+    <div id="floating-container"></div>
+
+    <div id="main-menu" class="glass-panel">
+        <div class="logo-container">
+            <h1 class="gradient-text">Mystery Number</h1>
+            <div class="subtitle" id="txt-subtitle">Uji IQ Matematik Anda</div>
+        </div>
+
+        <div style="max-width: 320px; margin: 0 auto;">
+            <button class="btn btn-primary" id="btn-start-game" aria-label="Mula Permainan">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> <span id="lbl-start">▶️ Mula Permainan</span>
+            </button>
+            <button class="btn" id="btn-open-records" aria-label="Rekod & Statistik">
+                📊 <span id="lbl-records">Rekod & Statistik</span>
+            </button>
+            <button class="btn" id="btn-open-leaderboard" aria-label="Leaderboard">
+                🏆 <span id="lbl-leaderboard">Papan Pendahulu</span>
+            </button>
+            <button class="btn" id="btn-open-settings" aria-label="Tetapan">
+                ⚙️ <span id="lbl-settings">Tetapan</span>
+            </button>
+        </div>
+
+        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--panel-border); font-size: 0.95rem; display:flex; justify-content: space-around;">
+            <div>👤 <span id="mini-name">Pemain</span></div>
+            <div>⭐ LV <span id="mini-level">1</span> (<span id="mini-xp">0</span> XP)</div>
+            <div>👑 <span id="mini-badge">Bronze</span></div>
+        </div>
+    </div>
+
+
+    <div id="game-config-menu" class="glass-panel hidden">
+        <h2 class="gradient-text" id="lbl-config-title">Konfigurasi Misteri</h2>
+        
+        <h3 style="margin-top:20px; text-align:left; font-size:1.1rem;" id="lbl-choose-diff">1. Tahap Kesukaran</h3>
+        <div class="grid-select" id="select-diff-grid">
+            <div class="grid-item-btn selected" data-value="mudah">Mudah</div>
+            <div class="grid-item-btn" data-value="sederhana">Sederhana</div>
+            <div class="grid-item-btn" data-value="sukar">Sukar</div>
+            <div class="grid-item-btn" data-value="master">Master</div>
+        </div>
+
+        <h3 style="margin-top:20px; text-align:left; font-size:1.1rem;" id="lbl-choose-mode">2. Mod Permainan</h3>
+        <div class="grid-select" id="select-mode-grid">
+            <div class="grid-item-btn selected" data-value="classic">Classic</div>
+            <div class="grid-item-btn" data-value="timeattack">Time Attack</div>
+            <div class="grid-item-btn" data-value="infinity">Infinity</div>
+        </div>
+
+        <h3 style="margin-top:20px; text-align:left; font-size:1.1rem;" id="lbl-choose-qty">3. Bilangan Soalan / Masa</h3>
+        <div class="grid-select" id="select-qty-grid">
+            <div class="grid-item-btn selected" data-value="10">10 Soalan</div>
+            <div class="grid-item-btn" data-value="20">20 Soalan</div>
+            <div class="grid-item-btn" data-value="30">30 Soalan</div>
+            <div class="grid-item-btn" data-value="0">Tanpa Had</div>
+        </div>
+
+        <div style="margin-top:30px; display:flex; gap:15px;">
+            <button class="btn" id="btn-config-back">Kembali</button>
+            <button class="btn btn-primary" id="btn-config-launch">Lancar Permainan 🚀</button>
+        </div>
+    </div>
+
+
+    <div id="gameplay-screen" class="glass-panel hidden">
+        <div class="hud-bar">
+            <div class="hud-item">📋 <span id="hud-q-index">Soalan 1/10</span></div>
+            <div class="hud-item">⏱️ <span id="hud-timer">Masa: --</span></div>
+            <div class="hud-item">❤️ <span id="hud-lives">❤️❤️❤️</span></div>
+            <div class="hud-item" style="color:var(--accent);">🔥 Combo: x<span id="hud-combo">1</span></div>
+            <div class="hud-item" style="color:var(--success);">⭐ <span id="hud-score">0000</span></div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="game-progress-bar"></div>
+        </div>
+
+        <div class="hints-box" id="hints-arena">
+            </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div style="font-size:0.9rem; color:var(--text-muted);" id="lbl-hint-cost">Petunjuk mengurangkan markah!</div>
+            <button class="btn" id="btn-trigger-hint" style="width:auto; padding:8px 16px; margin:0; font-size:1rem; border-color:var(--secondary);">
+                💡 Dapatkan Petunjuk (<span id="hint-count-badge">0/4</span>)
+            </button>
+        </div>
+
+        <h3 style="text-align:left; font-size:1.1rem; margin-bottom:10px;" id="lbl-pick-answer">Tekan Nombor Pilihan Anda:</h3>
+        <div class="numbers-grid" id="matrix-numbers-grid">
+            </div>
+
+        <div id="explanation-container"></div>
+
+        <div style="margin-top:25px;">
+            <button class="btn btn-primary hidden" id="btn-next-question">Soalan Seterusnya ➔</button>
+            <button class="btn" id="btn-quit-game" style="border-color:var(--error); color:var(--error);">Tamatkan Permainan</button>
+        </div>
+    </div>
+
+
+    <div id="records-screen" class="glass-panel hidden">
+        <h2 class="gradient-text">Statistik & Pencapaian</h2>
+        
+        <div style="display:flex; margin-top:15px; border-bottom:1px solid var(--panel-border);">
+            <div style="flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:700; border-bottom:2px solid var(--primary);" id="tab-stats-btn">Analitis</div>
+            <div style="flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:700; color:var(--text-muted);" id="tab-badges-btn">Lencana & Sijil</div>
+        </div>
+
+        <div id="view-analytics" class="data-list">
+            <div class="data-row"><span>Jumlah Permainan:</span><strong id="stat-games">0</strong></div>
+            <div class="data-row"><span>Jawapan Betul:</span><strong id="stat-correct" style="color:var(--success);">0</strong></div>
+            <div class="data-row"><span>Jawapan Salah:</span><strong id="stat-wrong" style="color:var(--error);">0</strong></div>
+            <div class="data-row"><span>Ketepatan (Accuracy):</span><strong id="stat-accuracy">0%</strong></div>
+            <div class="data-row"><span>Kadar Kemenangan (Win Rate):</span><strong id="stat-winrate">0%</strong></div>
+            <div class="data-row"><span>Rantaian Terbaik (Streak):</span><strong id="stat-streak">0</strong></div>
+            <div class="data-row"><span>Jumlah Petunjuk Digunakan:</span><strong id="stat-hints">0</strong></div>
+        </div>
+
+        <div id="view-badges" class="hidden">
+            <h3 style="font-size:1rem; margin-top:15px; text-align:left;">Koleksi Lencana Tahap</h3>
+            <div class="badge-grid" id="badges-container">
+                <div class="badge-card" id="badge-bronze"><span class="badge-icon">🥉</span>Bronze</div>
+                <div class="badge-card" id="badge-silver"><span class="badge-icon">🥈</span>Silver</div>
+                <div class="badge-card" id="badge-gold"><span class="badge-icon">🥇</span>Gold</div>
+                <div class="badge-card" id="badge-diamond"><span class="badge-icon">💎</span>Diamond</div>
+                <div class="badge-card" id="badge-ruby"><span class="badge-icon">❤️</span>Ruby</div>
+                <div class="badge-card" id="badge-emerald"><span class="badge-icon">💚</span>Emerald</div>
+                <div class="badge-card" id="badge-master"><span class="badge-icon">🔥</span>Master</div>
+                <div class="badge-card" id="badge-legend"><span class="badge-icon">👑</span>Legend</div>
+            </div>
+
+            <h3 style="font-size:1rem; margin-top:20px; text-align:left;">Pencapaian Khas (Achievements)</h3>
+            <div class="achievement-grid" id="achievements-container">
+                <div class="achievement-card" id="ach-detective">🕵️‍♂️<br>Number Detective</div>
+                <div class="achievement-card" id="ach-genius">🧠<br>Math Genius</div>
+                <div class="achievement-card" id="ach-perfect">💯<br>Perfect Score</div>
+                <div class="achievement-card" id="ach-nohint">🚫<br>No Hint Master</div>
+                <div class="achievement-card" id="ach-fast">⚡<br>Fast Thinker</div>
+                <div class="achievement-card" id="ach-brain">🪐<br>Brain Master</div>
+                <div class="achievement-card" id="ach-100games">🎮<br>100 Games Played</div>
+                <div class="achievement-card" id="ach-1000correct">🎯<br>1000 Correct</div>
+            </div>
+        </div>
+
+        <button class="btn" id="btn-records-back" style="margin-top:25px;">Kembali Ke Menu</button>
+    </div>
+
+
+    <div id="leaderboard-screen" class="glass-panel hidden">
+        <h2 class="gradient-text">Papan Pendahulu Global</h2>
+        
+        <div style="display:flex; gap:5px; margin-top:12px; margin-bottom:12px;">
+            <button class="btn grid-item-btn selected" id="lb-tab-day" style="padding:8px 4px; font-size:0.9rem; margin:0;">Hari Ini</button>
+            <button class="btn grid-item-btn" id="lb-tab-week" style="padding:8px 4px; font-size:0.9rem; margin:0;">Minggu Ini</button>
+            <button class="btn grid-item-btn" id="lb-tab-month" style="padding:8px 4px; font-size:0.9rem; margin:0;">Bulan Ini</button>
+            <button class="btn grid-item-btn" id="lb-tab-all" style="padding:8px 4px; font-size:0.9rem; margin:0;">Sepanjang Masa</button>
+        </div>
+
+        <div class="data-list" id="leaderboard-rows-container">
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">Memuat turun data kedudukan...</div>
+        </div>
+
+        <button class="btn" id="btn-leaderboard-back" style="margin-top:20px;">Kembali Ke Menu</button>
+    </div>
+
+
+    <div id="settings-screen" class="glass-panel hidden">
+        <h2 class="gradient-text">Tetapan Aplikasi</h2>
+        
+        <div style="margin-top:20px;">
+            <label style="display:block; font-weight:700; margin-bottom:8px;">Profil Nama Pemain</label>
+            <input type="text" id="input-player-name" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--panel-border); background:rgba(0,0,0,0.3); color:#fff; font-size:1.1rem; margin-bottom:20px;" maxlength="18" placeholder="Masukkan nama anda">
+
+            <div class="data-row" style="padding:15px 0;">
+                <span>Muzik Latar Belakang (Audio API Synth Loop)</span>
+                <input type="checkbox" id="setting-toggle-music" checked style="width:22px; height:22px;">
+            </div>
+            <div class="data-row" style="padding:15px 0;">
+                <span>Kesan Bunyi (Sound Effects)</span>
+                <input type="checkbox" id="setting-toggle-sound" checked style="width:22px; height:22px;">
+            </div>
+            <div class="data-row" style="padding:15px 0;">
+                <span>Mod Gelap / Cerah (Theme Mode)</span>
+                <button class="btn" id="btn-toggle-theme" style="width:auto; padding:6px 14px; margin:0; font-size:0.9rem;">Tukar Tema</button>
+            </div>
+            <div class="data-row" style="padding:15px 0;">
+                <span>Bahasa Pilihan / Language</span>
+                <select id="setting-select-lang" style="padding:8px; border-radius:6px; background:rgba(0,0,0,0.5); color:#fff;">
+                    <option value="ms">Bahasa Melayu</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:30px; display:flex; flex-direction:column; gap:10px;">
+            <button class="btn btn-primary" id="btn-settings-save">Simpan Perubahan</button>
+            <button class="btn" id="btn-settings-reset" style="border-color:var(--error); color:var(--error);">Padam & Reset Semua Progres</button>
+            <button class="btn" id="btn-settings-back">Kembali</button>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Import Firebase components modularly
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Firebase Configuration Provided by User
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQZ8bWLhZN5JoRnsVEfmoLSi9Ud9xxmw4",
+            authDomain: "memorymatch-836a1.firebaseapp.com",
+            databaseURL: "https://memorymatch-836a1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "memorymatch-836a1",
+            storageBucket: "memorymatch-836a1.firebasestorage.app",
+            messagingSenderId: "449525592270",
+            appId: "1:449525592270:web:e7688cd848a41d6ef6e09f"
+        };
+
+        // Initialize Firebase variables
+        let app, db, auth, currentUser = null;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            auth = getAuth(app);
+        } catch(e) {
+            console.error("Firebase Initialization failed, switching to local-fallback sandbox mode.", e);
+        }
+
+        // ================= STATE PERMAINAN GLOBAL =================
+        let playerProfile = {
+            uid: "local_guest",
+            name: "Wira Matematik",
+            avatar: "🎯",
+            score: 0,
+            xp: 0,
+            level: 1,
+            gamesPlayed: 0,
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            highestScore: 0,
+            streak: 0,
+            maxStreak: 0,
+            hintsUsed: 0,
+            unlockedBadges: ["bronze"],
+            unlockedAchievements: [],
+            dailyChallengeDate: "",
+            theme: "dark",
+            lang: "ms"
+        };
+
+        let currentGame = {
+            difficulty: "mudah",
+            mode: "classic",
+            totalQuestions: 10,
+            currentQuestionIndex: 0,
+            lives: 3,
+            combo: 1,
+            score: 0,
+            currentTimeLeft: 45,
+            timerInterval: null,
+            targetNumber: null,
+            minRange: 1,
+            maxRange: 100,
+            generatedHints: [],
+            visibleHintsCount: 0,
+            questionHistoryIds: new Set(),
+            currentQuestionId: "",
+            isAnswered: false,
+            questionStartTime: 0
+        };
+
+        // Synthesizer Web Audio API Controller Without audio asset dependencies
+        const AudioSynth = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            play(type) {
+                if (playerProfile.sound === false || !playerProfile.sound) {
+                    if(document.getElementById('setting-toggle-sound') && !document.getElementById('setting-toggle-sound').checked) return;
+                }
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                const now = this.ctx.currentTime;
+                if (type === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now); osc.stop(now + 0.05);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now); osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(90, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'levelup') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(261.63, now);
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.5);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                }
+            }
+        };
+
+        // Canvas Confetti Generator Engine
+        const ConfettiEngine = {
+            canvas: null, ctx: null, particles: [], active: false,
+            init() {
+                this.canvas = document.getElementById("canvas-confetti");
+                this.ctx = this.canvas.getContext("2d");
+                window.addEventListener('resize', () => this.resize());
+                this.resize();
+            },
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            },
+            trigger() {
+                this.active = true; this.particles = [];
+                for(let i=0; i<80; i++) {
+                    this.particles.push({
+                        x: window.innerWidth / 2, y: window.innerHeight / 2,
+                        vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.5) * 15 - 5,
+                        size: Math.random() * 8 + 4, color: `hsl(${Math.random()*360}, 100%, 60%)`,
+                        alpha: 1
+                    });
+                }
+                this.loop();
+            },
+            loop() {
+                if(!this.active) return;
+                this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+                let alive = false;
+                this.particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.alpha -= 0.015;
+                    if(p.alpha > 0) {
+                        alive = true;
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.globalAlpha = p.alpha;
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                        this.ctx.fill();
+                    }
+                });
+                this.ctx.globalAlpha = 1.0;
+                if(alive) { requestAnimationFrame(() => this.loop()); } else { this.active = false; }
+            }
+        };
+
+        // ================= PROCEDURAL MATHEMATICS QUESTION ENGINE =================
+        const QuestionGenerator = {
+            isPrime(num) {
+                if (num <= 1) return false;
+                for (let i = 2; i <= Math.sqrt(num); i++) if (num % i === 0) return false;
+                return true;
+            },
+            generateQuestionMatrix(difficulty) {
+                let min = 1, max = 100;
+                
+                // DIKECILKAN: Julat nombor sasaran dikecilkan agar tekaan lebih berfokus
+                if (difficulty === "mudah") { min = 1; max = 20; }
+                else if (difficulty === "sederhana") { min = 10; max = 60; }
+                else if (difficulty === "sukar") { min = 50; max = 300; }
+                else if (difficulty === "master") { min = 100; max = 1000; }
+
+                // DIKECILKAN: Julat tekaan rawak antara startRange ke finalMax dikecilkan
+                let targetSpan = difficulty === "mudah" ? 8 : difficulty === "sederhana" ? 15 : 40;
+                let startRange = Math.floor(Math.random() * (max - min)) + min;
+                let finalMax = startRange + targetSpan;
+                
+                let target = Math.floor(Math.random() * (finalMax - startRange + 1)) + startRange;
+
+                let hints = [];
+                
+                let padLower = Math.floor(Math.random() * 3) + 1;
+                let padUpper = Math.floor(Math.random() * 3) + 1;
+                hints.push({
+                    text: `Saya lebih besar daripada ${target - padLower}`,
+                    validate: (n) => n > (target - padLower)
+                });
+                hints.push({
+                    text: `Saya lebih kecil daripada ${target + padUpper}`,
+                    validate: (n) => n < (target + padUpper)
+                });
+
+                if (target % 2 === 0) {
+                    hints.push({ text: "Saya ialah nombor genap", validate: (n) => n % 2 === 0 });
+                } else {
+                    hints.push({ text: "Saya ialah nombor ganjil", validate: (n) => n % 2 !== 0 });
+                }
+
+                if (max > 30 && target > 3) {
+                    if (target % 3 === 0) {
+                        hints.push({ text: "Saya ialah gandaan bagi 3", validate: (n) => n % 3 === 0 });
+                    } else if (target % 4 === 0) {
+                        hints.push({ text: "Saya boleh dibahagi tepat dengan 4", validate: (n) => n % 4 === 0 });
+                    } else if (this.isPrime(target)) {
+                        hints.push({ text: "Saya ialah nombor perdana", validate: (n) => this.isPrime(n) });
+                    }
+                }
+
+                let digits = target.toString().split('').map(Number);
+                let sumDigits = digits.reduce((a,b) => a+b, 0);
+                hints.push({
+                    text: `Hasil tambah digit-digit saya berjumlah ${sumDigits}`,
+                    validate: (n) => n.toString().split('').map(Number).reduce((a,b)=>a+b,0) === sumDigits
+                });
+
+                let questionId = `D${difficulty}T${target}S${sumDigits}`;
+
+                // DIKECILKAN: Mengecilkan pilihan kad jawapan kepada julat tepat [startRange hingga finalMax] tanpa pad tambahan
+                let choices = [];
+                for(let i = startRange; i <= finalMax; i++) {
+                    if (i >= min) choices.push(i);
+                }
+                choices = [...new Set(choices)].filter(n => n !== target);
+                choices = choices.sort(() => 0.5 - Math.random()).slice(0, 14); // Pilihan kad dikurangkan agar tidak terlalu serabut
+                choices.push(target);
+                choices.sort((a,b) => a - b);
+
+                return {
+                    questionId, target, hints, choices, startRange, finalMax
+                };
+            }
+        };
+
+        // ================= FIREBASE CLOUD CONTROLLER MODULE =================
+        const FirebaseController = {
+            async anonymousLogin() {
+                if(!auth) return;
+                try {
+                    let credential = await signInAnonymously(auth);
+                    playerProfile.uid = credential.user.uid;
+                    await this.loadProgress();
+                } catch(e) {
+                    console.warn("Sign-In failed anonymously, working locally instead.", e);
+                }
+            },
+            async saveProgress() {
+                updateUserProfileUI();
+                if(!db || playerProfile.uid === "local_guest") {
+                    localStorage.setItem("mystery_num_local_state", JSON.stringify(playerProfile));
+                    return;
+                }
+                try {
+                    await set(ref(db, `users/${playerProfile.uid}/profile`), playerProfile);
+                } catch(e) { console.error("Cloud save failure", e); }
+            },
+            async loadProgress() {
+                if(!db || playerProfile.uid === "local_guest") {
+                    let local = localStorage.getItem("mystery_num_local_state");
+                    if(local) {
+                        playerProfile = JSON.parse(local);
+                        updateUserProfileUI();
+                    }
+                    return;
+                }
+                try {
+                    const snapshot = await get(child(ref(db), `users/${playerProfile.uid}/profile`));
+                    if(snapshot.exists()) {
+                        playerProfile = snapshot.val();
+                        updateUserProfileUI();
+                    }
+                } catch(e) { console.error("Cloud load error", e); }
+            },
+            async saveScore(score, mode) {
+                if(!db) return;
+                let timestamp = new Date().getTime();
+                let entry = {
+                    name: playerProfile.name,
+                    score: score,
+                    level: playerProfile.level,
+                    date: new Date().toISOString().split('T')[0],
+                    timestamp: timestamp
+                };
+                try {
+                    await set(ref(db, `leaderboards/${mode}/${playerProfile.uid}`), entry);
+                } catch(e) { console.error(e); }
+            },
+            async getLeaderboard(mode) {
+                if(!db) {
+                    return [{name: "Pemain Tempatan", score: playerProfile.highestScore, level: playerProfile.level, date: "Hari Ini"}];
+                }
+                try {
+                    const snap = await get(child(ref(db), `leaderboards/${mode}`));
+                    if(snap.exists()) {
+                        let obj = snap.val();
+                        let arr = Object.values(obj);
+                        return arr.sort((a,b) => b.score - a.score).slice(0, 100);
+                    }
+                } catch(e) { console.error(e); }
+                return [];
+            }
+        };
+
+        // ================= APP CONTROL ROUTERS & FLOW CONTROLLERS =================
+        function screenNavigator(screenId) {
+            AudioSynth.play('click');
+            document.getElementById("main-menu").classList.add("hidden");
+            document.getElementById("game-config-menu").classList.add("hidden");
+            document.getElementById("gameplay-screen").classList.add("hidden");
+            document.getElementById("records-screen").classList.add("hidden");
+            document.getElementById("leaderboard-screen").classList.add("hidden");
+            document.getElementById("settings-screen").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+
+            if (screenId === "records-screen") renderStatsAndBadges();
+            if (screenId === "leaderboard-screen") switchLeaderboardTab("all");
+        }
+
+        function updateUserProfileUI() {
+            document.getElementById("mini-name").innerText = playerProfile.name || "Pemain";
+            document.getElementById("mini-level").innerText = playerProfile.level;
+            document.getElementById("mini-xp").innerText = playerProfile.xp;
+            
+            let currentBadge = "Bronze";
+            if (playerProfile.level >= 50) currentBadge = "Legend";
+            else if (playerProfile.level >= 40) currentBadge = "Master";
+            else if (playerProfile.level >= 30) currentBadge = "Emerald";
+            else if (playerProfile.level >= 25) currentBadge = "Ruby";
+            else if (playerProfile.level >= 20) currentBadge = "Diamond";
+            else if (playerProfile.level >= 12) currentBadge = "Gold";
+            else if (playerProfile.level >= 5) currentBadge = "Silver";
+            
+            playerProfile.unlockedBadges = ["bronze"];
+            if(playerProfile.level >= 5) playerProfile.unlockedBadges.push("silver");
+            if(playerProfile.level >= 12) playerProfile.unlockedBadges.push("gold");
+            if(playerProfile.level >= 20) playerProfile.unlockedBadges.push("diamond");
+            if(playerProfile.level >= 25) playerProfile.unlockedBadges.push("ruby");
+            if(playerProfile.level >= 30) playerProfile.unlockedBadges.push("emerald");
+            if(playerProfile.level >= 40) playerProfile.unlockedBadges.push("master");
+            if(playerProfile.level >= 50) playerProfile.unlockedBadges.push("legend");
+
+            document.getElementById("mini-badge").innerText = currentBadge;
+        }
+
+        // ================= GAME ENGINE LIFE CYCLES =================
+        function initiateGameSetup() {
+            let diffActiveBtn = document.querySelector("#select-diff-grid .grid-item-btn.selected");
+            let modeActiveBtn = document.querySelector("#select-mode-grid .grid-item-btn.selected");
+            let qtyActiveBtn = document.querySelector("#select-qty-grid .grid-item-btn.selected");
+
+            currentGame.difficulty = diffActiveBtn.dataset.value;
+            currentGame.mode = modeActiveBtn.dataset.value;
+            currentGame.totalQuestions = parseInt(qtyActiveBtn.dataset.value);
+            currentGame.currentQuestionIndex = 0;
+            currentGame.score = 0;
+            currentGame.combo = 1;
+            currentGame.questionHistoryIds.clear();
+
+            if (currentGame.mode === "infinity") {
+                currentGame.lives = 999; 
+                currentGame.totalQuestions = 0;
+            } else {
+                currentGame.lives = 3;
+            }
+
+            screenNavigator("gameplay-screen");
+            setupNewQuestion();
+        }
+
+        function setupNewQuestion() {
+            clearInterval(currentGame.timerInterval);
+            currentGame.currentQuestionIndex++;
+            currentGame.isAnswered = false;
+
+            if(currentGame.totalQuestions > 0) {
+                document.getElementById("hud-q-index").innerText = `Soalan ${currentGame.currentQuestionIndex}/${currentGame.totalQuestions}`;
+                document.getElementById("game-progress-bar").style.width = `${((currentGame.currentQuestionIndex - 1)/currentGame.totalQuestions)*100}%`;
+            } else {
+                document.getElementById("hud-q-index").innerText = `Soalan ${currentGame.currentQuestionIndex}/∞`;
+                document.getElementById("game-progress-bar").style.width = "50%";
+            }
+
+            let setup = null;
+            let loopGuard = 0;
+            while(loopGuard < 200) {
+                setup = QuestionGenerator.generateQuestionMatrix(currentGame.difficulty);
+                if (!currentGame.questionHistoryIds.has(setup.questionId)) {
+                    break;
+                }
+                loopGuard++;
+            }
+            
+            currentGame.currentQuestionId = setup.questionId;
+            currentGame.questionHistoryIds.add(setup.questionId);
+            currentGame.targetNumber = setup.target;
+            currentGame.generatedHints = setup.hints;
+
+            // BETULKAN: Menunjukkan semua petunjuk automatik untuk tahap Mudah & Sederhana
+            if (currentGame.difficulty === "mudah" || currentGame.difficulty === "sederhana") {
+                currentGame.visibleHintsCount = setup.hints.length;
+            } else {
+                currentGame.visibleHintsCount = 1;
+            }
+
+            document.getElementById("btn-next-question").classList.add("hidden");
+            document.getElementById("explanation-container").innerHTML = "";
+
+            renderHintsArena();
+            renderChoicesGrid(setup.choices);
+            updateGameHUD();
+
+            if(currentGame.mode === "timeattack") {
+                currentGame.currentTimeLeft = 20;
+            } else {
+                currentGame.currentTimeLeft = 45;
+            }
+            
+            if(currentGame.mode !== "infinity") {
+                document.getElementById("hud-timer").innerText = `Masa: ${currentGame.currentTimeLeft}s`;
+                currentGame.timerInterval = setInterval(() => {
+                    currentGame.currentTimeLeft--;
+                    document.getElementById("hud-timer").innerText = `Masa: ${currentGame.currentTimeLeft}s`;
+                    if(currentGame.currentTimeLeft <= 0) {
+                        processAnswerSelection(null, false);
+                    }
+                }, 1000);
+            } else {
+                document.getElementById("hud-timer").innerText = "Masa: ∞";
+            }
+            currentGame.questionStartTime = new Date().getTime();
+        }
+
+        function renderHintsArena() {
+            const arena = document.getElementById("hints-arena");
+            arena.innerHTML = "";
+            for(let i=0; i<currentGame.visibleHintsCount; i++) {
+                if (currentGame.generatedHints[i]) {
+                    let div = document.createElement("div");
+                    div.className = "hint-line";
+                    div.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span>${currentGame.generatedHints[i].text}</span>`;
+                    arena.appendChild(div);
+                }
+            }
+            document.getElementById("hint-count-badge").innerText = `${currentGame.visibleHintsCount}/${currentGame.generatedHints.length}`;
+        }
+
+        function renderChoicesGrid(choices) {
+            const container = document.getElementById("matrix-numbers-grid");
+            container.innerHTML = "";
+            choices.forEach(num => {
+                let card = document.createElement("div");
+                card.className = "num-card";
+                card.innerText = num;
+                card.setAttribute("role", "button");
+                card.setAttribute("aria-label", `Pilih nombor ${num}`);
+                card.addEventListener("click", () => {
+                    if(!currentGame.isAnswered) processAnswerSelection(num, card);
+                });
+                container.appendChild(card);
+            });
+        }
+
+        function updateGameHUD() {
+            document.getElementById("hud-score").innerText = String(currentGame.score).padStart(4, '0');
+            document.getElementById("hud-combo").innerText = currentGame.combo;
+            
+            let heartString = "";
+            if(currentGame.mode === "infinity") {
+                heartString = "∞";
+            } else {
+                for(let i=0; i<currentGame.lives; i++) heartString += "❤️";
+                if(heartString === "") heartString = "💀";
+            }
+            document.getElementById("hud-lives").innerText = heartString;
+        }
+
+        function triggerHintCost() {
+            if(currentGame.isAnswered) return;
+            if(currentGame.visibleHintsCount < currentGame.generatedHints.length) {
+                currentGame.visibleHintsCount++;
+                playerProfile.hintsUsed++;
+                renderHintsArena();
+                AudioSynth.play('click');
+            }
+        }
+
+        function processAnswerSelection(chosenNumber, elementCard) {
+            currentGame.isAnswered = true;
+            clearInterval(currentGame.timerInterval);
+
+            let isCorrect = (chosenNumber === currentGame.targetNumber);
+            let timeTaken = (new Date().getTime() - currentGame.questionStartTime) / 1000;
+
+            if (isCorrect) {
+                AudioSynth.play('correct');
+                ConfettiEngine.trigger();
+                if(elementCard) elementCard.classList.add("correct");
+                
+                let basePoints = 100;
+                let speedBonus = Math.max(0, Math.floor((45 - timeTaken) * 2));
+                let comboBonus = (currentGame.combo - 1) * 25;
+                let roundTotal = basePoints + speedBonus + comboBonus;
+                
+                currentGame.score += roundTotal;
+                currentGame.combo++;
+                playerProfile.correctAnswers++;
+                playerProfile.streak++;
+                if(playerProfile.streak > playerProfile.maxStreak) playerProfile.maxStreak = playerProfile.streak;
+
+                createFloatingScoreEffect(elementCard, `+${roundTotal}`);
+                renderExplanationDropdown(true);
+
+            } else {
+                AudioSynth.play('wrong');
+                if(elementCard) elementCard.classList.add("wrong");
+                if (navigator.vibrate) navigator.vibrate(200);
+
+                currentGame.combo = 1;
+                playerProfile.wrongAnswers++;
+                playerProfile.streak = 0;
+                
+                if(currentGame.mode !== "infinity") {
+                    currentGame.lives--;
+                }
+
+                renderExplanationDropdown(false);
+            }
+
+            updateGameHUD();
+            FirebaseController.saveProgress();
+
+            if(currentGame.mode !== "infinity" && currentGame.lives <= 0) {
+                setTimeout(() => finishGameSession(false), 1500);
+            } else if(currentGame.totalQuestions > 0 && currentGame.currentQuestionIndex >= currentGame.totalQuestions) {
+                setTimeout(() => finishGameSession(true), 1500);
+            } else {
+                document.getElementById("btn-next-question").classList.remove("hidden");
+            }
+        }
+
+        function createFloatingScoreEffect(element, text) {
+            let container = document.getElementById("floating-container");
+            let div = document.createElement("div");
+            div.className = "floating-score";
+            div.innerText = text;
+            
+            if(element) {
+                let rect = element.getBoundingClientRect();
+                div.style.left = `${rect.left + 10}px`;
+                div.style.top = `${rect.top - 20}px`;
+            } else {
+                div.style.left = "50%";
+                div.style.top = "50%";
+            }
+            container.appendChild(div);
+            setTimeout(() => div.remove(), 1000);
+        }
+
+        function renderExplanationDropdown(wasCorrect) {
+            const container = document.getElementById("explanation-container");
+            container.innerHTML = "";
+
+            let panel = document.createElement("div");
+            panel.className = "explanation-panel";
+            if(!wasCorrect) panel.style.borderColor = "var(--error)";
+
+            let titleText = wasCorrect ? "Tahniah! Jawapan Betul." : `Salah! Nombor Misteri Ialah: ${currentGame.targetNumber}`;
+            
+            let html = `<div class="explanation-title" style="color:${wasCorrect?'var(--success)':'var(--error)'}">
+                <span>${wasCorrect?'✔':'❌'}</span> ${titleText}
+            </div>
+            <p style="font-size:0.95rem; margin-bottom:10px; color:var(--text-muted);">Mari kita semak petunjuk deduksi:</p>
+            <ul>`;
+
+            currentGame.generatedHints.forEach(h => {
+                html += `<li class="explanation-item">🔹 ${h.text}</li>`;
+            });
+
+            html += `</ul>`;
+            panel.innerHTML = html;
+            container.appendChild(panel);
+        }
+
+        function finishGameSession(isVictory) {
+            clearInterval(currentGame.timerInterval);
+            alert(`Sesi Tamat! Skor Akhir Anda: ${currentGame.score}`);
+            
+            playerProfile.gamesPlayed++;
+            if(currentGame.score > playerProfile.highestScore) {
+                playerProfile.highestScore = currentGame.score;
+            }
+
+            let earnedXP = Math.floor(currentGame.score * 0.1);
+            playerProfile.xp += earnedXP;
+            
+            let nextLevelThreshold = playerProfile.level * 200;
+            if(playerProfile.xp >= nextLevelThreshold) {
+                playerProfile.level++;
+                AudioSynth.play('levelup');
+                alert(`🎉 TAHNIAH! Anda naik ke Tahap (Level) ${playerProfile.level}!`);
+            }
+
+            if(playerProfile.gamesPlayed >= 100 && !playerProfile.unlockedAchievements.includes("100games")) {
+                playerProfile.unlockedAchievements.push("100games");
+            }
+            if(playerProfile.correctAnswers >= 1000 && !playerProfile.unlockedAchievements.includes("1000correct")) {
+                playerProfile.unlockedAchievements.push("1000correct");
+            }
+            if(currentGame.score > 2000 && !playerProfile.unlockedAchievements.includes("genius")) {
+                playerProfile.unlockedAchievements.push("genius");
+            }
+
+            FirebaseController.saveScore(currentGame.score, currentGame.mode);
+            FirebaseController.saveProgress();
+            screenNavigator("main-menu");
+        }
+
+        // ================= STATS AND INTERFACE RENDERING GENERATORS =================
+        function renderStatsAndBadges() {
+            document.getElementById("stat-games").innerText = playerProfile.gamesPlayed || 0;
+            document.getElementById("stat-correct").innerText = playerProfile.correctAnswers || 0;
+            document.getElementById("stat-wrong").innerText = playerProfile.wrongAnswers || 0;
+            document.getElementById("stat-streak").innerText = playerProfile.maxStreak || 0;
+            document.getElementById("stat-hints").innerText = playerProfile.hintsUsed || 0;
+
+            let total = (playerProfile.correctAnswers || 0) + (playerProfile.wrongAnswers || 0);
+            let acc = total > 0 ? Math.round((playerProfile.correctAnswers / total) * 100) : 0;
+            document.getElementById("stat-accuracy").innerText = `${acc}%`;
+
+            let wr = playerProfile.gamesPlayed > 0 ? Math.round((playerProfile.correctAnswers / (playerProfile.gamesPlayed * 10)) * 100) : 0;
+            document.getElementById("stat-winrate").innerText = `${Math.min(100, wr)}%`;
+
+            document.querySelectorAll(".badge-card").forEach(card => card.classList.remove("unlocked"));
+            if(playerProfile.unlockedBadges) {
+                playerProfile.unlockedBadges.forEach(b => {
+                    let el = document.getElementById(`badge-${b}`);
+                    if(el) el.classList.add("unlocked");
+                });
+            }
+
+            document.querySelectorAll(".achievement-card").forEach(card => card.classList.remove("unlocked"));
+            if(playerProfile.unlockedAchievements) {
+                playerProfile.unlockedAchievements.forEach(ach => {
+                    let el = document.getElementById(`ach-${ach}`);
+                    if(el) el.classList.add("unlocked");
+                });
+            }
+        }
+
+        async function switchLeaderboardTab(mode) {
+            document.querySelectorAll("#leaderboard-screen .grid-item-btn").forEach(b => b.classList.remove("selected"));
+            
+            let btnId = "lb-tab-all";
+            if(mode === "classic") btnId = "lb-tab-day"; 
+            let targetBtn = document.getElementById(btnId);
+            if(targetBtn) targetBtn.classList.add("selected");
+
+            const container = document.getElementById("leaderboard-rows-container");
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Memuat turun data dari pelayan awan...</div>`;
+
+            let data = await FirebaseController.getLeaderboard(mode === "all" ? "classic" : mode);
+            container.innerHTML = "";
+            
+            if(data.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Tiada rekod data dijumpai bagi kategori ini.</div>`;
+                return;
+            }
+
+            data.forEach((row, index) => {
+                let div = document.createElement("div");
+                div.className = "data-row";
+                div.innerHTML = `<span><strong>#${index+1}</strong> ${escapeHTML(row.name)} (LV ${row.level || 1})</span>
+                <strong style="color:var(--primary);">${row.score} Pts</strong>`;
+                container.appendChild(div);
+            });
+        }
+
+        function escapeHTML(str) {
+            if(!str) return "";
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        // ================= MANAGEMENT SYSTEM HANDLERS =================
+        function saveSystemSettings() {
+            let nameInput = document.getElementById("input-player-name").value.trim();
+            if(nameInput) playerProfile.name = nameInput;
+
+            playerProfile.lang = document.getElementById("setting-select-lang").value;
+            FirebaseController.saveProgress();
+            alert("Tetapan berjaya disimpan!");
+            screenNavigator("main-menu");
+        }
+
+        function resetEntireProgressData() {
+            if(confirm("Adakah anda pasti mahu pemadamkan keseluruhan rekod permainan dan profil progres anda? Tindakan ini tidak boleh dikembalikan.")) {
+                localStorage.clear();
+                playerProfile = {
+                    uid: "local_guest", name: "Pemain Baru", avatar: "🎯", score: 0, xp: 0, level: 1,
+                    gamesPlayed: 0, correctAnswers: 0, wrongAnswers: 0, highestScore: 0, streak: 0, maxStreak: 0, hintsUsed: 0,
+                    unlockedBadges: ["bronze"], unlockedAchievements: [], dailyChallengeDate: "", theme: "dark", lang: "ms"
+                };
+                FirebaseController.saveProgress();
+                location.reload();
+            }
+        }
+
+        // ================= DOM EVENTS REGISTRATIONS =================
+        document.addEventListener("DOMContentLoaded", () => {
+            ConfettiEngine.init();
+            FirebaseController.anonymousLogin();
+
+            document.getElementById("btn-start-game").addEventListener("click", () => screenNavigator("game-config-menu"));
+            document.getElementById("btn-open-records").addEventListener("click", () => screenNavigator("records-screen"));
+            document.getElementById("btn-open-leaderboard").addEventListener("click", () => screenNavigator("leaderboard-screen"));
+            document.getElementById("btn-open-settings").addEventListener("click", () => {
+                document.getElementById("input-player-name").value = playerProfile.name || "";
+                document.getElementById("setting-select-lang").value = playerProfile.lang || "ms";
+                screenNavigator("settings-screen");
+            });
+
+            setupGridSelectionToggle("#select-diff-grid");
+            setupGridSelectionToggle("#select-mode-grid");
+            setupGridSelectionToggle("#select-qty-grid");
+
+            document.getElementById("btn-config-back").addEventListener("click", () => screenNavigator("main-menu"));
+            document.getElementById("btn-config-launch").addEventListener("click", initiateGameSetup);
+
+            document.getElementById("btn-trigger-hint").addEventListener("click", triggerHintCost);
+            document.getElementById("btn-next-question").addEventListener("click", setupNewQuestion);
+            document.getElementById("btn-quit-game").addEventListener("click", () => {
+                if(confirm("Adakah anda pasti mahu menamatkan permainan ini awal?")) {
+                    finishGameSession(false);
+                }
+            });
+
+            document.getElementById("tab-stats-btn").addEventListener("click", () => {
+                document.getElementById("tab-stats-btn").style.borderBottom = "2px solid var(--primary)";
+                document.getElementById("tab-badges-btn").style.borderBottom = "none";
+                document.getElementById("view-analytics").classList.remove("hidden");
+                document.getElementById("view-badges").classList.add("hidden");
+            });
+            document.getElementById("tab-badges-btn").addEventListener("click", () => {
+                document.getElementById("tab-badges-btn").style.borderBottom = "2px solid var(--primary)";
+                document.getElementById("tab-stats-btn").style.borderBottom = "none";
+                document.getElementById("view-badges").classList.remove("hidden");
+                document.getElementById("view-analytics").classList.add("hidden");
+            });
+            document.getElementById("btn-records-back").addEventListener("click", () => screenNavigator("main-menu"));
+
+            document.getElementById("lb-tab-day").addEventListener("click", () => switchLeaderboardTab("classic"));
+            document.getElementById("lb-tab-week").addEventListener("click", () => switchLeaderboardTab("classic"));
+            document.getElementById("lb-tab-month").addEventListener("click", () => switchLeaderboardTab("classic"));
+            document.getElementById("lb-tab-all").addEventListener("click", () => switchLeaderboardTab("all"));
+            document.getElementById("btn-leaderboard-back").addEventListener("click", () => screenNavigator("main-menu"));
+
+            document.getElementById("btn-settings-save").addEventListener("click", saveSystemSettings);
+            document.getElementById("btn-settings-reset").addEventListener("click", resetEntireProgressData);
+            document.getElementById("btn-settings-back").addEventListener("click", () => screenNavigator("main-menu"));
+            
+            document.getElementById("btn-toggle-theme").addEventListener("click", () => {
+                document.body.classList.toggle("light-mode");
+                AudioSynth.play('click');
+            });
+        });
+
+        function setupGridSelectionToggle(parentSelector) {
+            const items = document.querySelectorAll(`${parentSelector} .grid-item-btn`);
+            items.forEach(item => {
+                item.addEventListener("click", () => {
+                    AudioSynth.play('click');
+                    items.forEach(i => i.classList.remove("selected"));
+                    item.classList.add("selected");
+                });
+            });
+        }
+    </script>
+</body>
+</html>

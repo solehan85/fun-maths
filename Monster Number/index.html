@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Number Monster — Kira. Suap. Seronok!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#26345b;--yellow:#ffd84d;--blue:#58c9ff;--pink:#ff76b7;--mint:#65e2b7;--purple:#8b6cff;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Fredoka,system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,#fff3a8,#a9efff 48%,#e2c4ff);min-height:100dvh;overflow-x:hidden}
+button,input{font:inherit}.app{max-width:760px;margin:auto;min-height:100dvh;padding:14px}.screen{display:none;min-height:calc(100dvh - 28px);animation:in .35s ease}.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}h1{font-size:clamp(2.4rem,12vw,5rem);line-height:.9;text-align:center;margin:0;color:#6c48e8;text-shadow:0 5px 0 #fff,0 9px 18px #7f5fff55}.tag{font-size:clamp(1.1rem,5vw,1.7rem);font-weight:700}
+.btn{border:0;border-radius:22px;padding:15px 24px;min-height:54px;font-weight:700;font-size:1.2rem;color:#fff;background:linear-gradient(#ff8a43,#ff5f45);box-shadow:0 7px 0 #d94a37;cursor:pointer;transition:.12s}.btn:active{transform:translateY(5px);box-shadow:0 2px 0 #d94a37}.btn.alt{background:linear-gradient(#8d73ff,#694ce0);box-shadow:0 7px 0 #5034b5}.btn.green{background:linear-gradient(#4edca7,#24b886);box-shadow:0 7px 0 #198966}
+.card{width:min(100%,620px);background:#ffffffdf;border:4px solid #fff;border-radius:30px;padding:20px;box-shadow:0 16px 40px #55458d25}.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px}.pill{background:#fff;padding:8px 12px;border-radius:999px;box-shadow:0 4px 12px #0002;font-weight:700}
+.monster{position:relative;width:190px;height:170px;background:linear-gradient(145deg,#8d73ff,#6748db);border-radius:48% 52% 44% 46%;box-shadow:inset -12px -12px 0 #5236b355,0 15px 25px #5636b533;animation:idle 2.2s ease-in-out infinite}
+@keyframes idle{50%{transform:translateY(-8px) scale(1.02)}}.eye{position:absolute;top:34px;width:48px;height:54px;background:#fff;border-radius:50%}.eye:after{content:"";position:absolute;width:20px;height:24px;background:#26345b;border-radius:50%;left:15px;top:16px}.e1{left:40px}.e2{right:40px}.mouth{position:absolute;left:42px;right:42px;bottom:28px;height:52px;background:#352447;border-radius:12px 12px 50px 50px;border:5px solid #fff}.tooth{position:absolute;width:18px;height:14px;background:#fff;top:0;clip-path:polygon(0 0,100% 0,50% 100%)}.t1{left:14px}.t2{right:14px}.monster.happy{animation:happy .45s ease 3}.monster.wrong{animation:shake .35s ease 2}@keyframes happy{50%{transform:translateY(-22px) rotate(4deg)}}@keyframes shake{25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+.avatar{font-size:2.6rem;border:4px solid transparent;border-radius:20px;background:#fff;padding:8px;cursor:pointer}.avatar.sel{border-color:#ffb000;transform:scale(1.08)}
+input{width:100%;padding:15px;border:3px solid #bdaeff;border-radius:18px;font-size:1.25rem;text-align:center}.ages button{min-width:64px}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}.mode{border:0;border-radius:24px;padding:18px 10px;background:#fff;box-shadow:0 7px 0 #c9bdf2;font-weight:700;font-size:1rem;min-height:100px;cursor:pointer}.mode span{display:block;font-size:2.1rem}.mode.locked{filter:grayscale(1);opacity:.6}
+.gamebox{width:100%;padding-top:58px}.instruction{text-align:center;font-size:clamp(1.5rem,7vw,2.4rem);margin:8px}.foods,.objects,.answers{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}.food,.obj{font-size:clamp(2.4rem,11vw,4.4rem);border:0;background:#fff;border-radius:20px;padding:7px;min-width:58px;cursor:pointer;box-shadow:0 5px 0 #d6caef}.tray{min-height:82px;background:#fff8d2;border:4px dashed #ffbd36;border-radius:22px;padding:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;align-items:center}.answer{min-width:82px;min-height:72px;border:0;border-radius:20px;background:#fff;font-size:2rem;font-weight:700;box-shadow:0 6px 0 #b9a9ef;cursor:pointer}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.group{min-height:150px;background:#fff;border:4px solid #fff;border-radius:24px;padding:10px;font-size:2.2rem;cursor:pointer;box-shadow:0 7px 0 #c8b9ec}.progress{height:14px;background:#fff;border-radius:99px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,#55dca8,#ffd74e);transition:.3s}.feedback{height:38px;text-align:center;font-size:1.5rem;font-weight:700}.status{font-size:.8rem;opacity:.8}.result-num{font-size:2.4rem;font-weight:700;color:#704fe3}
+@media(max-width:430px){.app{padding:8px}.card{padding:14px;border-radius:24px}.menu-grid{gap:8px}.mode{min-height:88px;padding:10px 6px}.monster{transform:scale(.88);margin:-8px 0}.top{font-size:.82rem}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.conf{position:fixed;top:-20px;font-size:22px;animation:fall 1.8s linear forwards;pointer-events:none}@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
+
+.map{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.level-node{aspect-ratio:1;border:0;border-radius:50%;font-weight:700;font-size:1.05rem;background:#fff;box-shadow:0 5px 0 #c9bdf2}.level-node.current{outline:5px solid #ffd84d}.level-node.locked{filter:grayscale(1);opacity:.45}
+.monster-shop{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.shop-item{background:#fff;border:3px solid #e5dcff;border-radius:22px;padding:10px;text-align:center}.shop-item .face{font-size:3rem}.shop-item.owned{border-color:#65e2b7}.shop-item.equipped{outline:5px solid #ffd84d}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.badge{background:#fff3b0;border-radius:999px;padding:8px 12px;font-size:.9rem}
+.daily{background:linear-gradient(135deg,#fff4a9,#ffd2ec);border-radius:24px;padding:14px;text-align:center;margin:12px 0}
+.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:6px}.tab{white-space:nowrap;border:0;border-radius:999px;padding:10px 13px;background:#fff;font-weight:700}
+.voice-btn{position:fixed;right:14px;bottom:14px;z-index:5;border:0;border-radius:50%;width:56px;height:56px;font-size:1.5rem;background:#fff;box-shadow:0 5px 18px #0003}
+
+body[data-world="candy"]{background:linear-gradient(160deg,#fff0a8,#ffc8e6 52%,#cfc3ff)}
+body[data-world="jungle"]{background:linear-gradient(160deg,#dfffa8,#8ee8b0 52%,#77d9e8)}
+body[data-world="ocean"]{background:linear-gradient(160deg,#bdf5ff,#78d8f5 52%,#9abfff)}
+body[data-world="space"]{background:linear-gradient(160deg,#b9b7ff,#8b78e8 52%,#f0b5ff)}
+body[data-world="magic"]{background:linear-gradient(160deg,#ffe1f4,#d7c1ff 52%,#fff0a6)}
+.world-banner{width:100%;text-align:center;font-size:1rem;font-weight:700;background:#ffffffbb;border-radius:999px;padding:7px 12px;margin-bottom:6px}
+.tutorial-overlay{position:fixed;inset:0;background:#352b6dcc;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px}.tutorial-box{max-width:430px;background:#fff;border-radius:30px;padding:22px;text-align:center;box-shadow:0 20px 60px #0005}.tutorial-icon{font-size:4rem;animation:happy 1s ease infinite}.hidden{display:none!important}
+.monster-accessory{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:3rem;z-index:3}.sparkle{position:absolute;animation:spark 1.2s ease-out forwards;pointer-events:none}@keyframes spark{to{transform:translateY(-70px) scale(1.8);opacity:0}}
+.quest-strip{display:flex;justify-content:center;gap:6px;margin:7px 0}.quest-dot{width:13px;height:13px;border-radius:50%;background:#fff}.quest-dot.done{background:#57d9a6;transform:scale(1.15)}
+@media(max-height:700px){.monster{width:150px;height:135px}.eye{top:25px;width:40px;height:45px}.mouth{bottom:20px}.instruction{font-size:1.35rem}.gamebox{padding-top:48px}}
+</style></head>
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+<main class="app">
+<section id="splash" class="screen active"><h1>NUMBER<br>MONSTER</h1><div class="tag">Kira. Suap. Seronok!</div><div class="monster"><i class="eye e1"></i><i class="eye e2"></i><div class="mouth"><i class="tooth t1"></i><i class="tooth t2"></i></div></div><button class="btn" id="startBtn">MULA! 🚀</button><div class="status" id="netStatus">Menyemak sambungan…</div></section>
+<section id="setup" class="screen"><div class="card"><h2 style="text-align:center">Siapa nama kamu? 🌟</h2><input id="nameInput" maxlength="18" placeholder="Nama saya..."><h3 style="text-align:center">Umur</h3><div class="row ages" id="ages"></div><h3 style="text-align:center">Pilih avatar</h3><div class="row" id="avatars"></div><br><button class="btn green" style="width:100%" id="savePlayer">JOM MAIN!</button></div></section>
+<section id="menu" class="screen"><div class="card"><div class="row" style="justify-content:space-between"><div><span id="pAvatar">🦁</span> <b id="pName"></b></div><div>⭐ <span id="pStars">0</span> · 🏆 <span id="pScore">0</span></div></div><h2 style="text-align:center">Pilih Permainan 🎮</h2><div class="menu-grid" id="menuGrid"></div><div class="daily" id="dailyCard"></div><div class="row"><button class="btn green" id="adventureBtn">🗺️ PETA 30 LEVEL</button><button class="btn alt" id="collectionBtn">👾 KOLEKSI</button></div><div class="row" style="margin-top:15px"><button class="btn alt" id="soundBtn">🔊 Bunyi</button><button class="btn alt" id="musicBtn">🎵 Muzik</button></div></div></section>
+<section id="hub" class="screen"><div class="card">
+<div class="tabs"><button class="tab" data-hub="map">🗺️ Peta</button><button class="tab" data-hub="shop">👾 Monster</button><button class="tab" data-hub="achieve">🏅 Pencapaian</button></div>
+<div id="hubContent"></div><div class="row" style="margin-top:14px"><button class="btn alt" id="hubBack">← MENU</button></div>
+</div></section>
+<section id="game" class="screen"><div class="gamebox"><div class="top"><button class="pill" id="homeBtn">🏠</button><span class="pill">⭐ <b id="gStars">0</b></span><span class="pill">🏆 <b id="gScore">0</b></span></div><div class="world-banner" id="worldBanner">🍭 Candy Land</div><div class="quest-strip" id="questStrip"></div><div class="progress"><div class="bar" id="bar"></div></div><div class="instruction" id="instruction"></div><div class="feedback" id="feedback"></div><div id="playArea"></div></div></section>
+<section id="result" class="screen"><div class="card" style="text-align:center"><h1 style="font-size:3rem">HEBAT! 🎉</h1><p>Jawapan betul</p><div class="result-num" id="rCorrect">0/10</div><p>Bintang diperoleh</p><div class="result-num" id="rStars">⭐ 0</div><p>Best streak: 🔥 <b id="rStreak">0</b></p><div class="row"><button class="btn green" id="againBtn">MAIN LAGI</button><button class="btn alt" id="menuBtn">MENU</button></div></div></section>
+</main>
+<div id="tutorial" class="tutorial-overlay hidden"><div class="tutorial-box"><div class="tutorial-icon" id="tutIcon">👾</div><h2 id="tutTitle">Selamat Datang!</h2><p id="tutText">Jom belajar nombor bersama Monster!</p><button class="btn green" id="tutNext">SETERUSNYA</button></div></div>
+<button class="voice-btn" id="voiceBtn" aria-label="Baca arahan">🗣️</button>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(()=>{"use strict";
+const firebaseConfig={apiKey:"AIzaSyC3hzD3YQ_gsMj3hlhgh6XwDnmHmD5Rj2c",authDomain:"preschool-76b21.firebaseapp.com",databaseURL:"https://preschool-76b21-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"preschool-76b21",storageBucket:"preschool-76b21.firebasestorage.app",messagingSenderId:"932243185210",appId:"1:932243185210:web:a73af25ed9afe80fd85f03"};
+const $=s=>document.querySelector(s), screens=[...document.querySelectorAll(".screen")];
+const foods=[
+["🍎","EPAL"],["🍌","PISANG"],["🍓","STRAWBERI"],["🍪","BISKUT"],["🍩","DONAT"],["🥕","LOBAK"],["🍇","ANGGUR"],["🧁","KEK"],
+["🍊","OREN"],["🍉","TEMBIKAI"],["🍒","CERI"],["🥝","KIWI"],["🌽","JAGUNG"],["🍐","PIR"],["🍑","PIC"],["🥨","PRETZEL"]
+];
+const objectSets=[
+["🐟","IKAN"],["🐥","ANAK AYAM"],["🐞","KUMBANG"],["🦋","RAMA-RAMA"],["🌸","BUNGA"],["⭐","BINTANG"],["⚽","BOLA"],["🚗","KERETA"],
+["🎈","BELON"],["🧸","TEDDY"],["✏️","PENSIL"],["📚","BUKU"],["🐸","KATAK"],["🐝","LEBAH"],["🐠","IKAN"],["🚀","ROKET"]
+];
+const allItems=[...foods,...objectSets];
+const modes=[["feed","🍎","SUAP MONSTER",1],["count","🔢","KIRA & PILIH",3],["compare","⚖️","MANA LEBIH BANYAK?",5],["missing","❓","NOMBOR HILANG",7],["math","➕","MINI MATH",10]];
+const monsterCatalog=[
+{id:"grape",face:"👾",name:"Grape Goo",cost:0},{id:"mint",face:"🐲",name:"Minty",cost:20},{id:"sun",face:"🦁",name:"Sunny",cost:35},
+{id:"space",face:"👽",name:"Zippy",cost:50},{id:"ocean",face:"🐙",name:"Bloop",cost:70},{id:"magic",face:"🦄",name:"Sparkle",cost:100}
+];
+const levelThemes=["🍭 Candy Land","🌳 Jungle","🌊 Ocean","🚀 Space","🏰 Magic Castle"];
+
+let db=null, timers=[], audioCtx=null, musicTimer=null; let syncTimer=null;
+let saved=null;try{saved=JSON.parse(localStorage.getItem("nm_player")||"null")}catch(e){localStorage.removeItem("nm_player")}
+const state={screen:"splash",player:saved||{playerId:localStorage.getItem("nm_id")||crypto.randomUUID(),playerName:"",age:5,avatar:"🦁",score:0,stars:0,currentLevel:1,highestLevel:1,gamesPlayed:0,correctAnswers:0,wrongAnswers:0,bestStreak:0,badges:[],ownedMonsters:["grape"],equippedMonster:"grape",dailyDate:"",dailyDone:false,createdAt:Date.now()},mode:"feed",questionIndex:0,correct:0,sessionStars:0,streak:0,sessionBest:0,currentQuestion:null,selected:[],locked:false,lastKeys:[],sound:localStorage.getItem("nm_sound")!=="off",music:localStorage.getItem("nm_music")!=="off"};
+localStorage.setItem("nm_id",state.player.playerId);
+state.player.ownedMonsters=state.player.ownedMonsters||["grape"];
+state.player.equippedMonster=state.player.equippedMonster||"grape";
+state.player.badges=state.player.badges||[];
+
+function show(id){
+ screens.forEach(x=>x.classList.toggle("active",x.id===id));
+ state.screen=id;
+ if("speechSynthesis" in window) speechSynthesis.cancel();
+ if(!["game","hub","menu"].includes(id)) delete document.body.dataset.world;
+}
+function saveLocal(){localStorage.setItem("nm_player",JSON.stringify(state.player))}
+function queueSync(){saveLocal();clearTimeout(syncTimer);syncTimer=setTimeout(()=>sync(),500)}
+async function loadCloudPlayer(){
+ if(!db||!state.player.playerId)return false;
+ try{
+  const snap=await db.ref("players/"+state.player.playerId).once("value");
+  const v=snap.val(); if(!v)return false;
+  const merged={
+   ...state.player,
+   ...(v.profile||{}),
+   ...(v.progress||{}),
+   ...(v.stats||{}),
+   badges:Array.isArray(v.badges)?v.badges:(state.player.badges||[])
+  };
+  merged.ownedMonsters=merged.ownedMonsters||["grape"];
+  merged.equippedMonster=merged.equippedMonster||"grape";
+  state.player=merged; saveLocal(); return true;
+ }catch(e){return false}
+}
+async function sync(){saveLocal();if(!db)return;$("#netStatus").textContent="Syncing…";try{await db.ref("players/"+state.player.playerId).set({profile:{playerId:state.player.playerId,playerName:state.player.playerName,age:state.player.age,avatar:state.player.avatar,createdAt:state.player.createdAt},progress:{score:state.player.score,stars:state.player.stars,currentLevel:state.player.currentLevel,highestLevel:state.player.highestLevel,ownedMonsters:state.player.ownedMonsters,equippedMonster:state.player.equippedMonster,dailyDate:state.player.dailyDate,dailyDone:state.player.dailyDone},stats:{gamesPlayed:state.player.gamesPlayed,correctAnswers:state.player.correctAnswers,wrongAnswers:state.player.wrongAnswers,bestStreak:state.player.bestStreak,lastPlayed:Date.now()},badges:state.player.badges});$("#netStatus").textContent="Online"}catch(e){$("#netStatus").textContent="Offline Mode"}}
+try{firebase.initializeApp(firebaseConfig);db=firebase.database();db.ref(".info/connected").on("value",s=>$("#netStatus").textContent=s.val()?"Online":"Offline Mode")}catch(e){$("#netStatus").textContent="Offline Mode"}
+function tone(f=440,d=.12,type="sine",v=.08,force=false){if(!state.sound&&!force)return;try{audioCtx=audioCtx||new (AudioContext||webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d)}catch(e){}}
+function sfx(k){({tap:()=>tone(440,.06),pop:()=>tone(650,.08,"triangle"),ok:()=>{tone(660,.12);setTimeout(()=>tone(880,.18),110)},bad:()=>tone(220,.2,"triangle"),star:()=>{tone(800,.1);setTimeout(()=>tone(1100,.2),90)}}[k]||(()=>{}))()}
+function musicStart(){
+ musicStop(); if(!state.music)return;
+ try{if(audioCtx&&audioCtx.state==="suspended")audioCtx.resume()}catch(e){}let notes=[262,330,392,523,392,330],i=0;musicTimer=setInterval(()=>{if(state.screen!=="game"&&state.screen!=="menu")return;tone(notes[i++%notes.length],.16,"sine",.025,true)},420)}
+function musicStop(){if(musicTimer)clearInterval(musicTimer);musicTimer=null}
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+function delay(fn,ms){let t=setTimeout(fn,ms);timers.push(t)}
+function confetti(){for(let i=0;i<35;i++){let e=document.createElement("i");e.className="conf";e.textContent=["⭐","●","▲","◆"][i%4];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()*.5+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}}
+function renderSetup(){let ages=$("#ages"),avs=$("#avatars");ages.innerHTML="";[4,5,6].forEach(a=>{let b=document.createElement("button");b.className="btn alt";b.textContent=a;b.onclick=()=>{state.player.age=a;renderSetup()};if(a===state.player.age)b.style.outline="5px solid #ffd84d";ages.appendChild(b)});avs.innerHTML="";["🦁","🐼","🐰","🦊","🐸"].forEach(a=>{let b=document.createElement("button");b.className="avatar"+(a===state.player.avatar?" sel":"");b.textContent=a;b.onclick=()=>{state.player.avatar=a;renderSetup()};avs.appendChild(b)});$("#nameInput").value=state.player.playerName||""}
+function renderMenu(){$("#pAvatar").textContent=state.player.avatar;$("#pName").textContent=state.player.playerName;$("#pStars").textContent=state.player.stars;$("#pScore").textContent=state.player.score;renderDaily();let g=$("#menuGrid");g.innerHTML="";modes.forEach(([id,ic,n,l])=>{let b=document.createElement("button"),locked=state.player.highestLevel<l;b.className="mode"+(locked?" locked":"");b.innerHTML=`<span>${locked?"🔒":ic}</span>${n}<small style="display:block">Level ${l}+</small>`;b.onclick=()=>{if(locked){sfx("bad");return}startGame(id)};g.appendChild(b)});show("menu");musicStart()}
+function maxN(){let a=state.player.age,l=state.player.highestLevel;return Math.min(a===4?10:a===5?15:20,l<=5?5:l<=10?10:l<=15?15:20)}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function pick(a){return a[rnd(0,a.length-1)]}
+function uniqueChoices(ans,min=0,max=20,count=3){let s=new Set([ans]),guard=0;while(s.size<count&&guard++<100){let spread=Math.max(2,Math.ceil(max/4));let v=Math.max(min,Math.min(max,ans+rnd(-spread,spread)));if(v!==ans)s.add(v)}for(let v=min;s.size<count&&v<=max;v++)s.add(v);return shuffle([...s]).slice(0,count)}
+function qKey(q){return [q.type,q.variant,q.ans,q.a,q.b,q.start,q.step,q.food&&q.food[0],q.item&&q.item[0],q.ask].join("|")}
+function accept(q){let k=qKey(q);if(state.lastKeys.includes(k))return false;state.lastKeys.push(k);if(state.lastKeys.length>30)state.lastKeys.shift();return true}
+function numberWords(n){return ["SIFAR","SATU","DUA","TIGA","EMPAT","LIMA","ENAM","TUJUH","LAPAN","SEMBILAN","SEPULUH"][n]||String(n)}
+function makeQuestion(){
+ let q,n=maxN(),tries=0;
+ do{
+  if(state.mode==="feed"){
+   let f=pick(foods),a=rnd(1,n),variant=pick(["exact","oneMore","oneLess"]);
+   if(state.player.age===4||state.player.highestLevel<5)variant="exact";
+   if(variant==="oneMore"){let shown=Math.max(1,a-1);q={type:"feed",variant,ans:a,food:f,text:`BERI ${shown} ${f[1]}, TAMBAH 1 LAGI!`}}
+   else if(variant==="oneLess"){a=Math.max(1,a);let shown=Math.min(n+1,a+1);q={type:"feed",variant,ans:a,food:f,text:`BERI 1 KURANG DARIPADA ${shown} ${f[1]}!`}}
+   else q={type:"feed",variant,ans:a,food:f,text:pick([`MONSTER NAK ${a} ${f[1]}!`,`SUAP ${a} ${f[1]}!`,`BERI MONSTER ${a} ${f[1]}!`])};
+  }else if(state.mode==="count"){
+   let item=pick(allItems),a=rnd(1,n),variant=pick(["count","word","after","before"]);
+   if(state.player.age===4||state.player.highestLevel<6)variant=pick(["count","word"]);
+   if(variant==="after"){let base=rnd(1,Math.max(1,n-1));q={type:"count",variant,ans:base+1,item,text:`NOMBOR SELEPAS ${base} IALAH?`,choices:uniqueChoices(base+1,1,n+2)}}
+   else if(variant==="before"){let base=rnd(2,n+1);q={type:"count",variant,ans:base-1,item,text:`NOMBOR SEBELUM ${base} IALAH?`,choices:uniqueChoices(base-1,1,n+2)}}
+   else if(variant==="word"&&a<=10){q={type:"count",variant,ans:a,item,text:`PILIH NOMBOR “${numberWords(a)}”`,choices:uniqueChoices(a,1,n+2)}}
+   else q={type:"count",variant:"count",ans:a,item,text:`ADA BERAPA ${item[1]}?`,choices:uniqueChoices(a,1,n+3)};
+  }else if(state.mode==="compare"){
+   let item=pick(allItems),a=rnd(1,n),b=rnd(1,n),ask=pick(["more","less","same"]);
+   if(ask==="same")b=a;
+   if(ask!=="same"&&a===b)b=b<n?b+1:Math.max(1,b-1);
+   let ans=ask==="same"?"same":ask==="more"?(a>b?"left":"right"):(a<b?"left":"right");
+   q={type:"compare",variant:"groups",a,b,item,food:item,ask,ans,text:ask==="same"?"PILIH JIKA SAMA BANYAK!":ask==="more"?"PILIH YANG LEBIH BANYAK!":"PILIH YANG LEBIH SEDIKIT!"};
+  }else if(state.mode==="missing"){
+   let variants=["middle","start","end"];
+   let step=(state.player.age>=5&&state.player.highestLevel>12&&Math.random()>.55)?2:1;
+   let start=rnd(1,Math.max(1,n-step*4)),seq=[0,1,2,3,4].map(i=>start+i*step),variant=pick(variants),idx=variant==="start"?0:variant==="end"?4:rnd(1,3),ans=seq[idx];
+   q={type:"missing",variant,seq,idx,ans,start,step,text:step===2?"LENGKAPKAN LOMPAT DUA-DUA!":"NOMBOR APA YANG HILANG?",choices:uniqueChoices(ans,1,n+5)};
+  }else{
+   let item=pick(foods),variant=pick(["add","subtract","make","double"]);
+   if(state.player.age===4||state.player.highestLevel<12)variant=pick(["add","subtract"]);
+   let a,b,ans,op,text;
+   if(variant==="double"){a=rnd(1,Math.min(5,Math.floor(n/2)||2));b=a;ans=a+b;op="+";text=`DUA KUMPULAN SAMA. BERAPA SEMUA?`}
+   else if(variant==="make"){ans=rnd(3,Math.min(10,n));a=rnd(1,ans-1);b=ans-a;op="+";text=`${a} DAN ${b}. BERAPA SEMUA?`}
+   else if(variant==="add"){a=rnd(1,Math.min(6,n));b=rnd(1,Math.min(6,10-a));ans=a+b;op="+";text=pick(["BERAPA SEMUANYA?","TAMBAH DAN KIRA!","KIRA JUMLAH SEMUA!"])}
+   else{a=rnd(2,Math.min(10,n));b=rnd(1,a);ans=a-b;op="−";text=pick(["BERAPA YANG TINGGAL?","TOLAK DAN KIRA!","KIRA BAKINYA!"])}
+   q={type:"math",variant,a,b,op,ans,food:item,text,choices:uniqueChoices(ans,0,10)};
+  }
+  tries++;
+ }while(!accept(q)&&tries<60);
+ return q
+}
+function currentWorld(){
+ let l=state.player.currentLevel||1;
+ return [["candy","🍭 Candy Land"],["jungle","🌳 Jungle"],["ocean","🌊 Ocean"],["space","🚀 Space"],["magic","🏰 Magic Castle"]][Math.min(4,Math.floor((l-1)/6))]
+}
+function applyWorld(){let w=currentWorld();document.body.dataset.world=w[0];let b=$("#worldBanner");if(b)b.textContent=w[1]}
+function monsterHTML(){
+ let id=state.player.equippedMonster||"grape";
+ let accessory={grape:"",mint:"🌿",sun:"👑",space:"🛸",ocean:"🫧",magic:"✨"}[id]||"";
+ return `<div class="monster" id="gameMonster">${accessory?`<span class="monster-accessory">${accessory}</span>`:""}<i class="eye e1"></i><i class="eye e2"></i><div class="mouth"><i class="tooth t1"></i><i class="tooth t2"></i></div></div>`
+}
+function renderQuestDots(){let d=$("#questStrip");if(!d)return;d.innerHTML="";for(let i=0;i<10;i++){let x=document.createElement("i");x.className="quest-dot"+(i<state.questionIndex?" done":"");d.appendChild(x)}}
+function sparkleAtMonster(){
+ let m=$("#gameMonster");if(!m)return;
+ for(let i=0;i<6;i++){let e=document.createElement("span");e.className="sparkle";e.textContent=pick(["⭐","✨","💫"]);e.style.left=(30+rnd(0,120))+"px";e.style.top=(20+rnd(0,90))+"px";m.appendChild(e);setTimeout(()=>e.remove(),1300)}
+}
+function renderQuestion(){state.locked=false;state.selected=[];state.currentQuestion=makeQuestion();applyWorld();renderQuestDots();$("#instruction").textContent=state.currentQuestion.text;$("#feedback").textContent="";$("#bar").style.width=(state.questionIndex/10*100)+"%";$("#gStars").textContent=state.player.stars;$("#gScore").textContent=state.player.score;let q=state.currentQuestion,a=$("#playArea");a.innerHTML="";
+if(q.type==="feed"){a.innerHTML=`<div class="row">${monsterHTML()}</div><div class="tray" id="tray"><span style="opacity:.6">Makanan masuk di sini</span></div><div class="foods" id="foods"></div><div style="text-align:center;margin:12px;font-size:1.4rem"><b id="counter">0 / ${q.ans}</b></div><div class="row"><button class="btn green" id="doneBtn">SIAP! ✓</button></div>`;let fs=$("#foods");foods.forEach(x=>{let b=document.createElement("button");b.className="food";b.textContent=x[0];b.setAttribute("aria-label",x[1]);b.onclick=()=>{if(state.locked)return;state.selected.push(x[0]);sfx("pop");renderTray()};fs.appendChild(b)});$("#doneBtn").onclick=()=>checkFeed()}
+else if(q.type==="count"){let visual=q.variant==="count"?`<div class="objects">${Array(q.ans).fill(`<span class="obj">${q.item[0]}</span>`).join("")}</div>`:`<div class="card" style="font-size:clamp(2rem,10vw,4rem);text-align:center">🔢</div>`;a.innerHTML=visual+`<div class="answers" id="answers"></div>`;answers(q.choices,q.ans)}
+else if(q.type==="compare"){a.innerHTML=`<div class="compare"><button class="group" data-v="left">${Array(q.a).fill(q.food[0]).join(" ")}</button><button class="group" data-v="right">${Array(q.b).fill(q.food[0]).join(" ")}</button></div><div class="row" style="margin-top:12px"><button class="answer" data-v="same">SAMA</button></div>`;a.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>submit(b.dataset.v===q.ans))}
+else if(q.type==="missing"){a.innerHTML=`<div class="card" style="font-size:clamp(1.6rem,8vw,3rem);text-align:center">${q.seq.map((x,i)=>i===q.idx?"❓":x).join(" → ")}</div><div class="answers" id="answers"></div>`;answers(q.choices,q.ans)}
+else{a.innerHTML=`<div class="card" style="font-size:clamp(1.5rem,7vw,2.5rem);text-align:center">${q.food[0].repeat(q.a)} ${q.op} ${q.food[0].repeat(q.b)} = ❓</div><div class="answers" id="answers"></div>`;answers(q.choices,q.ans)}}
+function answers(cs,ans){let d=$("#answers");cs.forEach(x=>{let b=document.createElement("button");b.className="answer";b.textContent=x;b.onclick=()=>submit(x===ans);d.appendChild(b)})}
+function renderTray(){let t=$("#tray");t.innerHTML="";state.selected.forEach((x,i)=>{let b=document.createElement("button");b.className="food";b.textContent=x;b.onclick=()=>{state.selected.splice(i,1);renderTray()};t.appendChild(b)});$("#counter").textContent=`${state.selected.filter(x=>x===state.currentQuestion.food[0]).length} / ${state.currentQuestion.ans}`}
+function checkFeed(){let q=state.currentQuestion,good=state.selected.length===q.ans&&state.selected.every(x=>x===q.food[0]);submit(good)}
+function submit(ok){if(state.locked)return;state.locked=true;if(ok){state.correct++;state.streak++;state.sessionBest=Math.max(state.sessionBest,state.streak);let gain=10+(state.streak>=3?5:0);state.player.score+=gain;state.player.stars++;state.sessionStars++;state.player.correctAnswers++;$("#feedback").textContent=["HEBAT! 🌟","PANDAINYA! 🎉","BETUL! ⭐","SYABAS! 🥳"][rnd(0,3)];sfx("ok");sparkleAtMonster();let m=$("#gameMonster");if(m)m.classList.add("happy")}else{state.streak=0;state.player.wrongAnswers++;$("#feedback").textContent=["CUBA LAGI! 💪","KIRA SEKALI LAGI! 😊","HAMPIR BETUL! 🌈"][rnd(0,2)];sfx("bad");let m=$("#gameMonster");if(m)m.classList.add("wrong")}
+$("#gStars").textContent=state.player.stars;$("#gScore").textContent=state.player.score;
+ if(!ok && state.mode==="feed"){
+   delay(()=>{state.locked=false;state.selected=[];renderTray();$("#feedback").textContent="CUBA SEKALI LAGI! 😊"},900);
+ }else{
+   delay(()=>{state.questionIndex++;if(state.questionIndex>=10)finish();else renderQuestion()},ok?1000:1250);
+ }
+}
+
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function renderDaily(){
+ let done=state.player.dailyDate===todayKey()&&state.player.dailyDone;
+ $("#dailyCard").innerHTML=done?`✅ Cabaran Harian selesai! Jumpa lagi esok.`:`🎁 <b>CABARAN HARIAN</b><br>Jawab 8/10 dengan betul untuk bonus ⭐ 10<br><button class="btn green" id="dailyBtn" style="margin-top:8px">MULA CABARAN</button>`;
+ let b=$("#dailyBtn");if(b)b.onclick=()=>{state.dailyChallenge=true;let unlocked=modes.filter(x=>state.player.highestLevel>=x[3]);startGame(pick(unlocked)[0])}
+}
+function speakInstruction(){
+ if(!("speechSynthesis" in window)||!state.currentQuestion)return;
+ speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(state.currentQuestion.text);u.lang="ms-MY";u.rate=.82;u.pitch=1.15;speechSynthesis.speak(u)
+}
+function openHub(tab="map"){show("hub");renderHub(tab)}
+function renderHub(tab){
+ let c=$("#hubContent");
+ if(tab==="map"){
+  c.innerHTML=`<h2 style="text-align:center">🗺️ Pengembaraan 30 Level</h2><p style="text-align:center">${levelThemes[Math.min(4,Math.floor((state.player.currentLevel-1)/6))]}</p><div class="map" id="levelMap"></div>`;
+  let m=$("#levelMap");for(let i=1;i<=30;i++){let b=document.createElement("button");b.className="level-node"+(i===state.player.currentLevel?" current":"")+(i>state.player.highestLevel?" locked":"");b.textContent=i>state.player.highestLevel?"🔒":i;b.onclick=()=>{if(i<=state.player.highestLevel){state.player.currentLevel=i;let available=modes.filter(x=>i>=x[3]);startGame(pick(available)[0])}};m.appendChild(b)}
+ }else if(tab==="shop"){
+  c.innerHTML=`<h2 style="text-align:center">👾 Koleksi Monster</h2><p style="text-align:center">Bintang kamu: ⭐ ${state.player.stars}</p><div class="monster-shop" id="shopGrid"></div>`;
+  let g=$("#shopGrid");monsterCatalog.forEach(x=>{let owned=state.player.ownedMonsters.includes(x.id),eq=state.player.equippedMonster===x.id,d=document.createElement("div");d.className="shop-item"+(owned?" owned":"")+(eq?" equipped":"");d.innerHTML=`<div class="face">${x.face}</div><b>${x.name}</b><br><small>${eq?"DIPAKAI":owned?"DIMILIKI":"⭐ "+x.cost}</small><br><button class="tab">${eq?"✓":owned?"PAKAI":"BELI"}</button>`;d.querySelector("button").onclick=()=>{if(eq)return;if(owned){state.player.equippedMonster=x.id}else if(state.player.stars>=x.cost){state.player.stars-=x.cost;state.player.ownedMonsters.push(x.id);state.player.equippedMonster=x.id;sfx("star")}else{sfx("bad");alert("Bintang belum cukup!")}queueSync();renderHub("shop")};g.appendChild(d)})
+ }else{
+  const defs=[["🍎","Monster Feeder",10],["⭐","Counting Star",20],["🔢","Number Hero",50],["🗺️","Math Explorer",100],["👑","Monster Master",200]];
+  c.innerHTML=`<h2 style="text-align:center">🏅 Pencapaian</h2><div class="badges">${defs.map(([ic,n,req])=>`<span class="badge">${ic} ${n} ${state.player.correctAnswers>=req?"✅":"🔒 "+state.player.correctAnswers+"/"+req}</span>`).join("")}</div>`
+ }
+}
+document.querySelectorAll("[data-hub]").forEach(b=>b.onclick=()=>renderHub(b.dataset.hub));
+function startGame(mode){
+ clearTimers();
+ if(!modes.some(x=>x[0]===mode)) mode="feed";
+ state.mode=mode;state.currentQuestion=null;state.selected=[];state.questionIndex=0;state.correct=0;state.sessionStars=0;state.streak=0;state.sessionBest=0;state.locked=false;show("game");applyWorld();musicStart();renderQuestion()}
+function finish(){clearTimers();state.player.gamesPlayed++;state.player.bestStreak=Math.max(state.player.bestStreak,state.sessionBest);
+if(state.dailyChallenge&&state.correct>=8&&!(state.player.dailyDate===todayKey()&&state.player.dailyDone)){state.player.stars+=10;state.sessionStars+=10;state.player.dailyDate=todayKey();state.player.dailyDone=true}state.dailyChallenge=false;
+[["Monster Feeder",10],["Counting Star",20],["Number Hero",50],["Math Explorer",100],["Monster Master",200]].forEach(([n,r])=>{if(state.player.correctAnswers>=r&&!state.player.badges.includes(n))state.player.badges.push(n)});if(state.correct>=7){state.player.currentLevel=Math.min(30,state.player.currentLevel+1);state.player.highestLevel=Math.max(state.player.highestLevel,state.player.currentLevel)}if(state.player.correctAnswers>=20&&!state.player.badges.includes("Counting Star"))state.player.badges.push("Counting Star");$("#rCorrect").textContent=`${state.correct}/10`;$("#rStars").textContent=`⭐ ${state.sessionStars}`;$("#rStreak").textContent=state.sessionBest;show("result");confetti();sfx("star");sync()}
+
+const tutorialSteps=[
+ ["👾","Hai, Kawan!","Saya Monster Nombor. Kita akan bermain sambil belajar mengira!"],
+ ["👆","Sentuh & Pilih","Sentuh makanan atau jawapan yang betul. Butang semuanya besar dan mesra jari."],
+ ["⭐","Kumpul Bintang","Jawab dengan betul untuk kumpul bintang dan buka Monster baharu!"],
+ ["🗺️","30 Level Menanti","Jelajah Candy Land, Jungle, Ocean, Space dan Magic Castle!"]
+];
+let tutIndex=0;
+function startTutorial(){tutIndex=0;$("#tutorial").classList.remove("hidden");renderTut()}
+function renderTut(){let x=tutorialSteps[tutIndex];$("#tutIcon").textContent=x[0];$("#tutTitle").textContent=x[1];$("#tutText").textContent=x[2];$("#tutNext").textContent=tutIndex===tutorialSteps.length-1?"JOM MAIN!":"SETERUSNYA"}
+$("#tutNext").onclick=()=>{sfx("tap");tutIndex++;if(tutIndex>=tutorialSteps.length){$("#tutorial").classList.add("hidden");localStorage.setItem("nm_tutorial","done")}else renderTut()};
+$("#startBtn").onclick=async()=>{
+ sfx("tap"); $("#startBtn").disabled=true;
+ if(saved&&saved.playerName){await loadCloudPlayer();renderMenu()}
+ else{renderSetup();show("setup")}
+ $("#startBtn").disabled=false;
+};
+$("#savePlayer").onclick=()=>{let n=$("#nameInput").value.trim();if(!n){$("#nameInput").focus();sfx("bad");return}state.player.playerName=n;sync();renderMenu();if(localStorage.getItem("nm_tutorial")!=="done")startTutorial()};
+$("#homeBtn").onclick=()=>{clearTimers();state.dailyChallenge=false;saveLocal();renderMenu()};$("#adventureBtn").onclick=()=>openHub("map");$("#collectionBtn").onclick=()=>openHub("shop");$("#hubBack").onclick=renderMenu;$("#voiceBtn").onclick=speakInstruction;$("#againBtn").onclick=()=>startGame(state.mode);$("#menuBtn").onclick=renderMenu;
+$("#soundBtn").onclick=()=>{state.sound=!state.sound;localStorage.setItem("nm_sound",state.sound?"on":"off");$("#soundBtn").textContent=state.sound?"🔊 Bunyi":"🔇 Bunyi"};
+$("#musicBtn").onclick=()=>{state.music=!state.music;localStorage.setItem("nm_music",state.music?"on":"off");$("#musicBtn").textContent=state.music?"🎵 Muzik":"⏸️ Muzik";state.music?musicStart():musicStop()};
+document.addEventListener("visibilitychange",()=>{if(document.hidden){musicStop();if("speechSynthesis" in window)speechSynthesis.cancel()}else if(state.music&&(state.screen==="game"||state.screen==="menu"))musicStart()});window.addEventListener("error",()=>{let n=$("#netStatus");if(n)n.textContent="Game Mode Selamat"});
+window.addEventListener("unhandledrejection",()=>{let n=$("#netStatus");if(n)n.textContent="Offline Mode"});
+window.addEventListener("online",sync);
+window.addEventListener("beforeunload",saveLocal);
+})();
+</script></body></html>

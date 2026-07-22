@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Lab - Kuasai Ukuran</title>
+    <style>
+        /* CSS STYLING & RESPONSIVENESS */
+        :root {
+            --primary-blue: #2a6f97;
+            --secondary-blue: #014f86;
+            --accent-green: #2a9d8f;
+            --accent-orange: #f4a261;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --dark-text: #2b2d42;
+            --correct-green: #4caf50;
+            --wrong-red: #e63946;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--primary-blue);
+        }
+
+        /* Screens Management */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Lab Decorations */
+        h1 {
+            color: var(--secondary-blue);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Buttons styling */
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 14px 20px;
+            margin: 10px 0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 4px 0 var(--secondary-blue);
+        }
+
+        .btn:hover {
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--secondary-blue);
+        }
+
+        .btn-green { background: var(--accent-green); box-shadow: 0 4px 0 #1f7369; }
+        .btn-green:hover { background: #1f7369; }
+        
+        .btn-orange { background: var(--accent-orange); box-shadow: 0 4px 0 #d97d36; }
+        .btn-orange:hover { background: #d97d36; }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Header HUD */
+        .hud {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .hud-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Progress & Timer */
+        .progress-bar-container {
+            width: 100%;
+            background-color: #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-orange);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* Question Box */
+        .question-box {
+            background: #f1f5f9;
+            border-left: 5px solid var(--primary-blue);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* MCQ Options */
+        .option-btn {
+            background: var(--white);
+            color: var(--dark-text);
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 3px 0 #cbd5e1;
+            text-align: left;
+        }
+        .option-btn:hover {
+            background: #f8fafc;
+            border-color: var(--primary-blue);
+        }
+
+        /* Input / Fill in the blank styling */
+        .input-container {
+            margin: 20px 0;
+        }
+        .input-blank {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            outline: none;
+        }
+        .input-blank:focus {
+            border-color: var(--primary-blue);
+        }
+
+        /* Feedback Overlays */
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+            animation: pop 0.3s ease-in-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.wrong {
+            display: block;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .explanation {
+            font-weight: normal;
+            font-size: 0.95rem;
+            margin-top: 8px;
+            color: #333;
+            text-align: left;
+            background: rgba(255,255,255,0.6);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        /* Leaderboard table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+        th { background-color: var(--primary-blue); color: white; }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* Lab Decorative SVGs background-ish */
+        .lab-icon-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Settings Toggle */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Grid for Category selection */
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .btn-grid, .category-grid { grid-template-columns: 1fr; }
+            .hud { grid-template-columns: 1fr; font-size: 0.85rem; }
+            .game-container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+
+
+    <div class="game-container">
+        <canvas id="confetti-canvas"></canvas>
+
+        <div id="menu-screen" class="screen active">
+            <div class="lab-icon-container">
+                <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="30" fill="#2a6f97"/>
+                    <path d="M22 45C22 38 26 34 32 34C38 34 42 38 42 45" fill="#ffffff"/>
+                    <circle cx="32" cy="24" r="8" fill="#ffffff"/>
+                    <path d="M28 24H36" stroke="#2b2d42" stroke-width="2"/>
+                    <path d="M20 48 L44 48 L38 28 L26 28 Z" fill="#2a9d8f" opacity="0.7"/>
+                    <circle cx="32" cy="40" r="4" fill="#f4a261"/>
+                </svg>
+            </div>
+            <h1>🧪 Measurement Lab</h1>
+            <p style="text-align:center; font-weight:bold; color:var(--primary-blue);">Jom Kuasai Panjang, Berat & Isipadu!</p>
+            
+            <button class="btn btn-green" onclick="showScreen('level-screen')">▶ Mula Bermain</button>
+            <button class="btn" onclick="showScreen('rules-screen')">▶ Cara Bermain</button>
+            <button class="btn" onclick="showLeaderboard()">▶ Rekod Skor</button>
+            <button class="btn" onclick="showScreen('settings-screen')">▶ Tetapan Bunyi</button>
+            <button class="btn btn-orange" onclick="showScreen('about-screen')">▶ Tentang Permainan</button>
+        </div>
+
+        <div id="level-screen" class="screen">
+            <h2>🟢 Pilih Tahap Kesukaran</h2>
+            <button class="btn btn-green" onclick="selectLevel('Mudah')">🟢 Mudah (Asas & Unit Ringkas)</button>
+            <button class="btn btn-orange" onclick="selectLevel('Sederhana')">🟡 Sederhana (Operasi & Penukaran)</button>
+            <button class="btn" style="background:#e63946; box-shadow:0 4px 0 #b3222b;" onclick="selectLevel('Sukar')">🔴 Sukar (KBAT & Penyelesaian Masalah)</button>
+            <button class="btn btn-orange" style="margin-top:20px;" onclick="showScreen('menu-screen')">Kembali</button>
+        </div>
+
+        <div id="category-screen" class="screen">
+            <h2>🧪 Pilih Kategori Ukuran</h2>
+            <div class="category-grid">
+                <button class="btn" onclick="selectCategory('Panjang')">📏 Panjang</button>
+                <button class="btn btn-green" onclick="selectCategory('Berat')">⚖ Berat</button>
+                <button class="btn btn-orange" onclick="selectCategory('Isipadu')">🧪 Isipadu</button>
+                <button class="btn" style="background:#6c757d; box-shadow:0 4px 0 #495057;" onclick="selectCategory('Campuran')">🎲 Campuran</button>
+            </div>
+            <button class="btn btn-orange" style="margin-top:20px;" onclick="showScreen('level-screen')">Kembali</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="hud">
+                <div class="hud-item">⭐ Skor: <span id="hud-score">0</span></div>
+                <div class="hud-item">❤️ Nyawa: <span id="hud-lives">❤️❤️❤️</span></div>
+                <div class="hud-item">🔢 Soalan: <span id="hud-count">1</span>/10</div>
+                <div class="hud-item">🔥 Combo: <span id="hud-combo">0</span></div>
+            </div>
+
+            <div class="progress-bar-container">
+                <div id="timer-bar" class="progress-bar"></div>
+            </div>
+
+            <div style="text-align:center; font-size: 2.5rem; margin-bottom:10px;" id="visual-emoji">🧪</div>
+            <div id="question-text" class="question-box">Memuatkan soalan...</div>
+
+            <div id="answer-section"></div>
+
+            <div id="feedback-box" class="feedback">
+                <span id="feedback-text">Betul!</span>
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <button id="next-btn" class="btn btn-green" style="display:none; margin-top:15px;" onclick="nextQuestion()">Soalan Seterusnya ➡</button>
+            <button class="btn btn-orange" style="margin-top:10px;" onclick="confirmExit()">Keluar ke Menu</button>
+        </div>
+
+        <div id="gameover-screen" class="screen">
+            <h2>🧪 Keputusan Makmal</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <div id="badge-display" style="font-size: 4rem; margin-bottom: 5px;">🥉</div>
+                <h3 id="badge-title" style="color:var(--primary-blue);">Beginner Scientist</h3>
+            </div>
+            
+            <div style="background:#f1f5f9; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:600;">
+                <p>Jumlah Markah: <span id="res-score" style="color:var(--accent-green); font-size:1.3rem;">0</span></p>
+                <p>Betul / Salah: <span id="res-stats">0 / 0</span></p>
+                <p>Ketepatan: <span id="res-accuracy">0%</span></p>
+                <p>Masa Diambil: <span id="res-time">0s</span></p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="player-name" class="input-blank" placeholder="Masukkan Nama Anda" maxlength="12" style="margin-bottom: 10px;">
+                <button class="btn btn-green" onclick="saveScore()">Simpan Rekod Skor</button>
+            </div>
+
+            <button class="btn" onclick="restartGame()">Main Semula 🔄</button>
+            <button class="btn btn-orange" onclick="showScreen('menu-screen')">Menu Utama 🏠</button>
+        </div>
+
+        <div id="rules-screen" class="screen">
+            <h2>📖 Cara Bermain</h2>
+            <div style="text-align:left; padding: 10px;">
+                <p>1. Pilih <strong>Tahap Kesukaran</strong> dan <strong>Kategori Ukuran</strong> yang anda mahu kuasai.</p>
+                <p>2. Setiap sesi mengandungi tepat <strong>10 soalan unik</strong> yang tidak akan berulang.</p>
+                <p>3. Setiap soalan diberi masa <strong>30 saat</strong> untuk dijawab.</p>
+                <p>4. Anda mempunyai <strong>3 Nyawa</strong>. Jawapan salah atau masa tamat akan menolak 1 nyawa. Jika nyawa habis awal, permainan tamat.</p>
+                <p>5. <strong>Bonus Combo:</strong> Jawab betul berturut-turut dalam masa kurang 8 saat untuk bonus markah!</p>
+                <p>6. Kumpul markah tertinggi untuk mendapatkan pangkat tertinggi: <strong>Lab Master</strong>! 🏆</p>
+            </div>
+            <button class="btn btn-orange" onclick="showScreen('menu-screen')">Kembali ke Menu</button>
+        </div>
+
+        <div id="leaderboard-screen" class="screen">
+            <h2>🏆 Top 10 Rekod Skor Terbaik</h2>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Skor</th>
+                            <th>Kategori</th>
+                            <th>Tahap</th>
+                            <th>Tarikh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+            </div>
+            <button class="btn btn-orange" style="margin-top:20px;" onclick="showScreen('menu-screen')">Kembali ke Menu</button>
+        </div>
+
+        <div id="settings-screen" class="screen">
+            <h2>⚙ Tetapan Bunyi</h2>
+            <div class="toggle-container">
+                <span>Kesan Bunyi (SFX)</span>
+                <input type="checkbox" id="sound-toggle" checked style="width:24px; height:24px; cursor:pointer;">
+            </div>
+            <p style="font-size:0.85rem; color:#666; text-align:center;">Bunyi dihasilkan secara automatik melalui sistem Web Audio tanpa menggunakan internet.</p>
+            <button class="btn btn-orange" style="margin-top:20px;" onclick="showScreen('menu-screen')">Kembali ke Menu</button>
+        </div>
+
+        <div id="about-screen" class="screen">
+            <h2>🧪 Tentang Measurement Lab</h2>
+            <p>Permainan ini dibina khas berpandukan Kurikulum Standard Sekolah Rendah (KSSR) Malaysia untuk topik Ukuran (Panjang, Berat, dan Isipadu Cecair).</p>
+            <p>Membantu murid-murid Tahun 1 hingga Tahun 6 mengukuhkan kemahiran penukaran unit, operasi asas matematik, serta penyelesaian masalah harian (KBAT).</p>
+            <p style="text-align:center; font-weight:bold; margin-top:20px;">Versi 1.1.0 (2026) • KSSR Mesra Murid</p>
+            <button class="btn btn-orange" onclick="showScreen('menu-screen')">Kembali ke Menu</button>
+        </div>
+
+    </div>
+
+    <script>
+        // CORE VARIABLES
+        let currentScreen = 'menu-screen';
+        let selectedLevel = 'Mudah';
+        let selectedCategory = 'Campuran';
+        let score = 0;
+        let lives = 3;
+        let combo = 0;
+        let questionCount = 0;
+        let correctAnswersCount = 0;
+        let wrongAnswersCount = 0;
+        let startTime, questionStartTime;
+        let totalTimeElapsed = 0;
+        
+        let timerInterval;
+        let timeLeft = 30;
+        let currentQuestionObj = {};
+        let soundEnabled = true;
+        
+        // Sesi Bank Soalan Rawak Aktif
+        let activeQuestionBank = [];
+
+        // WEB AUDIO SYSTEM
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration) {
+            if (!soundEnabled || !document.getElementById('sound-toggle').checked) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playSound(action) {
+            if (action === 'click') playTone(600, 'sine', 0.1);
+            if (action === 'correct') { playTone(523.25, 'triangle', 0.15); setTimeout(() => playTone(659.25, 'triangle', 0.2), 100); }
+            if (action === 'wrong') playTone(150, 'sawtooth', 0.4);
+            if (action === 'gameover') playTone(100, 'sawtooth', 0.8);
+        }
+
+        // COMPREHENSIVE SAMPLE QUESTION BANK (Per Category & Difficulty)
+        const MASTER_QUESTIONS = {
+            Panjang: {
+                Mudah: [
+                    { type: 'MCQ', text: 'Berapakah 1 cm dalam mm?', cAns: '10 mm', opts: ['10 mm', '100 mm', '5 mm', '20 mm'], exp: '1 cm bersamaan dengan 10 mm.' },
+                    { type: 'MCQ', text: 'Tukarkan 5 m kepada cm.', cAns: '500 cm', opts: ['500 cm', '50 cm', '5000 cm', '5 cm'], exp: '1 m = 100 cm. Jadi, 5 m × 100 = 500 cm.' },
+                    { type: 'BLANK', text: 'Kira: 12 cm + 8 cm = _____ cm.', cAns: '20', exp: '12 + 8 = 20 cm.' },
+                    { type: 'MCQ', text: 'Berapakah 30 mm dalam cm?', cAns: '3 cm', opts: ['3 cm', '300 cm', '30 cm', '0.3 cm'], exp: '10 mm = 1 cm. Jadi, 30 mm ÷ 10 = 3 cm.' },
+                    { type: 'BLANK', text: 'Kira baki: 45 m - 15 m = _____ m.', cAns: '30', exp: '45 - 15 = 30 m.' },
+                    { type: 'MCQ', text: 'Antara berikut, unit manakah paling sesuai untuk mengukur jarak jalan raya?', cAns: 'km', opts: ['km', 'cm', 'mm', 'm'], exp: 'Kilometer (km) digunakan untuk mengukur jarak yang sangat jauh.' },
+                    { type: 'BLANK', text: 'Tukarkan 7 cm kepada mm. Tulis angka sahaja: _____ mm.', cAns: '70', exp: '7 cm × 10 = 70 mm.' },
+                    { type: 'MCQ', text: 'Panjang sebuah buku latihan adalah sekitar...', cAns: '25 cm', opts: ['25 cm', '25 m', '25 mm', '25 km'], exp: 'Ukuran buku yang logik ialah dalam unit sentimeter (cm).' },
+                    { type: 'BLANK', text: 'Isi tempat kosong: 2 m = _____ cm.', cAns: '200', exp: '2 × 100 = 200 cm.' },
+                    { type: 'MCQ', text: 'Berapakah 400 cm dalam unit m?', cAns: '4 m', opts: ['4 m', '40 m', '4000 m', '0.4 m'], exp: '400 cm ÷ 100 = 4 m.' }
+                ],
+                Sederhana: [
+                    { type: 'MCQ', text: 'Tukarkan 2 m 45 cm kepada cm.', cAns: '245 cm', opts: ['245 cm', '2045 cm', '2450 cm', '65 cm'], exp: '2 m = 200 cm. Ditambah 45 cm menjadi 245 cm.' },
+                    { type: 'BLANK', text: 'Kira: 3 m 20 cm + 1 m 50 cm = ____ cm.', cAns: '470', exp: '3 m 20 cm = 320 cm. 1 m 50 cm = 150 cm. Total: 320 + 150 = 470 cm.' },
+                    { type: 'MCQ', text: 'Kira baki panjang: 5 m - 1 m 20 cm.', cAns: '3 m 80 cm', opts: ['3 m 80 cm', '4 m 80 cm', '3 m 20 cm', '4 m'], exp: '500 cm - 120 cm = 380 cm = 3 m 80 cm.' },
+                    { type: 'BLANK', text: 'Sebuah papan tanda berukuran 180 cm. Berapakah panjangnya dalam m dan cm? (Tulis cm sahaja jika ditukar asas, atau jawab angka total cm): ____ cm.', cAns: '180', exp: 'Jumlah panjang kekal 180 cm.' },
+                    { type: 'MCQ', text: 'Tukarkan 3 km 50 m kepada m.', cAns: '3050 m', opts: ['3050 m', '3500 m', '3005 m', '350 m'], exp: '3 km = 3000 m. 3000 m + 50 m = 3050 m.' },
+                    { type: 'BLANK', text: 'Kira hasil darab: 15 cm × 4 = _____ cm.', cAns: '60', exp: '15 × 4 = 60 cm.' },
+                    { type: 'MCQ', text: 'Bahagikan: 2 m ÷ 5 = ______ cm.', cAns: '40 cm', opts: ['40 cm', '4 cm', '20 cm', '50 cm'], exp: '2 m = 200 cm. 200 cm ÷ 5 = 40 cm.' },
+                    { type: 'BLANK', text: 'Selesaikan: 4 km - 1500 m = _____ m.', cAns: '2500', exp: '4000 m - 1500 m = 2500 m.' },
+                    { type: 'MCQ', text: 'Tukarkan 6500 m kepada km dan m.', cAns: '6 km 500 m', opts: ['6 km 500 m', '65 km', '6 km 50 m', '60 km 500 m'], exp: '6000 m = 6 km, bakinya 500 m.' },
+                    { type: 'BLANK', text: 'Cari jumlah: 85 mm + 15 mm = _____ cm.', cAns: '10', exp: '85 + 15 = 100 mm. 100 mm ÷ 10 = 10 cm.' }
+                ],
+                Sukar: [
+                    { type: 'MCQ', text: 'Ali ada seutas tali sepanjang 10 m. Dia memotong tali itu kepada 4 bahagian yang sama panjang. Berapakah panjang satu bahagian dalam m dan cm?', cAns: '2 m 50 cm', opts: ['2 m 50 cm', '2 m 5 cm', '25 cm', '3 m'], exp: '10 m = 1000 cm. 1000 cm ÷ 4 = 250 cm = 2 m 50 cm.' },
+                    { type: 'BLANK', text: 'Sebuah trek larian adalah sepanjang 400 m. Jika Sarah berlari mengelilingi trek itu sebanyak 5 kali, berapakah jumlah jarak lariannya dalam km? (Tulis angka sahaja): _____ km.', cAns: '2', exp: '400 m × 5 = 2000 m. 2000 m = 2 km.' },
+                    { type: 'MCQ', text: 'Kain sepanjang 12 m digunakan untuk membuat 5 helai langsir yang sama saiz. Baki kain yang tidak digunakan ialah 1 m. Berapakah panjang kain bagi sehelai langsir?', cAns: '2 m 20 cm', opts: ['2 m 20 cm', '2 m', '2 m 40 cm', '1 m 80 cm'], exp: 'Kain digunakan = 12 m - 1 m = 11 m = 1100 cm. 1100 cm ÷ 5 = 220 cm = 2 m 20 cm.' },
+                    { type: 'BLANK', text: 'Menara A adalah 150 m tinggi. Menara B adalah 25 m 50 cm lebih tinggi daripada Menara A. Berapakah tinggi Menara B dalam cm? _____ cm.', cAns: '17550', exp: '150 m + 25 m 50 cm = 175 m 50 cm = 17550 cm.' },
+                    { type: 'MCQ', text: 'Jarak dari rumah Abu ke sekolah ialah 2 km 400 m. Selepas bergerak sejauh 1 km 800 m, motosikal ayahnya pancit. Berapakah baki jarak ke sekolah?', cAns: '600 m', opts: ['600 m', '800 m', '1 km 200 m', '400 m'], exp: '2400 m - 1800 m = 600 m.' },
+                    { type: 'BLANK', text: 'Raju menyambung 3 batang kayu. Kayu pertama 1.2 m, kayu kedua 85 cm, dan kayu ketiga 95 cm. Berapakah panjang keseluruhan sambungan dalam cm? _____ cm.', cAns: '300', exp: '120 cm + 85 cm + 95 cm = 300 cm.' },
+                    { type: 'MCQ', text: 'Sebuah bangunan setinggi 30 meter mempunyai 10 tingkat yang sama tinggi. Berapakah tinggi satu tingkat dalam unit mm?', cAns: '3000 mm', opts: ['3000 mm', '300 mm', '30000 mm', '30 mm'], exp: '30 m ÷ 10 = 3 m sepejabat. 3 m × 1000 = 3000 mm.' },
+                    { type: 'BLANK', text: 'Kira: (4 km 200 m - 1 km 500 m) × 2 = _____ m.', cAns: '5400', exp: '4200 m - 1500 m = 2700 m. 2700 m × 2 = 5400 m.' },
+                    { type: 'MCQ', text: 'Siti berjalan kaki sejauh 850 m ke kedai, kemudian berjalan lagi 1 km 250 m ke rumah neneknya. Berapakah total jarak perjalanan Siti dalam km?', cAns: '2.1 km', opts: ['2.1 km', '2.0 km', '2.15 km', '3 km'], exp: '850 m + 1250 m = 2100 m = 2.1 km.' },
+                    { type: 'BLANK', text: 'Tali X panjangnya 50 cm. Tali Y adalah 3 kali panjang tali X. Cari jumlah panjang kedua-dua tali dalam m. (Angka sahaja): _____ m.', cAns: '2', exp: 'Tali Y = 150 cm. Total = 50 + 150 = 200 cm = 2 m.' }
+                ]
+            },
+            Berat: {
+                Mudah: [
+                    { type: 'MCQ', text: 'Tukarkan unit berikut: 2 kg = ______ g.', cAns: '2000 g', opts: ['2000 g', '200 g', '20 g', '20000 g'], exp: '1 kg = 1000 g. Jadi 2 kg × 1000 = 2000 g.' },
+                    { type: 'BLANK', text: 'Kira jumlah berat: 350 g + 150 g = _____ g.', cAns: '500', exp: '350 + 150 = 500 g.' },
+                    { type: 'MCQ', text: 'Berapakah 5000 g dalam kg?', cAns: '5 kg', opts: ['5 kg', '50 kg', '0.5 kg', '500 kg'], exp: '5000 g ÷ 1000 = 5 kg.' },
+                    { type: 'BLANK', text: 'Kira baki berat tepung: 900 g - 400 g = _____ g.', cAns: '500', exp: '900 - 400 = 500 g.' },
+                    { type: 'MCQ', text: 'Antara berikut, objek manakah yang beratnya diukur dalam gram (g)?', cAns: 'Sebiji klip kertas', opts: ['Sebiji klip kertas', 'Sebuah kereta', 'Sekampit beras 10kg', 'Seekor gajah'], exp: 'Objek ringan seperti klip kertas diukur dalam unit gram.' },
+                    { type: 'BLANK', text: 'Tukarkan 8 kg kepada g: _____ g.', cAns: '8000', exp: '8 × 1000 = 8000 g.' },
+                    { type: 'MCQ', text: 'Kira berat: 2 kg + 3 kg = _____ g.', cAns: '5000 g', opts: ['5000 g', '5 kg', '500 g', '50 g'], exp: '5 kg = 5000 g.' },
+                    { type: 'BLANK', text: 'Selesaikan: 1000 g + 3000 g = _____ kg.', cAns: '4', exp: '4000 g = 4 kg.' },
+                    { type: 'MCQ', text: 'Setengah daripada 1 kg bersamaan dengan...', cAns: '500 g', opts: ['500 g', '50 g', '250 g', '750 g'], exp: '1000 g ÷ 2 = 500 g.' },
+                    { type: 'BLANK', text: 'Tukarkan 6000 g kepada kg: _____ kg.', cAns: '6', exp: '6000 ÷ 1000 = 6 kg.' }
+                ],
+                Sederhana: [
+                    { type: 'MCQ', text: 'Ibu membeli 3 kg tepung. Kemudian ibu menambah lagi 450 g tepung. Berapakah jumlah berat tepung ibu?', cAns: '3 kg 450 g', opts: ['3 kg 450 g', '3450 kg', '453 kg', '750 g'], exp: 'Digabungkan menjadi 3 kg 450 g.' },
+                    { type: 'BLANK', text: 'Kira hasil: 2 kg 250 g + 1 kg 500 g = _____ g.', cAns: '3750', exp: '2250 g + 1500 g = 3750 g.' },
+                    { type: 'MCQ', text: 'Kira baki berat: 4 kg - 1 kg 200 g.', cAns: '2 kg 800 g', opts: ['2 kg 800 g', '3 kg 800 g', '2 kg 200 g', '3 kg'], exp: '4000 g - 1200 g = 2800 g = 2 kg 800 g.' },
+                    { type: 'BLANK', text: 'Darab berat: 450 g × 2 = _____ g.', cAns: '900', exp: '450 × 2 = 900 g.' },
+                    { type: 'MCQ', text: 'Bahagi saiz berat: 1 kg 500 g ÷ 3 = ______.', cAns: '500 g', opts: ['500 g', '50 g', '1 kg', '300 g'], exp: '1500 g ÷ 3 = 500 g.' },
+                    { type: 'BLANK', text: 'Tukarkan 4050 g kepada kg dan g: Jawab jumlah angka g sahaja: ____ g.', cAns: '4050', exp: 'Kekal 4050 g.' },
+                    { type: 'MCQ', text: 'Sebuah bakul mengandungi 2 kg mangga dan 750 g rambutan. Berapakah jumlah berat buah itu?', cAns: '2.75 kg', opts: ['2.75 kg', '275 kg', '20.75 kg', '27.5 kg'], exp: '2 kg + 0.75 kg = 2.75 kg.' },
+                    { type: 'BLANK', text: 'Kira: 5 kg 800 g - 2 kg 300 g = _____ g.', cAns: '3500', exp: '3 kg 500 g = 3500 g.' },
+                    { type: 'MCQ', text: 'Kira jumlah: 900 g + 200 g = ______.', cAns: '1 kg 100 g', opts: ['1 kg 100 g', '11 kg', '1 kg 10 g', '110 g'], exp: '1100 g = 1 kg 100 g.' },
+                    { type: 'BLANK', text: 'Jika berat sebiji oren ialah 150 g, berapakah berat bagi 6 biji oren yang sama dalam g? _____ g.', cAns: '900', exp: '150 g × 6 = 900 g.' }
+                ],
+                Sukar: [
+                    { type: 'MCQ', text: 'Pak Ali memetik 15 kg pisang. Dia menjual 8 kg 400 g pisang itu ke kedai A dan memberi 2 kg 500 g kepada jirannya. Berapakah baki pisang Pak Ali?', cAns: '4 kg 100 g', opts: ['4 kg 100 g', '5 kg', '4 kg 900 g', '3 kg 500 g'], exp: 'Jumlah keluar = 8400g + 2500g = 10900g. Baki = 15000g - 10900g = 4100g = 4 kg 100 g.' },
+                    { type: 'BLANK', text: 'Sebuah kotak kosong beratnya 450 g. Apabila diisi dengan 5 buah buku saiz sama, berat keseluruhan menjadi 2 kg 950 g. Berapakah berat sehelai buku dalam gram? _____ g.', cAns: '500', exp: 'Berat buku-buku = 2950 g - 450 g = 2500 g. Berat sebiji buku = 2500 g ÷ 5 = 500 g.' },
+                    { type: 'MCQ', text: 'Berat badan Adam ialah 42.5 kg. Berat badan adiknya adalah 12 kg 750 g kurang daripada Adam. Berapakah berat badan adiknya?', cAns: '29 kg 750 g', opts: ['29 kg 750 g', '30 kg 250 g', '29.5 kg', '30 kg'], exp: '42500 g - 12750 g = 29750 g = 29 kg 750 g.' },
+                    { type: 'BLANK', text: 'Ibu menggunakan 1/4 daripada sekampit beras 10 kg untuk memasak bubur kenduri. Berapakah baki beras yang tinggal dalam gram? _____ g.', cAns: '7500', exp: 'Beras digunakan = 2500 g. Baki = 10000 g - 2500 g = 7500 g.' },
+                    { type: 'MCQ', text: 'Kira purata berat bagi 3 paket barang berikut: 1.2 kg, 850 g, dan 1.45 kg.', cAns: '1166.7 g', opts: ['1166.7 g', '1200 g', '1100 g', '1150 g'], exp: 'Total = 1200 + 850 + 1450 = 3500 g. Purata = 3500 ÷ 3 = 1166.67 g.' },
+                    { type: 'BLANK', text: 'Sebuah lori kecil membawa 8 buah kotak seberat 25 kg 500 g setiap satu. Berapakah jumlah muatan lori itu dalam kg? _____ kg.', cAns: '204', exp: '25.5 kg × 8 = 204 kg.' },
+                    { type: 'MCQ', text: 'Berat sekampit gula ialah 2 kg. Pekerja kedai membungkus semula gula itu ke dalam paket-paket kecil seberat 250 g setiap satu. Berapakah jumlah paket yang dihasilkan?', cAns: '8 paket', opts: ['8 paket', '4 paket', '6 paket', '10 paket'], exp: '2000 g ÷ 250 g = 8 paket.' },
+                    { type: 'BLANK', text: 'Kira: (5 kg 200 g - 3 kg 800 g) ÷ 7 = _____ g.', cAns: '200', exp: '1400 g ÷ 7 = 200 g.' },
+                    { type: 'MCQ', text: 'Pak Abu membela seekor kambing seberat 35 kg. Selepas beberapa bulan, berat kambingnya meningkat sebanyak 15%. Berapakah berat baru kambing itu?', cAns: '40.25 kg', opts: ['40.25 kg', '40.0 kg', '38.5 kg', '42.25 kg'], exp: 'Peningkatan = 35 × 0.15 = 5.25 kg. Berat baru = 35 + 5.25 = 40.25 kg.' },
+                    { type: 'BLANK', text: 'Jumlah berat A, B, dan C ialah 12 kg. Jika A = 3.5 kg, B = 4 kg 250 g, berapakah berat C dalam gram? _____ g.', cAns: '4250', exp: '12000 - (3500 + 4250) = 12000 - 7750 = 4250 g.' }
+                ]
+            },
+            Isipadu: {
+                Mudah: [
+                    { type: 'MCQ', text: 'Sebuah botol mengandungi 1000 ml air. Berapakah isipadu air ini dalam Liter (L)?', cAns: '1 L', opts: ['1 L', '10 L', '100 L', '0.1 L'], exp: 'Formula: 1000 ml = 1 L.' },
+                    { type: 'BLANK', text: 'Kira: 250 ml + 250 ml = _____ ml.', cAns: '500', exp: '250 + 250 = 500 ml.' },
+                    { type: 'MCQ', text: 'Tukarkan unit berikut: 4 L = ______ ml.', cAns: '4000 ml', opts: ['4000 ml', '400 ml', '40 ml', '40000 ml'], exp: '4 L × 1000 = 4000 ml.' },
+                    { type: 'BLANK', text: 'Kira baki susu dalam kotak: 800 ml - 300 ml = _____ ml.', cAns: '500', exp: '800 - 300 = 500 ml.' },
+                    { type: 'MCQ', text: 'Antara berikut, bekas manakah yang biasanya memuatkan isipadu sekitar 1.5 L Cecair?', cAns: 'Botol minuman besar', opts: ['Botol minuman besar', 'Sudu teh', 'Kolam renang', 'Cawan kopi kecil'], exp: 'Botol minuman plastik bersaiz besar biasanya berkapasiti 1.5 Liter.' },
+                    { type: 'BLANK', text: 'Tukarkan 9 L kepada ml: _____ ml.', cAns: '9000', exp: '9 × 1000 = 9000 ml.' },
+                    { type: 'MCQ', text: 'Berapakah isipadu cecair: 500 ml + 500 ml = _____ L?', cAns: '1 L', opts: ['1 L', '10 L', '100 ml', '2 L'], exp: '1000 ml bersamaan dengan 1 L.' },
+                    { type: 'BLANK', text: 'Selesaikan: 7000 ml = _____ L.', cAns: '7', exp: '7000 ÷ 1000 = 7 L.' },
+                    { type: 'MCQ', text: 'Suku daripada 1 L cecair bersamaan dengan...', cAns: '250 ml', opts: ['250 ml', '500 ml', '100 ml', '750 ml'], exp: '1000 ml ÷ 4 = 250 ml.' },
+                    { type: 'BLANK', text: 'Tambahkan cecair: 2 L + 3 L = _____ ml.', cAns: '5000', exp: '5 L = 5000 ml.' }
+                ],
+                Sederhana: [
+                    { type: 'MCQ', text: 'Untuk membuat jus, Safwan mencampurkan 2 L pati oren dan 350 ml air bersih. Berapakah jumlah isipadu jus itu?', cAns: '2 L 350 ml', opts: ['2 L 350 ml', '2350 L', '550 ml', '235 ml'], exp: 'Digabungkan menjadi 2 L 350 ml.' },
+                    { type: 'BLANK', text: 'Kira jumlah isipadu: 1 L 450 ml + 2 L 300 ml = _____ ml.', cAns: '3750', exp: '1450 ml + 2300 ml = 3750 ml.' },
+                    { type: 'MCQ', text: 'Kira baki cecair: 5 L - 2 L 400 ml.', cAns: '2 L 600 ml', opts: ['2 L 600 ml', '3 L 600 ml', '2 L 400 ml', '3 L'], exp: '5000 ml - 2400 ml = 2600 ml = 2 L 600 ml.' },
+                    { type: 'BLANK', text: 'Darab isipadu cecair: 350 ml × 3 = _____ ml.', cAns: '1050', exp: '350 × 3 = 1050 ml.' },
+                    { type: 'MCQ', text: 'Bahagikan cecair: 2 L 400 ml ÷ 4 = ______.', cAns: '600 ml', opts: ['600 ml', '60 ml', '1 L 200 ml', '400 ml'], exp: '2400 ml ÷ 4 = 600 ml.' },
+                    { type: 'BLANK', text: 'Satu teko mengandungi 1500 ml teh. Berapakah isipadu teh ini jika ditulis angka ml sahaja? ____ ml.', cAns: '1500', exp: 'Kekal 1500 ml.' },
+                    { type: 'MCQ', text: 'Sebuah baldi mengandungi 3 L 50 ml air cecair. Tukarkan unit ini kepada ml.', cAns: '3050 ml', opts: ['3050 ml', '3500 ml', '3005 ml', '350 ml'], exp: '3 L = 3000 ml. 3000 ml + 50 ml = 3050 ml.' },
+                    { type: 'BLANK', text: 'Kira: 4 L 900 ml - 1 L 500 ml = _____ ml.', cAns: '3400', exp: '3 L 400 ml = 3400 ml.' },
+                    { type: 'MCQ', text: 'Kira jumlah: 850 ml + 250 ml = ______.', cAns: '1 L 100 ml', opts: ['1 L 100 ml', '11 L', '1.1 ml', '100 ml'], exp: '1100 ml = 1 L 100 ml.' },
+                    { type: 'BLANK', text: 'Jika segelas air mengandungi 200 ml, berapakah jumlah isipadu air bagi 8 gelas yang sama dalam ml? _____ ml.', cAns: '1600', exp: '200 ml × 8 = 1600 ml.' }
+                ],
+                Sukar: [
+                    { type: 'MCQ', text: 'Sebuah tangki mengandungi 80 L air. Bapa menggunakan 24 L 500 ml untuk menyiram pokok bunga dan 35 L 750 ml untuk membasuh kereta. Berapakah baki air di tangki?', cAns: '19 L 750 ml', opts: ['19 L 750 ml', '20 L 250 ml', '19 L 250 ml', '21 L'], exp: 'Total guna = 24.5 + 35.75 = 60.25 L. Baki = 80 L - 60.25 L = 19.75 L = 19 L 750 ml.' },
+                    { type: 'BLANK', text: 'Ibu menyediakan 4.5 L air sirap untuk jamuan. Tetamu meminum 3 L 850 ml air tersebut. Ibu menambah lagi 1200 ml air sirap yang baru. Berapakah isipadu air sirap sekarang dalam ml? _____ ml.', cAns: '1850', exp: '4500 ml - 3850 ml = 650 ml. 650 ml + 1200 ml = 1850 ml.' },
+                    { type: 'MCQ', text: 'Sebuah botol minyak masak mengandungi 5 L minyak. Kakak menggunakan minyak itu untuk menggoreng makanan sebanyak 3 kali dengan kadar purata 450 ml setiap kali. Berapakah baki minyak memasak?', cAns: '3 L 650 ml', opts: ['3 L 650 ml', '4 L 550 ml', '3 L 500 ml', '3.6 L'], exp: 'Guna = 450 ml × 3 = 1350 ml. Baki = 5000 ml - 1350 ml = 3650 ml = 3 L 650 ml.' },
+                    { type: 'BLANK', text: 'Sebuah akuarium diisi penuh dengan 24 L air. Air itu kemudian dikeluarkan menggunakan secawan gayung khas berkapasiti 600 ml sehingga kosong. Berapakah kali gayung itu dicedok? _____ kali.', cAns: '40', exp: '24000 ml ÷ 600 ml = 40 kali.' },
+                    { type: 'MCQ', text: 'Kira purata isipadu cecair bagi 3 bekas: 1.5 L, 900 ml, dan 2.1 L.', cAns: '1.5 L', opts: ['1.5 L', '1.2 L', '1.35 L', '1.6 L'], exp: 'Total = 1500 + 900 + 2100 = 4500 ml. Purata = 4500 ÷ 3 = 1500 ml = 1.5 L.' },
+                    { type: 'BLANK', text: 'Sebuah syarikat pengeluar susu mengisikan 15 L susu tulen ke dalam kotak-kotak kecil saiz 250 ml. Berapakah jumlah kotak susu yang dapat dihasilkan? _____ kotak.', cAns: '60', exp: '15000 ml ÷ 250 ml = 60 kotak.' },
+                    { type: 'MCQ', text: 'Isipadu air di dalam sebuah botol ialah 750 ml. Sani meminum 20% daripada air tersebut. Berapakah baki isipadu air yang tertinggal?', cAns: '600 ml', opts: ['600 ml', '550 ml', '650 ml', '150 ml'], exp: 'Diminum = 750 × 0.20 = 150 ml. Baki = 750 - 150 = 600 ml.' },
+                    { type: 'BLANK', text: 'Kira operasi gabungan: (3 L 400 ml + 1 L 800 ml) × 3 = _____ ml.', cAns: '15600', exp: '5200 ml × 3 = 15600 ml.' },
+                    { type: 'MCQ', text: 'Sebuah tong mengandungi 12 m L ramuan bahan kimia. Jika ramuan ini dibahagikan sama rata ke dalam 5 buah botol tabung uji kecil, berapakah isipadu sebotol dalam ml?', cAns: '2400 ml', opts: ['2400 ml', '240 ml', '2.4 ml', '2000 ml'], exp: '12 L = 12000 ml. 12000 ml ÷ 5 = 2400 ml.' },
+                    { type: 'BLANK', text: 'Sebuah cerek air mengandungi 2.25 L air. Selepas mendidih, didapati 150 ml air bertukar menjadi wap. Berapakah baki air di cerek dalam ml? _____ ml.', cAns: '2100', exp: '2250 ml - 150 ml = 2100 ml.' }
+                ]
+            }
+        };
+
+        // SCREEN MANAGEMENT
+        function showScreen(screenId) {
+            playSound('click');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+        }
+
+        function selectLevel(lvl) {
+            selectedLevel = lvl;
+            showScreen('category-screen');
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            buildActiveQuestionBank();
+            startGame();
+        }
+
+        // ALGORITMA SHUFFLE UNTUK PENGASINGAN RAWAK UNIK
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // MEMBINA BANK SOALAN AKTIF TANPA ULANGAN (10 SOALAN)
+        function buildActiveQuestionBank() {
+            activeQuestionBank = [];
+            let levelsToExtract = [selectedLevel];
+            
+            // Menggabungkan semua soalan kategori yang sesuai
+            let rawQuestions = [];
+            
+            if (selectedCategory === 'Campuran') {
+                const categories = ['Panjang', 'Berat', 'Isipadu'];
+                categories.forEach(c => {
+                    rawQuestions = rawQuestions.concat(MASTER_QUESTIONS[c][selectedLevel]);
+                });
+            } else {
+                rawQuestions = MASTER_QUESTIONS[selectedCategory][selectedLevel];
+            }
+
+            // Klon soalan asal agar tidak mengubah master data induk
+            let clonedQuestions = JSON.parse(JSON.stringify(rawQuestions));
+            
+            // Rawakkan susunan soalan
+            let shuffled = shuffleArray(clonedQuestions);
+            
+            // Ambil tepat 10 soalan teratas untuk sesi ini
+            activeQuestionBank = shuffled.slice(0, 10);
+        }
+
+        // GAMEPLAY ENGINE
+        function startGame() {
+            score = 0;
+            lives = 3;
+            combo = 0;
+            questionCount = 0;
+            correctAnswersCount = 0;
+            wrongAnswersCount = 0;
+            startTime = new Date();
+            
+            updateHUD();
+            showScreen('game-screen');
+            generateQuestion();
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('hud-count').innerText = Math.min(questionCount + 1, 10);
+            document.getElementById('hud-combo').innerText = combo;
+            
+            let heartStr = '';
+            for(let i=0; i<3; i++) {
+                heartStr += (i < lives) ? '❤️' : '🖤';
+            }
+            document.getElementById('hud-lives').innerText = heartStr;
+        }
+
+        // QUESTION GENERATOR
+        function generateQuestion() {
+            document.getElementById('feedback-box').className = 'feedback';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            // Dapatkan soalan unik seterusnya berdasarkan indeks questionCount terkini
+            let questionData = activeQuestionBank[questionCount];
+            
+            // Pengesahan sekiranya berlaku ralat luar jangkaan bank soalan kosong
+            if (!questionData) {
+                endgame();
+                return;
+            }
+
+            // Laraskan Emoji secara visual mengikut kategori dinamik soalan asal
+            let emoji = '🎲';
+            if (selectedCategory === 'Panjang' || (questionData.exp && questionData.exp.includes('cm') || questionData.exp.includes('m'))) emoji = '📏';
+            if (selectedCategory === 'Berat' || (questionData.exp && questionData.exp.includes('g') || questionData.exp.includes('kg'))) emoji = '⚖';
+            if (selectedCategory === 'Isipadu' || (questionData.exp && questionData.exp.includes('ml') || questionData.exp.includes('L'))) emoji = '🧪';
+            document.getElementById('visual-emoji').innerText = emoji;
+
+            // Simpan rujukan soalan global semasa
+            currentQuestionObj = {
+                type: questionData.type,
+                text: questionData.text,
+                correctAnswer: questionData.cAns.trim().toLowerCase(),
+                options: questionData.opts ? shuffleArray([...questionData.opts]) : [],
+                explanation: questionData.exp
+            };
+
+            // Papar teks soalan ke DOM
+            document.getElementById('question-text').innerText = currentQuestionObj.text;
+            const ansSection = document.getElementById('answer-section');
+            ansSection.innerHTML = '';
+
+            if (currentQuestionObj.type === 'MCQ') {
+                currentQuestionObj.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(opt);
+                    ansSection.appendChild(btn);
+                });
+            } else {
+                // Untuk jenis struktur Fill-in-the-blank
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'blank-input';
+                input.className = 'input-blank';
+                input.placeholder = 'Tulis jawapan angka/teks sahaja di sini...';
+                
+                const submitBtn = document.createElement('button');
+                submitBtn.className = 'btn btn-green';
+                submitBtn.innerText = 'Hantar Jawapan';
+                submitBtn.onclick = () => checkAnswer(document.getElementById('blank-input').value);
+                
+                ansSection.appendChild(input);
+                ansSection.appendChild(submitBtn);
+            }
+
+            // Set Semula Jam Pemasa 30 saat
+            timeLeft = 30;
+            questionStartTime = new Date();
+            startTimer();
+        }
+
+        // TIMER SYSTEM
+        function startTimer() {
+            clearInterval(timerInterval);
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.width = '100%';
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let percentage = (timeLeft / 30) * 100;
+                timerBar.style.width = percentage + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timeoutAnswer();
+                }
+            }, 1000);
+        }
+
+        // CHECK ANSWER
+        function checkAnswer(userAns) {
+            clearInterval(timerInterval);
+            questionCount++; // Naikkan nilai bilangan soalan yang telah dijawab sesion ini
+            
+            // Kunci semua butang input supaya tidak boleh diklik dua kali
+            document.querySelectorAll('#answer-section button').forEach(b => b.disabled = true);
+            let inputF = document.getElementById('blank-input');
+            if(inputF) inputF.disabled = true;
+
+            let isCorrect = userAns.trim().toLowerCase() === currentQuestionObj.correctAnswer;
+            let fbBox = document.getElementById('feedback-box');
+            let fbText = document.getElementById('feedback-text');
+            let expText = document.getElementById('explanation-text');
+
+            let timeTaken = (new Date() - questionStartTime) / 1000;
+
+            if (isCorrect) {
+                correctAnswersCount++;
+                playSound('correct');
+                fbBox.className = 'feedback correct';
+                
+                let basePoints = 10;
+                let bonusPoints = 0;
+                if (timeTaken < 8) {
+                    bonusPoints = 5;
+                    combo++;
+                    fbText.innerHTML = `✅ Tepat Sekali! (Bonus Kepantasan +5 ⚡)`;
+                } else {
+                    combo = 1;
+                    fbText.innerHTML = `✅ Betul!`;
+                }
+                score += (basePoints + bonusPoints);
+                triggerConfetti();
+            } else {
+                wrongAnswersCount++;
+                playSound('wrong');
+                lives--;
+                combo = 0;
+                fbBox.className = 'feedback wrong';
+                fbText.innerHTML = `❌ Kurang Tepat! Jawapan betul ialah: <strong>${currentQuestionObj.correctAnswer.toUpperCase()}</strong>`;
+            }
+
+            expText.innerText = currentQuestionObj.explanation;
+            updateHUD();
+            
+            let nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'block';
+
+            // KAWALAN HAD MAKSIMUM SOALAN (Tamat selepas soalan ke-10 atau nyawa habis)
+            if (questionCount >= 10 || lives <= 0) {
+                nextBtn.innerText = 'Lihat Keputusan Akhir 📊';
+                nextBtn.onclick = () => endgame();
+            } else {
+                nextBtn.innerText = 'Soalan Seterusnya ➡';
+                nextBtn.onclick = () => nextQuestion();
+            }
+        }
+
+        function timeoutAnswer() {
+            questionCount++;
+            wrongAnswersCount++;
+            lives--;
+            combo = 0;
+            playSound('wrong');
+            updateHUD();
+
+            let fbBox = document.getElementById('feedback-box');
+            fbBox.className = 'feedback wrong';
+            document.getElementById('feedback-text').innerHTML = `⏰ Masa Tamat! Jawapan betul: <strong>${currentQuestionObj.correctAnswer.toUpperCase()}</strong>`;
+            document.getElementById('explanation-text').innerText = currentQuestionObj.explanation;
+            
+            let nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'block';
+            
+            if (questionCount >= 10 || lives <= 0) {
+                nextBtn.innerText = 'Lihat Keputusan Akhir 📊';
+                nextBtn.onclick = () => endgame();
+            } else {
+                nextBtn.innerText = 'Soalan Seterusnya ➡';
+                nextBtn.onclick = () => nextQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (questionCount >= 10 || lives <= 0) {
+                endgame();
+            } else {
+                generateQuestion();
+            }
+        }
+
+        function confirmExit() {
+            if (confirm("Adakah anda pasti mahu keluar ke Menu Utama? Kemajuan semasa akan hilang.")) {
+                clearInterval(timerInterval);
+                showScreen('menu-screen');
+            }
+        }
+
+        // ENDGAME & REKOD SKOR
+        function endgame() {
+            clearInterval(timerInterval);
+            playSound('gameover');
+            
+            let endTime = new Date();
+            totalTimeElapsed = Math.round((endTime - startTime) / 1000);
+
+            // Pengiraan peratusan ketepatan
+            let accuracy = questionCount > 0 ? Math.round((correctAnswersCount / questionCount) * 100) : 0;
+            
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-stats').innerText = `${correctAnswersCount} Betul / ${wrongAnswersCount} Salah`;
+            document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('res-time').innerText = `${totalTimeElapsed} saat`;
+
+            // Penentuan Pangkat Badge
+            let badgeEmoji = '🥉';
+            let badgeTitle = 'Beginner Scientist';
+            
+            if (score >= 40 && score < 80) {
+                badgeEmoji = '🥈';
+                badgeTitle = 'Junior Scientist';
+            } else if (score >= 80 && score < 120) {
+                badgeEmoji = '🥇';
+                badgeTitle = 'Measurement Expert';
+            } else if (score >= 120) {
+                badgeEmoji = '🏆';
+                badgeTitle = 'Lab Master';
+            }
+
+            document.getElementById('badge-display').innerText = badgeEmoji;
+            document.getElementById('badge-title').innerText = badgeTitle;
+
+            showScreen('gameover-screen');
+        }
+
+        function saveScore() {
+            let nameInput = document.getElementById('player-name').value.trim();
+            if (!nameInput) {
+                alert("Sila masukkan nama untuk menyimpan rekod.");
+                return;
+            }
+
+            let today = new Date();
+            let dateStr = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
+
+            let newRecord = {
+                name: nameInput,
+                score: score,
+                category: selectedCategory,
+                level: selectedLevel,
+                date: dateStr
+            };
+
+            let leaderboard = JSON.parse(localStorage.getItem('ml_leaderboard')) || [];
+            leaderboard.push(newRecord);
+            
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 10);
+
+            localStorage.setItem('ml_leaderboard', JSON.stringify(leaderboard));
+            alert("Skor berjaya disimpan!");
+            showLeaderboard();
+        }
+
+        function showLeaderboard() {
+            let leaderboard = JSON.parse(localStorage.getItem('ml_leaderboard')) || [];
+            let tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            if (leaderboard.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tiada rekod lagi. Jom jadi yang pertama!</td></tr>`;
+            } else {
+                leaderboard.forEach(r => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${r.name}</td><td><strong>${r.score}</strong></td><td>${r.category}</td><td>${r.level}</td><td>${r.date}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+            showScreen('leaderboard-screen');
+        }
+
+        function restartGame() {
+            buildActiveQuestionBank();
+            startGame();
+        }
+
+        // CONFETTI EFFECT LURUS
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let confettiActive = false;
+
+        function triggerConfetti() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            particles = [];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 4 + 2,
+                    d: Math.random() * canvas.height,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    tilt: Math.random() * 10 - 5
+                });
+            }
+            confettiActive = true;
+            setTimeout(() => confettiActive = false, 1500);
+        }
+
+        function drawConfetti() {
+            if (!confettiActive && particles.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                ctx.beginPath();
+                ctx.lineWidth = p.r;
+                ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                ctx.stroke();
+                
+                p.y += Math.cos(p.d) + 2 + p.r / 2;
+                p.x += Math.sin(p.d);
+                
+                if (p.y > canvas.height) {
+                    if (confettiActive) {
+                        particles[index] = { ...p, y: -20, x: Math.random() * canvas.width };
+                    } else {
+                        particles.splice(index, 1);
+                    }
+                }
+            });
+            requestAnimationFrame(drawConfetti);
+        }
+        requestAnimationFrame(drawConfetti);
+    </script>
+</body>
+</html>

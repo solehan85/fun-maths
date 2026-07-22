@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Bingo - Belajar Matematik Sambil Bermain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           1. CSS RESET & GLOBAL VARIABLES
+           ========================================================================== */
+        :root {
+            --primary-blue: #1d3557;
+            --accent-blue: #4a90e2;
+            --neon-green: #2ecc71;
+            --bright-orange: #e67e22;
+            --sun-yellow: #f1c40f;
+            --pure-white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --shadow-premium: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+            --font-main: 'Nunito', sans-serif;
+            --font-heading: 'Fredoka', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--pure-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Animated Background Canvas */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            min-height: 90vh;
+            margin: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Glassmorphism Card Base */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            box-shadow: var(--shadow-premium);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* ==========================================================================
+           2. TYPOGRAPHY & BUTTONS
+           ========================================================================== */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            color: var(--sun-yellow);
+            text-shadow: 0 4px 0 #d35400, 0 8px 20px rgba(0,0,0,0.4);
+            margin-bottom: 5px;
+            animation: bounce 2s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #e0f7fa;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            padding: 15px 35px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 8px 15px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-orange { background: linear-gradient(to bottom, #ff9f43, #ee5253); color: white; }
+        .btn-green { background: linear-gradient(to bottom, #1dd1a1, #10ac84); color: white; }
+        .btn-blue { background: linear-gradient(to bottom, #54a0ff, #2e86de); color: white; }
+        .btn-yellow { background: linear-gradient(to bottom, #feca57, #ff9f43); color: #222; }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 30%;
+            height: 200%;
+            background: rgba(255,255,255,0.3);
+            transform: rotate(30deg);
+            transition: none;
+        }
+        .btn:hover::after {
+            left: 130%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        /* Screen Management */
+        .screen { display: none; width: 100%; }
+        .screen.active { display: block; animation: fadeIn 0.5s ease; }
+
+        /* ==========================================================================
+           3. MAIN MENU & OPTIONS SCREENS
+           ========================================================================== */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .years-grid, .grid-selection, .timer-selection, .difficulty-selection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .selection-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .selection-card:hover, .selection-card.selected {
+            background: var(--sun-yellow);
+            color: #111;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--sun-yellow);
+        }
+
+        /* ==========================================================================
+           4. GAMEPLAY UI (BOARD, TOP BAR, MASKOT)
+           ========================================================================== */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            padding: 25px;
+            border-radius: 20px;
+            font-size: 2.5rem;
+            font-family: var(--font-heading);
+            margin-bottom: 20px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.4);
+            position: relative;
+        }
+
+        /* Bingo Board Styling */
+        .bingo-board {
+            display: grid;
+            gap: 10px;
+            margin: 0 auto;
+            max-width: 500px;
+            perspective: 1000px;
+        }
+
+        .bingo-cell {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f2f6 100%);
+            color: #2f3542;
+            border-radius: 12px;
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #ced6e0, 0 8px 10px rgba(0,0,0,0.15);
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .bingo-cell:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #ced6e0;
+        }
+
+        .bingo-cell.marked {
+            background: linear-gradient(135deg, var(--neon-green) 0%, #26af5f 100%) !important;
+            color: white !important;
+            box-shadow: 0 5px 0 #1b7a42, 0 8px 10px rgba(0,0,0,0.2) !important;
+            animation: popCell 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bingo-cell.wrong {
+            animation: shake 0.4s ease-in-out;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%) !important;
+            color: white !important;
+            box-shadow: 0 5px 0 #b33939 !important;
+        }
+
+        .bingo-cell.hinted {
+            box-shadow: 0 0 20px 5px var(--sun-yellow) !important;
+            animation: pulseGlow 1s infinite alternate;
+        }
+
+        /* Power Ups Panel */
+        .powerups-panel {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .powerup-btn {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .powerup-btn:not(:disabled):hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .powerup-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .powerup-count {
+            background: var(--bright-orange);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        /* Robot Mascot UI */
+        .mascot-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 25px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .robot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, #dfe4ea, #747d8c);
+            border-radius: 20px;
+            position: relative;
+            animation: floatRobot 3s ease-in-out infinite alternate;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .robot-eyes {
+            position: absolute;
+            top: 25px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .eye {
+            width: 15px;
+            height: 15px;
+            background: #00d2d3;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #000;
+            animation: blinkRobot 4s infinite;
+        }
+
+        .robot-mouth {
+            width: 30px;
+            height: 6px;
+            background: #333;
+            position: absolute;
+            bottom: 20px;
+            left: 25px;
+            border-radius: 3px;
+        }
+
+        .speech-bubble {
+            background: white;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: white transparent;
+        }
+
+        /* ==========================================================================
+           5. OVERLAYS & MODALS (BINGO, POPUPS, LEADERBOARD)
+           ========================================================================== */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .overlay-content {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border: 2px solid var(--sun-yellow);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 30px var(--sun-yellow);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bingo-banner {
+            font-size: 4rem;
+            color: var(--sun-yellow);
+            text-shadow: 0 0 20px var(--sun-yellow);
+            animation: pulseGlow 0.5s infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        .stats-table, .leaderboard-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .stats-table td, .leaderboard-table th, .leaderboard-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .leaderboard-table th {
+            color: var(--sun-yellow);
+            font-family: var(--font-heading);
+        }
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            border: 2px solid #555;
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        .badge-icon.unlocked {
+            opacity: 1;
+            border-color: var(--sun-yellow);
+            background: radial-gradient(#fff9c4, #fbc02d);
+            box-shadow: 0 0 10px var(--sun-yellow);
+            transform: scale(1.1);
+        }
+
+        /* ==========================================================================
+           6. ANIMATIONS DEFINITIONS
+           ========================================================================== */
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes popCell { 0% { transform: scale(0.8); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes pulseGlow { from { transform: scale(1); box-shadow: 0 0 10px rgba(241,196,15,0.5); } to { transform: scale(1.03); box-shadow: 0 0 25px rgba(241,196,15,0.9); } }
+        @keyframes floatRobot { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+        @keyframes blinkRobot { 0%, 45%, 55%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        /* ==========================================================================
+           7. RESPONSIVE DESIGN (MOBILE ADAPTATION)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .game-layout { grid-template-columns: 1fr; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .years-grid, .grid-selection, .timer-selection, .difficulty-selection { grid-template-columns: repeat(2, 1fr); }
+            .main-title { font-size: 2.8rem; }
+            .subtitle { font-size: 1.1rem; }
+            .bingo-cell { font-size: 1.3rem; }
+            .glass-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="app-container">
+        <div class="glass-card">
+            
+            <div id="screenMainMenu" class="screen active">
+                <h1 class="main-title">MATH BINGO</h1>
+                <p class="subtitle">Belajar Matematik Sambil Bermain</p>
+                
+                <div class="menu-grid">
+                    <button class="btn btn-orange" onclick="switchScreen('screenSetup')">▶ Mula Permainan</button>
+                    <button class="btn btn-blue" onclick="switchScreen('screenHowTo')">📖 Cara Bermain</button>
+                    <button class="btn btn-green" onclick="switchScreen('screenLeaderboard')">🏆 Skor Tertinggi</button>
+                    <button class="btn btn-yellow" onclick="switchScreen('screenAbout')">🤖 Tentang Game</button>
+                </div>
+                
+                <div class="mascot-container" style="max-width: 400px; margin: 30px auto 0;">
+                    <div class="robot"><div class="robot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="robot-mouth"></div></div>
+                    <div class="speech-bubble" id="menuMascotText">Selamat datang! Sedia untuk mencabar minda anda hari ini?</div>
+                </div>
+            </div>
+
+            <div id="screenSetup" class="screen">
+                <h2 class="main-title" style="font-size: 2.5rem;">TETAPAN PERMAINAN</h2>
+                
+                <h3 style="margin-top:20px; color: var(--sun-yellow);">1. Pilih Tahun (KSSR)</h3>
+                <div class="years-grid" id="yearsGrid"></div>
+
+                <h3 style="margin-top:20px; color: var(--sun-yellow);">2. Saiz Kad Bingo</h3>
+                <div class="grid-selection">
+                    <div class="selection-card selected" data-val="3">3 × 3</div>
+                    <div class="selection-card" data-val="4">4 × 4</div>
+                    <div class="selection-card" data-val="5">5 × 5</div>
+                </div>
+
+                <h3 style="margin-top:20px; color: var(--sun-yellow);">3. Had Masa Pemasa</h3>
+                <div class="timer-selection">
+                    <div class="selection-card selected" data-val="0">Tiada Had</div>
+                    <div class="selection-card" data-val="300">5 Minit</div>
+                    <div class="selection-card" data-val="600">10 Minit</div>
+                    <div class="selection-card" data-val="900">15 Minit</div>
+                </div>
+
+                <h3 style="margin-top:20px; color: var(--sun-yellow);">4. Tahap Kesukaran</h3>
+                <div class="difficulty-selection">
+                    <div class="selection-card selected" data-val="easy">Mudah</div>
+                    <div class="selection-card" data-val="medium">Sederhana</div>
+                    <div class="selection-card" data-val="hard">Sukar</div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-blue" onclick="switchScreen('screenMainMenu')">Kembali</button>
+                    <button class="btn btn-green" onclick="startGame()">Sedia... MULA!</button>
+                </div>
+            </div>
+
+            <div id="screenGame" class="screen">
+                <div class="game-header">
+                    <div>⭐ Skor: <span id="txtScore">0</span></div>
+                    <div>🎯 Ketepatan: <span id="txtAccuracy">100</span>%</div>
+                    <div>⏱️ Masa: <span id="txtTimer">--:--</span></div>
+                    <div>🔥 Kombo: <span id="txtCombo">0</span></div>
+                </div>
+
+                <div class="game-layout">
+                    <div>
+                        <div class="question-box" id="boxQuestion">1 + 1 = ?</div>
+                        <div class="bingo-board" id="bingoBoard"></div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: var(--sun-yellow); margin-bottom: 15px;">Kuasa Power-Up</h3>
+                        <div class="powerups-panel">
+                            <button class="powerup-btn" id="pwHint" onclick="usePowerUp('hint')">🎁 Pembayang <span class="powerup-count" id="countHint">1</span></button>
+                            <button class="powerup-btn" id="pwDouble" onclick="usePowerUp('double')">⭐ Skor Berganda (20s) <span class="powerup-count" id="countDouble">1</span></button>
+                            <button class="powerup-btn" id="pwFreeze" onclick="usePowerUp('freeze')">⏰ Beku Masa (15s) <span class="powerup-count" id="countFreeze">1</span></button>
+                            <button class="powerup-btn" id="pwWild" onclick="usePowerUp('wild')">💎 Kad Liar (Wild) <span class="powerup-count" id="countWild">1</span></button>
+                        </div>
+
+                        <div class="mascot-container">
+                            <div class="robot"><div class="robot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="robot-mouth"></div></div>
+                            <div class="speech-bubble" id="gameMascotText">Cari jawapan di atas papan Bingo anda cepat!</div>
+                        </div>
+
+                        <button class="btn btn-orange" style="margin-top:20px; width:100%;" onclick="confirmExit()">Keluar Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="screenHowTo" class="screen">
+                <h2>CARA BERMAIN MATH BINGO</h2>
+                <div style="text-align: left; margin: 20px auto; max-width: 600px; line-height: 1.8;">
+                    <p>1. Pilih <strong>Tahun Persekolahan (1 hingga 6)</strong> mengikut silibus KSSR.</p>
+                    <p>2. Selesaikan soalan matematik yang dipaparkan di skrin permainan.</p>
+                    <p>3. Cari dan klik <strong>angka jawapan yang betul</strong> pada grid kad Bingo anda.</p>
+                    <p>4. Bina garisan lengkap secara <strong>Mendatar, Menegak, atau Pepenjuru</strong> untuk menjerit <strong>BINGO!</strong></p>
+                    <p>5. Gunakan Kuasa Bantuan (Power-ups) secara strategik untuk membantu anda menang.</p>
+                </div>
+                <button class="btn btn-blue" onclick="switchScreen('screenMainMenu')">Faham, Kembali</button>
+            </div>
+
+            <div id="screenLeaderboard" class="screen">
+                <h2>PAPAN SKOR TERTINGGI 🏆</h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Tahun</th>
+                            <th>Tahap</th>
+                            <th>Skor</th>
+                            <th>Tarikh</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody"></tbody>
+                </table>
+                <button class="btn btn-blue" onclick="switchScreen('screenMainMenu')">Kembali</button>
+            </div>
+
+            <div id="screenAbout" class="screen">
+                <h2>TENTANG PERMAINAN 🤖</h2>
+                <p style="margin: 20px 0; line-height: 1.6;">Math Bingo KSSR direka khas sebagai pemangkin minat subjek Matematik bagi anak-anak sekolah rendah di Malaysia. Menggabungkan keseronokan Bingo tradisional dengan silibus dinamik KSSR Kementerian Pendidikan Malaysia.</p>
+                <p><em>Versi 2.0 (Powered by Web Audio & Canvas API)</em></p>
+                <button class="btn btn-blue" onclick="switchScreen('screenMainMenu')">Kembali</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="overlay" id="overlayResult">
+        <div class="overlay-content">
+            <div id="overlayBingoBanner" class="bingo-banner" style="display:none;">🎉 BINGO!! 🎉</div>
+            <h2 id="overlayTitle">PERMAINAN TAMAT</h2>
+            <div class="badges-container" id="overlayBadges"></div>
+            
+            <table class="stats-table">
+                <tr><td>Skor Keseluruhan:</td><td id="resScore" style="font-weight:bold; color:var(--sun-yellow);">0</td></tr>
+                <tr><td>Ketepatan (Accuracy):</td><td id="resAccuracy">0%</td></tr>
+                <tr><td>Betul / Salah:</td><td id="resQA">0 / 0</td></tr>
+                <tr><td>Masa Digunakan:</td><td id="resTime">0s</td></tr>
+                <tr><td>Jumlah Bingo Diraih:</td><td id="resBingoCount">0</td></tr>
+                <tr><td>Penarafan Bintang:</td><td id="resRating" style="color:var(--sun-yellow);">⭐⭐⭐⭐⭐</td></tr>
+            </table>
+
+            <div style="margin-top: 20px;">
+                <input type="text" id="playerNameInput" placeholder="Masukkan nama anda" style="padding:10px; font-size:1.1rem; border-radius:10px; width:70%; border:none; text-align:center; margin-bottom:15px;"><br>
+                <button class="btn btn-orange" onclick="saveScoreAndExit()">Simpan & Menu Utama</button>
+                <button class="btn btn-green" onclick="restartGameDirectly()">Main Lagi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           FIREBASE CONFIGURATION (Ready for production activation)
+           ========================================================================== */
+        const firebaseConfig = {
+            apiKey: "AIzaSyBodgbX3UIKGJ3u0BI58DQH7k0Cv4rVluQ",
+            authDomain: "mathbingo-f3c5e.firebaseapp.com",
+            databaseURL: "https://mathbingo-f3c5e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mathbingo-f3c5e",
+            storageBucket: "mathbingo-f3c5e.firebasestorage.app",
+            messagingSenderId: "1005451966852",
+            appId: "1:1005451966852:web:e346dc0d838098743e45d1"
+        };
+        // Catatan: Jika ingin menggunakan real-time database cloud, anda boleh muatkan skrip Firebase SDK di sini.
+        // Buat masa sekarang, enjin utama disandarkan terus secara offline kukuh pada LocalStorage.
+
+        /* ==========================================================================
+           WEB AUDIO API SYNTHESIZER (No asset files needed!)
+           ========================================================================== */
+        const AudioEngine = {
+            ctx: null,
+            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+            play(type) {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now); osc.stop(now + 0.05);
+                } else if (type === 'right') {
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now); osc.stop(now + 0.25);
+                } else if (type === 'bingo' || type === 'victory') {
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.02, now + 0.6);
+                    osc.start(now); osc.stop(now + 0.6);
+                } else if (type === 'countdown') {
+                    osc.frequency.setValueAtTime(300, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+            }
+        };
+
+        /* ==========================================================================
+           GAMESTATE VARIABLES
+           ========================================================================== */
+        let gameState = {
+            selectedYear: 1,
+            boardSize: 3,
+            maxTime: 0, 
+            currentTime: 0,
+            difficulty: 'easy',
+            score: 0,
+            correctCount: 0,
+            wrongCount: 0,
+            totalQuestionsAnswered: 0,
+            bingoCount: 0,
+            isWildActive: false,
+            isDoubleActive: false,
+            isFreezeActive: false,
+            currentQuestion: null,
+            boardData: [],
+            markedCells: [], 
+            powerups: { hint: 1, double: 1, freeze: 1, wild: 1 },
+            timerInterval: null,
+            timeElapsedTotal: 0
+        };
+
+        const MascotDialogs = {
+            win: ["Hebat!", "Bagus!", "Teruskan!", "Bijak sekali!"],
+            nearly: ["Anda hampir mendapat Bingo!", "Sikit lagi!", "Nampak garisan Bingo tu?"],
+            wrong: ["Cuba lagi, jangan putus asa!", "Alamak, silap sikit!", "Fikir dalam-dalam."]
+        };
+
+        /* ==========================================================================
+           RENDER INITIAL SELECTION SETUP
+           ========================================================================== */
+        function initSetupLayouts() {
+            const grid = document.getElementById('yearsGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 6; i++) {
+                const card = document.createElement('div');
+                card.className = `selection-card ${i===1?'selected':''}`;
+                card.innerText = `Tahun ${i}`;
+                card.onclick = () => {
+                    AudioEngine.play('click');
+                    document.querySelectorAll('#yearsGrid .selection-card').forEach(c=>c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    gameState.selectedYear = i;
+                };
+                grid.appendChild(card);
+            }
+
+            setupSelectionClicks('.grid-selection .selection-card', (val) => gameState.boardSize = parseInt(val));
+            setupSelectionClicks('.timer-selection .selection-card', (val) => gameState.maxTime = parseInt(val));
+            setupSelectionClicks('.difficulty-selection .selection-card', (val) => gameState.difficulty = val);
+        }
+
+        function setupSelectionClicks(selector, callback) {
+            document.querySelectorAll(selector).forEach(card => {
+                card.onclick = () => {
+                    AudioEngine.play('click');
+                    document.querySelectorAll(selector).forEach(c=>c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    callback(card.getAttribute('data-val'));
+                };
+            });
+        }
+
+        function switchScreen(screenId) {
+            AudioEngine.play('click');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if(screenId === 'screenLeaderboard') loadLeaderboard();
+        }
+
+        /* ==========================================================================
+           MATHEMATICS QUESTION BANK GENERATOR (KSSR COMPLIANT)
+           ========================================================================== */
+        function generateMathProblem(year, diff) {
+            let maxNum = 20;
+            if(diff === 'medium') maxNum = 100;
+            if(diff === 'hard') maxNum = 1000;
+
+            let ops = ['+', '-'];
+            if(year >= 2) ops.push('*', '/');
+            
+            // Filter ops mengikut kekangan KSSR Tahun 1
+            if(year === 1) ops = ['+', '-'];
+
+            let op = ops[Math.floor(Math.random() * ops.length)];
+            let num1, num2, qText, ans;
+
+            switch(op) {
+                case '+':
+                    num1 = Math.floor(Math.random() * (maxNum/2)) + 1;
+                    num2 = Math.floor(Math.random() * (maxNum/2)) + 1;
+                    ans = num1 + num2;
+                    qText = `${num1} + ${num2} = ?`;
+                    break;
+                case '-':
+                    num1 = Math.floor(Math.random() * (maxNum/2)) + (maxNum/2);
+                    num2 = Math.floor(Math.random() * (maxNum/2)) + 1;
+                    ans = num1 - num2;
+                    qText = `${num1} - ${num2} = ?`;
+                    break;
+                case '*':
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 9) + 1;
+                    if(diff==='hard') num1 = Math.floor(Math.random()*20)+5;
+                    ans = num1 * num2;
+                    qText = `${num1} × ${num2} = ?`;
+                    break;
+                case '/':
+                    num2 = Math.floor(Math.random() * 9) + 1;
+                    num1 = num2 * (Math.floor(Math.random() * 9) + 1);
+                    ans = num1 / num2;
+                    qText = `${num1} ÷ ${num2} = ?`;
+                    break;
+            }
+            return { question: qText, answer: ans };
+        }
+
+        /* ==========================================================================
+           GAME ENGINE MECHANICS (START, ENGINE, REALTIME ENGINE)
+           ========================================================================== */
+        function startGame() {
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.wrongCount = 0;
+            gameState.totalQuestionsAnswered = 0;
+            gameState.bingoCount = 0;
+            gameState.currentTime = gameState.maxTime;
+            gameState.timeElapsedTotal = 0;
+            gameState.powerups = { hint: 1, double: 1, freeze: 1, wild: 1 };
+            updatePowerUpUI();
+
+            // Bina Kad Bingo Data Pokok
+            generateBingoBoardData();
+            switchScreen('screenGame');
+            nextQuestion();
+
+            if (gameState.maxTime > 0) {
+                document.getElementById('txtTimer').innerText = formatTime(gameState.currentTime);
+                startTimer();
+            } else {
+                document.getElementById('txtTimer').innerText = "Tiada Had";
+            }
+        }
+
+        function generateBingoBoardData() {
+            let cellsNeeded = gameState.boardSize * gameState.boardSize;
+            let setAnswers = new Set();
+            
+            // Jana jawapan rawak unik sepadan tahun & kesukaran
+            while(setAnswers.size < cellsNeeded) {
+                let prob = generateMathProblem(gameState.selectedYear, gameState.difficulty);
+                if (prob.answer > 0 && prob.answer < 5000) {
+                    setAnswers.add(prob.answer);
+                }
+            }
+
+            gameState.boardData = Array.from(setAnswers);
+            gameState.markedCells = new Array(cellsNeeded).fill(false);
+            
+            renderBingoBoardGrid();
+        }
+
+        function renderBingoBoardGrid() {
+            const board = document.getElementById('bingoBoard');
+            board.style.gridTemplateColumns = `repeat(${gameState.boardSize}, 1fr)`;
+            board.innerHTML = '';
+
+            for (let i = 0; i < gameState.boardData.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'bingo-cell';
+                cell.innerText = gameState.boardData[i];
+                cell.setAttribute('data-index', i);
+                cell.onclick = () => handleCellClick(i);
+                board.appendChild(cell);
+            }
+        }
+
+        function nextQuestion() {
+            // Pilih satu nilai secara rawak yang BELUM ditanda dalam papan board untuk dijadikan soalan utama
+            let unmarkedIndices = [];
+            for(let i=0; i<gameState.markedCells.length; i++) {
+                if(!gameState.markedCells[i]) unmarkedIndices.push(i);
+            }
+
+            if(unmarkedIndices.length === 0) {
+                endGame();
+                return;
+            }
+
+            let targetIndex = unmarkedIndices[Math.floor(Math.random() * unmarkedIndices.length)];
+            let targetAnswer = gameState.boardData[targetIndex];
+
+            // Reka soalan sepadan nilai sasaran jawapan tersebut
+            let validProblem = null;
+            let attempts = 0;
+            while(!validProblem && attempts < 400) {
+                let dummy = generateMathProblem(gameState.selectedYear, gameState.difficulty);
+                if(dummy.answer === targetAnswer) {
+                    validProblem = dummy;
+                }
+                attempts++;
+            }
+
+            // Fallback sintaksis mudah sekiranya brute-force mengambil masa terlalu lama
+            if(!validProblem) {
+                validProblem = { question: `Cari Nilai Nombor: ${targetAnswer}`, answer: targetAnswer };
+            }
+
+            gameState.currentQuestion = validProblem;
+            document.getElementById('boxQuestion').innerText = validProblem.question;
+            
+            // Reset sebarang pembayang (hints) lama
+            document.querySelectorAll('.bingo-cell').forEach(c=>c.classList.remove('hinted'));
+        }
+
+        function handleCellClick(index) {
+            if(gameState.markedCells[index]) return; // Dah ditanda
+
+            // Tindakbalas Mod Kad Liar (Wild Card) aktif
+            if(gameState.isWildActive) {
+                markCellTrue(index);
+                gameState.isWildActive = false;
+                document.getElementById('bingoBoard').style.cursor = 'default';
+                AudioEngine.play('right');
+                nextQuestion();
+                return;
+            }
+
+            let selectedValue = gameState.boardData[index];
+            let cellElements = document.querySelectorAll('.bingo-cell');
+
+            if(selectedValue === gameState.currentQuestion.answer) {
+                // JAWAPAN BETUL
+                AudioEngine.play('right');
+                gameState.correctCount++;
+                let scoreGain = 10;
+                if(gameState.isDoubleActive) scoreGain *= 2;
+                gameState.score += scoreGain;
+                
+                cellElements[index].classList.add('marked');
+                gameState.markedCells[index] = true;
+
+                // Urus Kata-Kata Semangat Robot Maskot
+                triggerMascotReaction('win');
+                
+                // Semak Logik Bingo
+                checkBingoLogic();
+                
+                // Kemas kini Paparan Realtime
+                updateStatsUI();
+                nextQuestion();
+            } else {
+                // JAWAPAN SALAH
+                AudioEngine.play('wrong');
+                gameState.wrongCount++;
+                cellElements[index].classList.add('wrong');
+                triggerMascotReaction('wrong');
+                setTimeout(() => cellElements[index].classList.remove('wrong'), 400);
+                updateStatsUI();
+            }
+        }
+
+        function markCellTrue(index) {
+            let cellElements = document.querySelectorAll('.bingo-cell');
+            cellElements[index].classList.add('marked');
+            gameState.markedCells[index] = true;
+            gameState.score += 10;
+            checkBingoLogic();
+            updateStatsUI();
+        }
+
+        /* ==========================================================================
+           BINGO CORE LOGIC MATRICES DETECTOR
+           ========================================================================== */
+        function checkBingoLogic() {
+            let size = gameState.boardSize;
+            let rows = new Array(size).fill(0);
+            let cols = new Array(size).fill(0);
+            let diag1 = 0; // Kiri Atas -> Kanan Bawah
+            let diag2 = 0; // Kanan Atas -> Kiri Atas
+
+            // Buat kiraan penanda pada baris/kolum/pepenjuru
+            for(let r=0; r<size; r++) {
+                for(let c=0; c<size; c++) {
+                    let idx = r * size + c;
+                    if(gameState.markedCells[idx]) {
+                        rows[r]++;
+                        cols[c]++;
+                        if(r === c) diag1++;
+                        if(r + c === size - 1) diag2++;
+                    }
+                }
+            }
+
+            // Contoh pengiraan asas Bingo dinamik baru
+            let totalBingoFound = 0;
+            for(let i=0; i<size; i++) {
+                if(rows[i] === size) totalBingoFound++;
+                if(cols[i] === size) totalBingoFound++;
+            }
+            if(diag1 === size) totalBingoFound++;
+            if(diag2 === size) totalBingoFound++;
+
+            // Jika jumlah Bingo baharu melebihi rekod sedia ada dalam sesi ini
+            if(totalBingoFound > gameState.bingoCount) {
+                let newBingos = totalBingoFound - gameState.bingoCount;
+                gameState.score += (newBingos * 100);
+                gameState.bingoCount = totalBingoFound;
+                triggerBingoCelebration();
+            }
+        }
+
+        function triggerBingoCelebration() {
+            AudioEngine.play('bingo');
+            triggerFireworksEffect();
+            document.getElementById('overlayBingoBanner').style.display = 'block';
+            document.getElementById('overlayTitle').innerText = "TAHNIAH! ANDA DAPAT BINGO!";
+            
+            // Robot beri maklum balas gembira
+            document.getElementById('gameMascotText').innerText = "Luar biasa! Kita dapat BINGO! 🎉";
+
+            setTimeout(() => {
+                document.getElementById('overlayBingoBanner').style.display = 'none';
+            }, 2500);
+        }
+
+        /* ==========================================================================
+           POWER-UPS STRATEGIC MECHANICS
+           ========================================================================== */
+        function usePowerUp(type) {
+            if(gameState.powerups[type] <= 0) return;
+            AudioEngine.play('click');
+
+            if(type === 'hint') {
+                let targetAns = gameState.currentQuestion.answer;
+                document.querySelectorAll('.bingo-cell').forEach(cell => {
+                    if(parseInt(cell.innerText) === targetAns) {
+                        cell.classList.add('hinted');
+                    }
+                });
+                gameState.powerups.hint--;
+            } 
+            else if(type === 'double') {
+                gameState.isDoubleActive = true;
+                gameState.powerups.double--;
+                document.getElementById('pwDouble').style.background = 'var(--bright-orange)';
+                setTimeout(() => {
+                    gameState.isDoubleActive = false;
+                    document.getElementById('pwDouble').style.background = 'rgba(255,255,255,0.08)';
+                }, 20000);
+            } 
+            else if(type === 'freeze') {
+                gameState.isFreezeActive = true;
+                gameState.powerups.freeze--;
+                document.getElementById('pwFreeze').style.background = 'var(--accent-blue)';
+                setTimeout(() => {
+                    gameState.isFreezeActive = false;
+                    document.getElementById('pwFreeze').style.background = 'rgba(255,255,255,0.08)';
+                }, 15000);
+            } 
+            else if(type === 'wild') {
+                gameState.isWildActive = true;
+                gameState.powerups.wild--;
+                document.getElementById('bingoBoard').style.cursor = 'crosshair';
+                document.getElementById('gameMascotText').innerText = "Pilih mana-mana kotak kegemaran anda!";
+            }
+
+            updatePowerUpUI();
+        }
+
+        function updatePowerUpUI() {
+            document.getElementById('countHint').innerText = gameState.powerups.hint;
+            document.getElementById('countDouble').innerText = gameState.powerups.double;
+            document.getElementById('countFreeze').innerText = gameState.powerups.freeze;
+            document.getElementById('countWild').innerText = gameState.powerups.wild;
+
+            document.getElementById('pwHint').disabled = gameState.powerups.hint <= 0;
+            document.getElementById('pwDouble').disabled = gameState.powerups.double <= 0;
+            document.getElementById('pwFreeze').disabled = gameState.powerups.freeze <= 0;
+            document.getElementById('pwWild').disabled = gameState.powerups.wild <= 0;
+        }
+
+        /* ==========================================================================
+           TIMERS, STATS INTERFACE UPDATE, & UTILITIES
+           ========================================================================== */
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(() => {
+                if(!gameState.isFreezeActive) {
+                    gameState.currentTime--;
+                    gameState.timeElapsedTotal++;
+                    document.getElementById('txtTimer').innerText = formatTime(gameState.currentTime);
+                    
+                    if(gameState.currentTime <= 10 && gameState.currentTime > 0) {
+                        AudioEngine.play('countdown');
+                    }
+
+                    if(gameState.currentTime <= 0) {
+                        clearInterval(gameState.timerInterval);
+                        endGame();
+                    }
+                } else {
+                    gameState.timeElapsedTotal++; // Kekalkan masa bermain total berjalan
+                }
+            }, 1000);
+        }
+
+        function formatTime(secs) {
+            let m = Math.floor(secs / 60);
+            let s = secs % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function updateStatsUI() {
+            let total = gameState.correctCount + gameState.wrongCount;
+            let acc = total === 0 ? 100 : Math.round((gameState.correctCount / total) * 100);
+            
+            document.getElementById('txtScore').innerText = gameState.score;
+            document.getElementById('txtAccuracy').innerText = acc;
+        }
+
+        function triggerMascotReaction(type) {
+            let arr = MascotDialogs[type];
+            let text = arr[Math.floor(Math.random() * arr.length)];
+            document.getElementById('gameMascotText').innerText = text;
+        }
+
+        function confirmExit() {
+            if(confirm("Adakah anda pasti mahu keluar permainan sekarang?")) {
+                clearInterval(gameState.timerInterval);
+                switchScreen('screenMainMenu');
+            }
+        }
+
+        /* ==========================================================================
+           ENDGAME ANALYTICS & ACHIEVEMENTS BADGES
+           ========================================================================== */
+        function endGame() {
+            clearInterval(gameState.timerInterval);
+            AudioEngine.play('victory');
+
+            let total = gameState.correctCount + gameState.wrongCount;
+            let acc = total === 0 ? 0 : Math.round((gameState.correctCount / total) * 100);
+
+            // Suntikan Data ke Paparan Modal
+            document.getElementById('resScore').innerText = gameState.score;
+            document.getElementById('resAccuracy').innerText = acc + "%";
+            document.getElementById('resQA').innerText = `${gameState.correctCount} Betul / ${gameState.wrongCount} Salah`;
+            document.getElementById('resTime').innerText = gameState.timeElapsedTotal + " Saat";
+            document.getElementById('resBingoCount').innerText = gameState.bingoCount;
+
+            // Pengiraan Penarafan Bintang
+            let stars = "⭐";
+            if(gameState.score > 100) stars = "⭐⭐";
+            if(gameState.score > 300) stars = "⭐⭐⭐";
+            if(gameState.score > 600) stars = "⭐⭐⭐⭐";
+            if(gameState.score > 1000) stars = "⭐⭐⭐⭐⭐";
+            document.getElementById('resRating').innerText = stars;
+
+            // Proses Pengurniaan Lencana Pencapaian (Achievements)
+            renderAchievementsBadges(acc);
+
+            document.getElementById('overlayResult').style.display = 'flex';
+        }
+
+        function renderAchievementsBadges(acc) {
+            const container = document.getElementById('overlayBadges');
+            container.innerHTML = '';
+
+            const badgesList = [
+                { id: 'b1', icon: '🏆', name: 'Beginner', desc: 'Selesai Game Pertama', unlock: true },
+                { id: 'b2', icon: '⚡', name: 'Fast Thinker', desc: 'Selesai bawah 60s', unlock: gameState.timeElapsedTotal < 60 && gameState.correctCount > 3 },
+                { id: 'b3', icon: '🎯', name: 'Perfect Score', desc: 'Akurasi 100%', unlock: acc === 100 && gameState.correctCount > 2 },
+                { id: 'b4', icon: '👑', name: 'Bingo Master', desc: 'Lebih 2 Bingo', unlock: gameState.bingoCount >= 2 },
+                { id: 'b5', icon: '🧠', name: 'Math Genius', desc: 'Skor > 800', unlock: gameState.score >= 800 }
+            ];
+
+            badgesList.forEach(badge => {
+                const bEl = document.createElement('div');
+                bEl.className = `badge-icon ${badge.unlock ? 'unlocked' : ''}`;
+                bEl.innerHTML = badge.icon;
+                bEl.title = `${badge.name}: ${badge.desc}`;
+                container.appendChild(bEl);
+            });
+        }
+
+        function restartGameDirectly() {
+            document.getElementById('overlayResult').style.display = 'none';
+            startGame();
+        }
+
+        /* ==========================================================================
+           LOCALSTORAGE LOCAL DATABASE INTEGRATION
+           ========================================================================== */
+        function saveScoreAndExit() {
+            let name = document.getElementById('playerNameInput').value.trim();
+            if(!name) name = "Murid Bijak";
+
+            let records = JSON.parse(localStorage.getItem('mathBingoLeaderboard')) || [];
+            records.push({
+                name: name,
+                year: `Tahun ${gameState.selectedYear}`,
+                diff: gameState.difficulty.toUpperCase(),
+                score: gameState.score,
+                date: new Date().toLocaleDateString('ms-MY')
+            });
+
+            // Isih kedudukan skor tertinggi
+            records.sort((a,b) => b.score - a.score);
+            localStorage.setItem('mathBingoLeaderboard', JSON.stringify(records.slice(0, 10))); // Simpan Top 10 sahaja
+
+            document.getElementById('overlayResult').style.display = 'none';
+            switchScreen('screenMainMenu');
+        }
+
+        function loadLeaderboard() {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            let records = JSON.parse(localStorage.getItem('mathBingoLeaderboard')) || [];
+
+            if(records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada rekod skor disimpan.</td></tr>`;
+                return;
+            }
+
+            records.forEach(r => {
+                let row = `<tr>
+                    <td><strong>${r.name}</strong></td>
+                    <td>${r.year}</td>
+                    <td>${r.diff}</td>
+                    <td style="color:var(--sun-yellow); font-weight:bold;">${r.score}</td>
+                    <td>${r.date}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        /* ==========================================================================
+           CANVAS ENGINE (BACKGROUND PARTICLES, CONFETTI & FIREWORKS ENGINE)
+           ========================================================================== */
+        const CanvasEngine = {
+            canvas: null, ctx: null, particles: [],
+            init() {
+                this.canvas = document.getElementById('bgCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                
+                // Janakan partikel terapung latar belakang asas (floating numbers)
+                for(let i=0; i<25; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 1,
+                        vy: (Math.random() - 0.5) * 1,
+                        size: Math.random() * 20 + 16,
+                        text: Math.floor(Math.random() * 9).toString(),
+                        alpha: Math.random() * 0.15 + 0.05
+                    });
+                }
+                this.loop();
+            },
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            },
+            addCelebrationParticles() {
+                // Tambah ledakan confetti berwarna-warni
+                for(let i=0; i<100; i++) {
+                    this.particles.push({
+                        x: this.canvas.width / 2,
+                        y: this.canvas.height / 2,
+                        vx: (Math.random() - 0.5) * 15,
+                        vy: (Math.random() - 0.7) * 15,
+                        size: Math.random() * 8 + 4,
+                        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                        alpha: 1,
+                        gravity: 0.2,
+                        life: 1
+                    });
+                }
+            },
+            loop() {
+                requestAnimationFrame(() => this.loop());
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for(let i = this.particles.length - 1; i >= 0; i--) {
+                    let p = this.particles[i];
+
+                    if(p.text) { // Mod partikel terapung nombor
+                        p.x += p.vx; p.y += p.vy;
+                        if(p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                        if(p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+                        this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                        this.ctx.font = `${p.size}px Fredoka`;
+                        this.ctx.fillText(p.text, p.x, p.y);
+                    } else { // Mod partikel confetti/percikan bunga api
+                        p.vx *= 0.98; p.vy += p.gravity || 0;
+                        p.x += p.vx; p.y += p.vy;
+                        p.alpha -= 0.015;
+                        
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.globalAlpha = p.alpha;
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        this.ctx.globalAlpha = 1;
+
+                        if(p.alpha <= 0) this.particles.splice(i, 1);
+                    }
+                }
+            }
+        };
+
+        function triggerFireworksEffect() {
+            CanvasEngine.addCelebrationParticles();
+        }
+
+        // Jalankan Enjin Aplikasi Sebaik Halaman Selesai Dimuatkan
+        window.onload = () => {
+            initSetupLayouts();
+            CanvasEngine.init();
+        };
+    </script>
+</body>
+</html>

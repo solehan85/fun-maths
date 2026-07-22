@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Algebra Quest</title>
+<style>
+:root{--y:#FFD93D;--b:#2563EB;--i:#4F46E5;--p:#7C3AED;--g:#22C55E;--r:#FF5A5F;--n:#0F172A;--card:#172554;--txt:#f8fafc;--mut:#bfdbfe}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 0,#312e81 0,#0f172a 45%,#090e1a 100%);color:var(--txt);min-height:100vh;overflow-x:hidden}
+button,input{font:inherit}button{min-height:44px;cursor:pointer;border:0}.app{max-width:1000px;margin:auto;min-height:100vh;padding:14px}.screen{display:none;animation:in .35s ease}.screen.active{display:block}@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}.brand{font-weight:1000;letter-spacing:.5px;color:var(--y);font-size:clamp(18px,4vw,28px)}.iconbtn,.pill{background:#ffffff12;color:white;border:1px solid #ffffff22;border-radius:999px;padding:9px 13px;font-weight:800}
+.hero{position:relative;text-align:center;padding:clamp(35px,8vw,80px) 15px;overflow:hidden;border-radius:30px;background:linear-gradient(135deg,#2563eb55,#7c3aed55);border:1px solid #ffffff25;box-shadow:0 25px 70px #0007}.hero h1{font-size:clamp(42px,10vw,88px);line-height:.9;margin:10px 0;color:var(--y);text-shadow:0 6px 0 #b45309,0 14px 30px #0008}.hero p{font-size:clamp(16px,3vw,22px);font-weight:800}.float{position:absolute;font-weight:1000;font-size:clamp(28px,6vw,55px);opacity:.35;animation:float 3s ease-in-out infinite}.f1{left:6%;top:15%}.f2{right:8%;top:18%;animation-delay:.5s}.f3{left:12%;bottom:10%;animation-delay:1s}.f4{right:10%;bottom:8%;animation-delay:1.5s}@keyframes float{50%{transform:translateY(-14px) rotate(8deg)}}
+.primary{background:linear-gradient(135deg,var(--y),#fb923c);color:#271700;padding:15px 22px;border-radius:16px;font-weight:1000;box-shadow:0 8px 0 #b45309;transition:.15s}.primary:active{transform:translateY(5px);box-shadow:0 3px 0 #b45309}.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.menu button,.world,.modecard{border-radius:18px;padding:16px;background:linear-gradient(135deg,#1e3a8a,#4f46e5);color:white;font-weight:900;border:1px solid #ffffff20;box-shadow:0 10px 25px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}.stat{background:#ffffff10;border:1px solid #ffffff20;padding:8px 12px;border-radius:14px;font-weight:800}
+h2{font-size:clamp(27px,6vw,44px);margin:10px 0}.subtitle{color:var(--mut);margin-top:0}.worldmap{display:grid;gap:14px;padding:12px 0 40px}.world{display:flex;align-items:center;gap:14px;text-align:left;position:relative}.world:nth-child(even){margin-left:clamp(20px,8vw,80px)}.world .orb{width:58px;height:58px;display:grid;place-items:center;background:#ffffff18;border-radius:50%;font-size:28px;flex:none}.world.locked{filter:grayscale(.8);opacity:.55}.world small{display:block;color:#c7d2fe;margin-top:4px}.gamebar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}.gamebar .stat{text-align:center;padding:7px 3px}.questionCard{background:linear-gradient(145deg,#172554,#312e81);border:1px solid #ffffff25;border-radius:26px;padding:clamp(18px,5vw,35px);text-align:center;box-shadow:0 20px 50px #0005;min-height:260px}.topic{color:var(--y);font-weight:900;text-transform:uppercase;letter-spacing:1px}.question{font-size:clamp(25px,6vw,45px);font-weight:1000;margin:22px 0;line-height:1.25}.visual{min-height:50px;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.tile{padding:10px 13px;border-radius:10px;background:var(--b);font-weight:900;box-shadow:inset 0 -4px #0003}.tile.unit{background:var(--g)}.scale{width:min(360px,90%);margin:auto}.beam{height:8px;background:#fbbf24;border-radius:8px;transform:rotate(-2deg);transition:.5s}.pans{display:flex;justify-content:space-between}.pan{background:#ffffff18;border-radius:0 0 30px 30px;padding:8px 18px;min-width:100px}.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.answer{padding:16px;border-radius:16px;background:#fff;color:#172554;font-size:clamp(18px,4vw,25px);font-weight:1000;box-shadow:0 6px 0 #94a3b8}.answer:active{transform:translateY(4px);box-shadow:0 2px 0 #94a3b8}.answer.correct{background:#86efac}.answer.wrong{background:#fda4af}.controls{display:flex;gap:8px;margin-top:12px}.controls button{flex:1}.hint{background:#fef3c7;color:#713f12;border-radius:14px;font-weight:900}.feedback{min-height:35px;font-size:22px;font-weight:1000;text-align:center;margin-top:10px}.progress{height:12px;background:#ffffff18;border-radius:20px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--y),#fb923c);width:0;transition:.4s}.panel{background:#ffffff0d;border:1px solid #ffffff20;border-radius:22px;padding:18px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.modecard{text-align:center;font-size:18px}.badge{font-size:30px;text-align:center;background:#ffffff0d;border-radius:16px;padding:12px}.mastery{margin:13px 0}.mastery label{display:flex;justify-content:space-between;font-weight:800;margin-bottom:5px}.bossArena{text-align:center}.boss{font-size:90px;display:inline-block;filter:drop-shadow(0 12px 15px #0008)}.hit{animation:hit .3s}@keyframes hit{25%{transform:translateX(-12px) rotate(-5deg)}75%{transform:translateX(12px) rotate(5deg)}}.hp{height:18px;background:#3f1d2b;border-radius:20px;overflow:hidden;margin:5px auto 14px;max-width:500px}.hp i{height:100%;display:block;background:linear-gradient(90deg,#ef4444,#fb7185);transition:.4s}.modal{position:fixed;inset:0;background:#020617dd;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modalbox{width:min(500px,100%);background:linear-gradient(145deg,#1e3a8a,#4c1d95);border-radius:26px;padding:25px;text-align:center;border:1px solid #ffffff30}.modalbox h2{color:var(--y)}.tutorialIcon{font-size:70px}.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.secondary{background:#ffffff18;color:white;border:1px solid #ffffff25;border-radius:14px;padding:12px 16px;font-weight:900}.confetti{position:fixed;width:9px;height:14px;background:var(--y);top:-20px;z-index:30;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}.shake{animation:shake .3s}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.bubbleArea{position:relative;min-height:210px;width:100%;overflow:hidden}.bubbleAnswer{position:absolute;width:72px;height:72px;border-radius:50%;background:linear-gradient(145deg,#60a5fa,#7c3aed);color:white;font-size:22px;font-weight:1000;border:3px solid #ffffff80;box-shadow:inset 0 0 18px #fff5,0 10px 25px #0005;animation:bob 2.4s ease-in-out infinite}.bubbleAnswer:nth-child(2){animation-delay:.4s}.bubbleAnswer:nth-child(3){animation-delay:.8s}.bubbleAnswer:nth-child(4){animation-delay:1.2s}@keyframes bob{50%{transform:translateY(-14px) scale(1.05)}}.sortGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%}.sortChoice{padding:15px;border-radius:14px;background:#ffffff15;color:white;border:1px solid #ffffff25;font-weight:900}.scaleInteractive{width:min(430px,96%);margin:auto}.scaleInteractive .beam{transform:rotate(-7deg);transform-origin:center;box-shadow:0 6px 0 #92400e}.scaleInteractive.balanced .beam{transform:rotate(0deg)}.operationRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}.operationRow button{padding:12px 16px;border-radius:14px;background:#fff;color:#312e81;font-weight:1000}.curriculumTag{display:inline-block;padding:5px 9px;border-radius:999px;background:#ffffff14;color:#fde68a;font-size:12px;font-weight:900;margin-top:7px}
+
+
+.stageSelector{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin:14px 0}.stageBtn{padding:13px 10px;border-radius:15px;background:#ffffff12;color:white;border:1px solid #ffffff25;font-weight:900}.stageBtn.active{background:linear-gradient(135deg,#f59e0b,#f97316);color:#241200;box-shadow:0 6px 0 #9a3412}.pathCard{background:linear-gradient(145deg,#172554,#3b0764);border:1px solid #ffffff20;border-radius:20px;padding:16px;margin:10px 0}.pathCard h3{margin:0 0 7px;color:#fde68a}.recommend{border:2px solid #facc15;box-shadow:0 0 25px #facc1530}.weakTag{display:inline-block;background:#fb7185;color:#3f0712;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:1000}.strongTag{display:inline-block;background:#86efac;color:#052e16;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:1000}.lessonStep{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:10px 0}.lessonStep span{padding:5px 8px;border-radius:999px;background:#ffffff10;font-size:11px;font-weight:900}.lessonStep .on{background:#facc15;color:#422006}.diagnosticBox{background:linear-gradient(135deg,#0f766e55,#2563eb55);border:1px solid #5eead455;border-radius:20px;padding:18px;margin-top:14px}
+
+.builder{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:12px}.builderSlot{min-width:80px;min-height:52px;border:2px dashed #fde68a;border-radius:13px;display:grid;place-items:center;padding:8px}.tokenBank{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.token,.operationCard{padding:12px 15px;border-radius:12px;background:#fef3c7;color:#422006;font-weight:1000;box-shadow:0 5px 0 #b45309}.algebraBoard{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%}.tileZone{min-width:130px;min-height:100px;padding:10px;border:2px dashed #ffffff45;border-radius:18px}.xTile{display:inline-grid;place-items:center;width:42px;height:72px;margin:3px;border-radius:8px;background:linear-gradient(145deg,#3b82f6,#4f46e5);font-weight:1000}.bossStage{position:relative;min-height:180px;width:100%;display:flex;justify-content:space-around;align-items:end}.heroAvatar{font-size:65px}.bossAvatar{font-size:90px}.energyOrb{position:absolute;font-size:35px;left:28%;bottom:55px;opacity:0}.energyOrb.fly{animation:orbFly .55s ease-out}.bossDamage{animation:bossDamage .45s}@keyframes orbFly{0%{opacity:1}100%{opacity:0;transform:translateX(260px) scale(1.8)}}@keyframes bossDamage{25%{transform:translateX(-14px) rotate(-7deg);filter:brightness(2)}75%{transform:translateX(12px) rotate(6deg)}}.bossHud{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}.bossName{font-size:11px;font-weight:1000;color:#fde68a}.explainBox{margin-top:10px;padding:10px;border-radius:12px;background:#0f766e44;border:1px solid #5eead466;font-size:14px}.interactiveScale{width:min(460px,98%);margin:auto}.scaleBeam{height:9px;background:#fbbf24;border-radius:10px;transform:rotate(-8deg);transition:.6s}.interactiveScale.solved .scaleBeam{transform:rotate(0)}.scalePans{display:flex;justify-content:space-between}.scalePan{width:44%;min-height:58px;background:#ffffff12;border-radius:0 0 30px 30px;padding:8px;font-weight:1000}
+
+.profileCard{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#1e3a8a88,#7c3aed88);border:1px solid #ffffff25;border-radius:22px;padding:16px;margin:12px 0}.avatarBig{font-size:64px;width:84px;height:84px;display:grid;place-items:center;background:#ffffff12;border-radius:50%;border:3px solid #facc15}.coin{color:#fde047;font-weight:1000}.shopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.shopItem{background:#ffffff10;border:1px solid #ffffff20;border-radius:18px;padding:14px;text-align:center}.shopItem .preview{font-size:48px}.shopItem button{width:100%;margin-top:8px}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;background:#ffffff0d;font-size:12px;font-weight:900}.day.done{background:#22c55e;color:#052e16}.day.today{outline:2px solid #facc15}.dragBoard{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}.dragSource,.dropZone{min-height:130px;border-radius:18px;padding:10px;background:#ffffff0b;border:2px dashed #ffffff35}.dropZone.over{border-color:#facc15;background:#facc1520}.dragTile{display:inline-grid;place-items:center;width:44px;height:70px;margin:4px;border-radius:8px;background:linear-gradient(145deg,#3b82f6,#4f46e5);font-weight:1000;cursor:grab;touch-action:none}.streakFlame{font-size:42px;filter:drop-shadow(0 0 12px #f97316)}.achievementToast{position:fixed;right:15px;bottom:15px;z-index:50;background:linear-gradient(135deg,#422006,#a16207);border:1px solid #fde68a;border-radius:18px;padding:14px 18px;transform:translateY(150%);transition:.4s;box-shadow:0 15px 40px #0008}.achievementToast.show{transform:translateY(0)}
+
+@media(min-width:700px){.menu{grid-template-columns:repeat(4,1fr)}.answers{grid-template-columns:repeat(4,1fr)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand">⚡ ALGEBRA QUEST</div><button id="soundBtn" class="iconbtn" aria-label="Tukar bunyi">🔊</button></header>
+
+<section id="home" class="screen active">
+ <div class="hero"><span class="float f1">x</span><span class="float f2">y</span><span class="float f3">+ 7</span><span class="float f4">2a</span>
+  <div>🏰 JOURNEY TO THE VARIABLE KINGDOM</div><h1>ALGEBRA<br>QUEST</h1><p>Cari Nilai. Pecahkan Misteri. Kuasai Algebra!</p>
+  <button class="primary" onclick="showScreen('map')">▶ MULA PENGEMBARAAN</button>
+ </div>
+ <div class="stats" id="homeStats"></div>
+ <div class="menu"><button onclick="openQuick()">⚡<br>Quick Play</button><button onclick="startDaily()">🏆<br>Daily Challenge</button><button onclick="startBoss()">👑<br>Boss Battle</button><button onclick="showProgress()">📊<br>Progress</button><button onclick="openMiniGames()">🎮<br>Mini Games</button><button onclick="openCurriculum()">🎓<br>Laluan Belajar</button><button onclick="showScreen('gameplayLab')">🧪<br>Play Lab</button><button onclick="openProfile()">🧙<br>Profil</button><button onclick="openShop()">🪙<br>Kedai Ganjaran</button></div>
+</section>
+
+<section id="map" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">STORY MODE</span></div><h2>🗺️ Peta Pengembaraan</h2><p class="subtitle">Takluk setiap dunia dan buka jalan ke Final Boss Tower!</p><div id="worldMap" class="worldmap"></div></section>
+
+<section id="quick" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button></div><h2>⚡ Quick Play</h2><p class="subtitle">Pilih kemahiran yang mahu dilatih.</p><div id="quickGrid" class="grid"></div></section>
+
+
+
+
+<section id="profileScreen" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">PLAYER PROFILE</span></div><h2>🧙 Profil Pengembara</h2><div id="profileContent"></div></section>
+<section id="shopScreen" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">REWARD SHOP</span></div><h2>🪙 Kedai Ganjaran</h2><p class="subtitle">Gunakan coin yang diperoleh daripada latihan dan pencapaian.</p><div class="stats"><div class="stat">🪙 <span id="shopCoins">0</span> Coin</div></div><div id="shopGrid" class="shopGrid"></div></section>
+<div id="achievementToast" class="achievementToast">🏆 Pencapaian dibuka!</div>
+
+<section id="gameplayLab" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">INTERACTIVE LAB</span></div><h2>🧪 Algebra Play Lab</h2><p class="subtitle">Belajar dengan manipulasi visual, bukan hanya memilih jawapan.</p><div class="grid"><button class="modecard" onclick="startBalanceLab()">⚖️<br>Interactive Balance</button><button class="modecard" onclick="startTileLab()">🧱<br>Algebra Tiles</button><button class="modecard" onclick="startBuilderLab()">🧩<br>Equation Builder</button><button class="modecard" onclick="startBoss()">🐉<br>Boss Arena</button></div></section>
+<section id="curriculum" class="screen">
+ <div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">SMART LEARNING PATH</span></div>
+ <h2>🎓 Laluan Belajar</h2>
+ <p class="subtitle">Pilih tahap. Soalan, nombor dan jenis Algebra akan disesuaikan secara automatik.</p>
+ <div id="stageSelector" class="stageSelector"></div>
+ <div class="diagnosticBox">
+  <h3>🧭 Cadangan Pintar</h3><p id="smartRecommendation">Main beberapa latihan untuk membina profil kemahiran.</p>
+  <button class="primary" onclick="startRecommended()">MULA LATIHAN CADANGAN</button>
+ </div>
+ <div id="curriculumPaths"></div>
+</section>
+
+<section id="minigames" class="screen">
+ <div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><span class="pill">MINI GAMES</span></div>
+ <h2>🎮 Algebra Arcade</h2><p class="subtitle">Latih kemahiran Algebra melalui cabaran pendek yang berbeza.</p>
+ <div class="grid">
+  <button class="modecard" onclick="startMini('catch')"><div style="font-size:38px">🫧</div>Catch the Variable<small style="display:block;color:#c7d2fe;margin-top:5px">Tangkap bubble jawapan</small></button>
+  <button class="modecard" onclick="startMini('sorter')"><div style="font-size:38px">🗂️</div>Equation Sorter<small style="display:block;color:#c7d2fe;margin-top:5px">Kenal jenis Algebra</small></button>
+  <button class="modecard" onclick="startMini('rescue')"><div style="font-size:38px">⚖️</div>Balance Rescue<small style="display:block;color:#c7d2fe;margin-top:5px">Pilih operasi seimbang</small></button>
+  <button class="modecard" onclick="startMini('detective')"><div style="font-size:38px">🔎</div>Pattern Detective<small style="display:block;color:#c7d2fe;margin-top:5px">Cari pola tersembunyi</small></button>
+ </div>
+</section>
+
+<section id="game" class="screen">
+ <div class="top"><button class="iconbtn" onclick="quitGame()">✕ Keluar</button><span id="modeLabel" class="pill">STORY</span></div>
+ <div class="gamebar"><div class="stat">❤️ <span id="lives">3</span></div><div class="stat">⭐ <span id="score">0</span></div><div class="stat">🔥 <span id="combo">0</span></div><div class="stat">⏱️ <span id="timer">—</span></div></div>
+ <div class="progress"><i id="levelProgress"></i></div>
+ <div id="questionCard" class="questionCard"><div id="topic" class="topic"></div><div id="question" class="question"></div><div id="visual" class="visual"></div></div>
+ <div id="answers" class="answers"></div><div class="controls"><button class="hint" onclick="useHint()">💡 PETUNJUK</button></div><div id="feedback" class="feedback"></div>
+</section>
+
+<section id="progressScreen" class="screen"><div class="top"><button class="iconbtn" onclick="showScreen('home')">← Home</button><button class="iconbtn" onclick="askReset()">Reset</button></div><h2>📊 Perjalanan Algebra</h2><div id="progressContent"></div></section>
+
+<div id="tutorial" class="modal"><div class="modalbox"><div id="tIcon" class="tutorialIcon"></div><h2 id="tTitle"></h2><p id="tText"></p><div class="row"><button class="secondary" onclick="finishTutorial()">SKIP</button><button class="primary" id="tNext" onclick="nextTutorial()">NEXT</button></div></div></div>
+<div id="messageModal" class="modal"><div class="modalbox"><div id="mIcon" class="tutorialIcon">🏆</div><h2 id="mTitle"></h2><p id="mText"></p><div class="row"><button class="primary" id="mBtn">TERUSKAN</button></div></div></div>
+<div id="resetModal" class="modal"><div class="modalbox"><h2>Reset Progress?</h2><p>Semua XP, bintang, badge dan rekod akan dipadam.</p><div class="row"><button class="secondary" onclick="closeReset()">Batal</button><button class="primary" onclick="resetProgress()">Ya, Reset</button></div></div></div>
+</div>
+
+<script>
+"use strict";
+// ================= CONFIG =================
+const WORLDS=[
+ {name:"Mystery Village",icon:"📦",topic:"mystery",desc:"Cari nombor misteri"},
+ {name:"Variable Forest",icon:"🌲",topic:"variable",desc:"Kenali pemboleh ubah"},
+ {name:"Balance Bridge",icon:"⚖️",topic:"balance",desc:"Seimbangkan persamaan"},
+ {name:"Like Terms Lab",icon:"🧪",topic:"terms",desc:"Gabungkan sebutan serupa"},
+ {name:"Expression Workshop",icon:"🧩",topic:"expression",desc:"Bina ungkapan algebra"},
+ {name:"Equation Castle",icon:"🏰",topic:"equation",desc:"Selesaikan persamaan"},
+ {name:"Two-Step Canyon",icon:"⛰️",topic:"twostep",desc:"Cabaran dua langkah"},
+ {name:"Pattern Mountain",icon:"🔎",topic:"pattern",desc:"Siasat pola dan peraturan"},
+ {name:"Word Problem City",icon:"🌆",topic:"word",desc:"Algebra dalam kehidupan"},
+ {name:"Final Boss Tower",icon:"👑",topic:"boss",desc:"Kalahkan Equation Guardian"}
+];
+const LEVEL_NAMES=["Novice Solver","Number Detective","Variable Hunter","Equation Explorer","Algebra Knight","Algebra Master"];
+const BADGES=[
+ ["mystery","🔍","Mystery Detective"],["variable","🔤","Variable Hunter"],["balance","⚖️","Balance Master"],
+ ["combo","🔥","Combo King"],["pattern","🧠","Pattern Genius"],["equation","🏰","Equation Conqueror"],["master","👑","Algebra Master"]
+];
+const DEFAULT={playerName:"Pemain",xp:0,totalStars:0,worldProgress:{},unlockedWorlds:1,highScores:{time:0},dailyChallenge:{date:"",done:false},streak:0,badges:[],soundPreference:true,questionsAnswered:0,correctAnswers:0,bestCombo:0,skills:{mystery:0,variable:0,balance:0,terms:0,expression:0,equation:0,twostep:0,pattern:0,word:0},tutorialDone:false,coins:0,avatar:"🧙‍♂️",ownedAvatars:["🧙‍♂️"],loginDays:[],selectedStage:"Tahun 4",skillAttempts:{mystery:0,variable:0,balance:0,terms:0,expression:0,equation:0,twostep:0,pattern:0,word:0},skillCorrect:{mystery:0,variable:0,balance:0,terms:0,expression:0,equation:0,twostep:0,pattern:0,word:0}};
+let data=loadGame(), game=null, history=[], audioCtx=null, tutorialStep=0, timerId=null;
+
+// ================= STORAGE =================
+function loadGame(){try{const x=JSON.parse(localStorage.getItem("algebraQuestSave"));return {...DEFAULT,...x,worldProgress:{...DEFAULT.worldProgress,...(x?.worldProgress||{})},skills:{...DEFAULT.skills,...(x?.skills||{})},highScores:{...DEFAULT.highScores,...(x?.highScores||{})},skillAttempts:{...DEFAULT.skillAttempts,...(x?.skillAttempts||{})},skillCorrect:{...DEFAULT.skillCorrect,...(x?.skillCorrect||{})}}}catch(e){return structuredClone(DEFAULT)}}
+function saveGame(){try{localStorage.setItem("algebraQuestSave",JSON.stringify(data))}catch(e){}}
+function resetProgress(){data=structuredClone(DEFAULT);data.tutorialDone=true;saveGame();closeReset();renderHome();showScreen("home")}
+function askReset(){document.getElementById("resetModal").classList.add("show")} function closeReset(){document.getElementById("resetModal").classList.remove("show")}
+
+// ================= AUDIO =================
+function tone(freq,dur=.12,type="sine",vol=.08){if(!data.soundPreference)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
+function sound(kind){({click:()=>tone(420,.06),correct:()=>{tone(660,.12);setTimeout(()=>tone(880,.15),90)},wrong:()=>tone(180,.18,"sawtooth",.04),win:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.25),i*110)),hit:()=>tone(100,.2,"square",.05)}[kind]||(()=>{}))()}
+document.getElementById("soundBtn").onclick=()=>{data.soundPreference=!data.soundPreference;saveGame();updateSound();if(data.soundPreference)sound("click")};
+function updateSound(){document.getElementById("soundBtn").textContent=data.soundPreference?"🔊":"🔇"}
+
+// ================= ROUTER/UI =================
+function showScreen(id){sound("click");document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");scrollTo(0,0);if(id==="home")renderHome();if(id==="map")renderMap()}
+function levelInfo(){const i=Math.min(5,Math.floor(data.xp/300));return {i,name:LEVEL_NAMES[i]}}
+function renderHome(){const l=levelInfo();document.getElementById("homeStats").innerHTML=`<div class="stat">🎖️ ${l.name}</div><div class="stat">⚡ ${data.xp} XP</div><div class="stat">⭐ ${data.totalStars}</div><div class="stat">🔥 ${data.streak} Streak</div>`}
+function renderMap(){document.getElementById("worldMap").innerHTML=WORLDS.map((w,i)=>{const locked=i>=data.unlockedWorlds&&i<9;const p=data.worldProgress[i]||{};return `<button class="world ${locked?"locked":""}" onclick="${locked?"lockedMsg()":i===9?"startBoss()":`startStory(${i})`}"><span class="orb">${locked?"🔒":w.icon}</span><span><b>WORLD ${i+1} · ${w.name}</b><small>${w.desc} ${p.stars?" · "+"⭐".repeat(p.stars):""}</small></span></button>`}).join("")}
+function lockedMsg(){showMessage("🔒","Dunia Masih Terkunci","Selesaikan dunia sebelumnya untuk membuka laluan ini.",()=>document.getElementById("messageModal").classList.remove("show"))}
+function openQuick(){showScreen("quick");document.getElementById("quickGrid").innerHTML=WORLDS.slice(0,9).map((w,i)=>`<button class="modecard" onclick="startQuick(${i})"><div style="font-size:35px">${w.icon}</div>${w.name}</button>`).join("")}
+function showMessage(icon,title,text,cb){const m=document.getElementById("messageModal");document.getElementById("mIcon").textContent=icon;document.getElementById("mTitle").textContent=title;document.getElementById("mText").textContent=text;document.getElementById("mBtn").onclick=cb;m.classList.add("show")}
+
+// ================= RANDOM + ANTI REPEAT =================
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[rnd(0,a.length-1)];
+function unique(gen){for(let i=0;i<30;i++){const q=gen();const key=q.text+"|"+q.answer;if(!history.includes(key)){history.push(key);if(history.length>20)history.shift();return q}}return gen()}
+function options(ans,custom){if(custom)return shuffle(custom);let set=new Set([ans]);while(set.size<4){let d=rnd(-5,5);if(d===0)d=2;set.add(Math.max(0,ans+d))}return shuffle([...set])}
+function shuffle(a){return [...new Set(a)].sort(()=>Math.random()-.5)}
+
+// ================= QUESTION GENERATORS =================
+function generateQuestion(topic,diff=1){
+ return unique(()=>{
+  const max=diff<=1?12:diff===2?25:50; let x=rnd(1,max),a=rnd(2,Math.min(9,max)),b=rnd(1,max),q;
+  switch(topic){
+   case "mystery":{const op=pick(["+","−","×","÷"]);if(op==="+"){q={text:`□ + ${a} = ${x+a}`,answer:x,hints:["Cari nombor yang apabila ditambah menghasilkan jumlah itu.",`Gunakan operasi lawan: ${x+a} − ${a}.`,`Tolak ${a} daripada jumlah.`]}}else if(op==="−"){q={text:`${x+a} − □ = ${a}`,answer:x,hints:["Fikirkan beza antara dua nombor.","Cari beza nombor besar dan hasil.",`${x+a} − ${a} akan memberi nilai kotak.`]}}else if(op==="×"){q={text:`□ × ${a} = ${x*a}`,answer:x,hints:["Gunakan operasi bahagi.","Bahagikan hasil dengan nombor yang diketahui.",`${x*a} ÷ ${a}.`]}}else{q={text:`${x*a} ÷ □ = ${a}`,answer:x,hints:["Fikirkan faktor yang hilang.","Hasil darab pembahagi dan jawapan memberi nombor asal.",`${x*a} ÷ ${a}.`]}}break}
+   case "variable":{const v=pick(["x","a","m","n"]);const k=rnd(1,10),op=pick(["+","−","×"]);if(op==="+")q={text:`Jika ${v} = ${x}, berapakah ${v} + ${k}?`,answer:x+k,hints:[`Gantikan ${v} dengan ${x}.`,`${x} + ${k}`,`Kira jumlah selepas penggantian.`]};else if(op==="−"){x=Math.max(x,k);q={text:`Jika ${v} = ${x}, berapakah ${v} − ${k}?`,answer:x-k,hints:[`Gantikan ${v} dengan ${x}.`,`${x} − ${k}`,`Kira beza selepas penggantian.`]}}else q={text:`Jika ${v} = ${x}, berapakah ${k}${v}?`,answer:k*x,hints:[`${k}${v} bermaksud ${k} × ${v}.`,`Gantikan pemboleh ubah dengan nilainya.`,`${k} × ${x}`]};break}
+   case "balance": q={text:`x + ${a} = ${x+a}. Berapakah x?`,answer:x,visual:"scale",hints:["Kita mahu x bersendirian.","Operasi lawan bagi tambah ialah tolak.",`Tolak ${a} pada kedua-dua belah.`]};break;
+   case "terms":{const c=rnd(1,9),d=rnd(1,9),v=pick(["x","a","m"]);const minus=Math.random()<.35&&c>d;q=minus?{text:`${c}${v} − ${d}${v} = ?`,answer:`${c-d}${v}`,custom:[`${c-d}${v}`,`${c+d}${v}`,`${c-d}`,`${c*d}${v}`]}:{text:`${c}${v} + ${d}${v} = ?`,answer:`${c+d}${v}`,custom:[`${c+d}${v}`,`${c*d}${v}`,`${c+d}`,`${c}${v}${d}`]};q.visual="tiles";q.hints=["Sebutan dengan pemboleh ubah sama boleh digabungkan.","Gabungkan pekali, kekalkan pemboleh ubah.",minus?`${c} − ${d}, kemudian kekalkan ${v}.`:`${c} + ${d}, kemudian kekalkan ${v}.`];break}
+   case "expression":{const v=pick(["x","n","m"]);const k=rnd(2,9);const type=rnd(0,2);if(type===0)q={text:`Sara mempunyai ${v} kad dan mendapat ${k} lagi. Pilih ungkapan yang betul.`,answer:`${v} + ${k}`,custom:[`${v} + ${k}`,`${k}${v}`,`${v} − ${k}`,`${v} ÷ ${k}`]};else if(type===1)q={text:`Ada ${k} kotak. Setiap kotak mempunyai ${v} pensel.`,answer:`${k}${v}`,custom:[`${k}${v}`,`${v} + ${k}`,`${v} − ${k}`,`${v} ÷ ${k}`]};else q={text:`Harga sebuah buku ialah RM${v}. Amir membeli ${k} buah buku.`,answer:`${k}${v}`,custom:[`${k}${v}`,`${v} + ${k}`,`${v} − ${k}`,`${k} + ${v}`]};q.hints=["Kenal pasti operasi dalam cerita.","'lagi' biasanya tambah, kumpulan sama banyak biasanya darab.","Pilih ungkapan yang mewakili situasi, bukan jawapan nombor."];break}
+   case "equation":{const op=pick(["+","−","×","÷"]);if(op==="+")q={text:`x + ${a} = ${x+a}`,answer:x,hints:["Asingkan x.","Gunakan operasi lawan tambah.",`Kira ${x+a} − ${a}.`]};else if(op==="−")q={text:`x − ${a} = ${x}`,answer:x+a,hints:["Asingkan x.","Gunakan operasi lawan tolak.",`Kira ${x} + ${a}.`]};else if(op==="×")q={text:`${a}x = ${a*x}`,answer:x,hints:["Pekali sedang mendarab x.","Bahagi kedua-dua belah dengan pekali.",`${a*x} ÷ ${a}.`]};else q={text:`x ÷ ${a} = ${x}`,answer:x*a,hints:["Gunakan operasi lawan bahagi.","Darab kedua-dua belah dengan pembahagi.",`${x} × ${a}.`]};break}
+   case "twostep":{const c=rnd(2,5),k=rnd(1,10),res=c*x+k;q={text:`${c}x + ${k} = ${res}`,answer:x,hints:[`Buang +${k} dahulu.`,`Tolak ${k} daripada kedua-dua belah: ${c}x = ${res-k}.`,`Kemudian bahagi dengan ${c}.`]};break}
+   case "pattern":{const step=rnd(2,9),start=rnd(1,8),seq=[0,1,2,3].map(i=>start+i*step);q={text:`${seq.join(", ")}, ?`,answer:start+4*step,visual:"machine",hints:["Cari beza antara nombor berturutan.",`Setiap nombor bertambah ${step}.`,`Tambah ${step} kepada nombor terakhir.`]};break}
+   case "word":{const k=rnd(2,8),price=rnd(2,12),total=k*price;q={text:`${k} tiket permainan berharga RM${total}. Jika setiap tiket sama harga, berapakah harga 1 tiket?`,answer:price,hints:["Bahagikan jumlah harga dengan bilangan tiket.",`${total} ÷ ${k}`,`Cari harga untuk satu unit.`]};break}
+   default:return generateQuestion("mystery",diff)
+  }
+  q.topic=topic;q.hints=q.hints||["Fikirkan operasi lawan.","Asingkan nilai yang tidak diketahui.","Semak semula dengan menggantikan jawapan."];return q;
+ })
+}
+
+
+
+
+
+// ================= PLAYER PROFILE, STREAK & REWARD SHOP V5 =================
+const AVATAR_SHOP=[["🧙‍♂️","Algebra Wizard",0],["🦊","Variable Fox",120],["🤖","Equation Bot",180],["🐉","Mini Dragon",250],["🦁","Number Lion",320],["👾","Arcade Solver",400]];
+function recordLogin(){
+ const d=new Date().toISOString().slice(0,10);data.loginDays=data.loginDays||[];
+ if(!data.loginDays.includes(d)){data.loginDays.push(d);data.loginDays=data.loginDays.slice(-35);data.coins=(data.coins||0)+10;saveGame()}
+}
+function openProfile(){showScreen("profileScreen");renderProfile()}
+function renderProfile(){
+ const l=levelInfo(),acc=data.questionsAnswered?Math.round(data.correctAnswers/data.questionsAnswered*100):0;
+ const days=[];for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=d.toISOString().slice(0,10);days.push(`<div class="day ${data.loginDays?.includes(key)?"done":""} ${i===0?"today":""}">${d.getDate()}</div>`)}
+ document.getElementById("profileContent").innerHTML=`<div class="profileCard"><div class="avatarBig">${data.avatar||"🧙‍♂️"}</div><div><h3 style="margin:0">${data.playerName}</h3><div>${l.name}</div><div class="coin">🪙 ${data.coins||0} Coin</div></div></div><div class="grid"><div class="panel"><b>⚡ XP</b><h2>${data.xp}</h2></div><div class="panel"><b>🎯 Accuracy</b><h2>${acc}%</h2></div><div class="panel"><b>🔥 Best Combo</b><h2>${data.bestCombo}</h2></div><div class="panel"><b>🏅 Badges</b><h2>${data.badges.length}</h2></div></div><div class="panel"><h3><span class="streakFlame">🔥</span> Aktiviti 28 Hari</h3><div class="calendar">${days.join("")}</div></div>`;
+}
+function openShop(){showScreen("shopScreen");renderShop()}
+function renderShop(){
+ document.getElementById("shopCoins").textContent=data.coins||0;
+ document.getElementById("shopGrid").innerHTML=AVATAR_SHOP.map(([av,n,c])=>{const own=data.ownedAvatars?.includes(av),eq=data.avatar===av;return `<div class="shopItem"><div class="preview">${av}</div><b>${n}</b><div class="coin">🪙 ${c}</div><button class="${eq?"secondary":"primary"}" onclick="buyAvatar('${av}',${c})">${eq?"DIPAKAI":own?"PAKAI":"BELI"}</button></div>`}).join("");
+}
+function buyAvatar(av,c){
+ data.ownedAvatars=data.ownedAvatars||["🧙‍♂️"];
+ if(data.ownedAvatars.includes(av)){data.avatar=av;saveGame();renderShop();return}
+ if((data.coins||0)<c){showMessage("🪙","Coin Belum Cukup","Teruskan bermain, bina combo dan selesaikan misi untuk mendapatkan coin.",()=>document.getElementById("messageModal").classList.remove("show"));return}
+ data.coins-=c;data.ownedAvatars.push(av);data.avatar=av;saveGame();renderShop();toast("🎁 Avatar baharu dibuka!")
+}
+function toast(msg){const e=document.getElementById("achievementToast");e.textContent=msg;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2600)}
+
+// ================= INTERACTIVE PLAY LAB V4 =================
+function startBalanceLab(){baseGame("Balance Lab","balance",8);game.lab="balance"}
+function startTileLab(){baseGame("Tile Lab","terms",8);game.lab="tiles"}
+function startBuilderLab(){baseGame("Builder Lab","expression",8);game.lab="builder"}
+function renderLabQuestion(){
+ const q=game.q,v=document.getElementById("visual"),a=document.getElementById("answers");a.className="answers";
+ document.getElementById("topic").textContent=game.lab==="balance"?"⚖️ INTERACTIVE BALANCE":game.lab==="tiles"?"🧱 ALGEBRA TILES":"🧩 EQUATION BUILDER";
+ document.getElementById("question").textContent=q.text;document.getElementById("feedback").textContent="";
+ if(game.lab==="balance"){
+  const k=(q.text.match(/x \+ (\d+)/)||[])[1]||2;q.answer=`Tolak ${k} kedua-dua belah`;
+  v.innerHTML=`<div id="labScale" class="interactiveScale"><div class="scaleBeam"></div><div class="scalePans"><div class="scalePan">x + ${k}</div><div class="scalePan">${q.text.split("=")[1]||"?"}</div></div></div>`;
+  const ops=shuffle([q.answer,`Tambah ${k} kedua-dua belah`,`Bahagi ${k} sebelah kiri`,`Darab ${k} kedua-dua belah`]);
+  a.innerHTML=ops.map(o=>`<button class="operationCard" data-value="${o}">${o}</button>`).join("");
+ }else if(game.lab==="tiles"){
+  const m=q.text.match(/(\d+)([xam])\s*([+−])\s*(\d+)\2/);if(!m){renderQuestion();return}
+  const c1=+m[1],vr=m[2],op=m[3],c2=+m[4],r=op==="+"?c1+c2:c1-c2;q.answer=`${r}${vr}`;
+  const tiles=n=>Array.from({length:n},()=>`<span class="xTile">${vr}</span>`).join("");
+  v.innerHTML=`<div class="dragBoard"><div class="dragSource" id="dragSource"><b>KETUK / SERET TILE</b><div>${tiles(c1)}${tiles(c2)}</div></div><div class="dropZone" id="dropZone"><b>ZON GABUNGAN</b><div id="droppedTiles"></div><small>Gabungkan ${c1} dan ${c2} tile ${vr}</small></div></div>`;
+  a.innerHTML=shuffle([q.answer,`${c1+c2}`,`${c1*c2}${vr}`,`${Math.abs(c1-c2)}${vr}`]).map(o=>`<button class="answer" data-value="${o}">${o}</button>`).join("");
+  setTimeout(initTileDrag,0);
+ }else{
+  const tokens=q.custom?shuffle(q.custom):shuffle([String(q.answer),"x + 2","2x","x − 2"]);
+  v.innerHTML=`<div><div class="builder"><div class="builderSlot">Ayat</div>➜<div id="builderSlot" class="builderSlot">?</div></div><div class="tokenBank">${tokens.map(x=>`<button class="token" data-value="${x}">${x}</button>`).join("")}</div></div>`;a.innerHTML="";
+ }
+ document.querySelectorAll("#answers button,.tokenBank button").forEach(b=>b.onclick=()=>{if(document.getElementById("builderSlot"))document.getElementById("builderSlot").textContent=b.dataset.value;if(b.dataset.value===String(q.answer)&&document.getElementById("labScale"))document.getElementById("labScale").classList.add("solved");checkAnswer(b.dataset.value,b)});
+}
+function renderBossQuestion(){
+ const q=game.q;document.getElementById("topic").textContent="👑 FINAL BOSS TOWER";
+ document.getElementById("question").innerHTML=`<div class="bossHud"><div><div class="bossName">🧙 HERO ${game.playerHP} HP</div><div class="hp"><i style="width:${game.playerHP}%;background:#22c55e"></i></div></div><div><div class="bossName">🐉 GUARDIAN ${game.bossHP} HP</div><div class="hp"><i style="width:${game.bossHP}%"></i></div></div></div><div class="bossStage"><div id="heroAvatar" class="heroAvatar">${data.avatar||"🧙‍♂️"}</div><div id="energyOrb" class="energyOrb">⚡</div><div id="bossAvatar" class="bossAvatar">🐉</div></div><div>${q.text}</div>`;
+ document.getElementById("visual").innerHTML="";const a=document.getElementById("answers");a.className="answers";a.innerHTML=options(q.answer,q.custom).map(o=>`<button class="answer" data-value="${o}">${o}</button>`).join("");a.querySelectorAll("button").forEach(b=>b.onclick=()=>checkAnswer(b.dataset.value,b));
+}
+function bossAttackAnimation(ok){const h=document.getElementById("heroAvatar"),b=document.getElementById("bossAvatar"),o=document.getElementById("energyOrb");if(ok&&o){o.classList.add("fly");setTimeout(()=>b&&b.classList.add("bossDamage"),300)}else if(h)h.classList.add("bossDamage")}
+
+
+function initTileDrag(){
+ const src=document.getElementById("dragSource"),zone=document.getElementById("dropZone"),dest=document.getElementById("droppedTiles");if(!src||!zone||!dest)return;
+ src.querySelectorAll(".xTile").forEach((tile,i)=>{
+  tile.classList.add("dragTile");tile.draggable=true;tile.dataset.id=i;
+  tile.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",tile.dataset.id));
+  tile.addEventListener("click",()=>dest.appendChild(tile));
+ });
+ zone.addEventListener("dragover",e=>{e.preventDefault();zone.classList.add("over")});
+ zone.addEventListener("dragleave",()=>zone.classList.remove("over"));
+ zone.addEventListener("drop",e=>{e.preventDefault();zone.classList.remove("over");const id=e.dataTransfer.getData("text/plain");const tile=src.querySelector(`[data-id="${id}"]`);if(tile)dest.appendChild(tile)});
+}
+
+// ================= CURRICULUM ENGINE V3 =================
+const STAGES=["Tahun 4","Tahun 5","Tahun 6","Tingkatan 1","Tingkatan 2"];
+const CURRICULUM={
+ "Tahun 4":[["mystery","Nombor Misteri","Operasi asas dan nilai hilang"],["pattern","Pola Nombor","Kenal perubahan dan sambung pola"],["word","Cerita Matematik","Hubungkan situasi kepada operasi"]],
+ "Tahun 5":[["mystery","Hubungan Operasi","Guna operasi songsang"],["variable","Kenali Simbol","Huruf sebagai nilai yang boleh berubah"],["pattern","Peraturan Pola","Cari peraturan input-output"]],
+ "Tahun 6":[["variable","Pemboleh Ubah","Penggantian nilai mudah"],["expression","Ungkapan Mudah","Terjemah ayat kepada simbol"],["balance","Konsep Keseimbangan","Kedua-dua sisi persamaan"]],
+ "Tingkatan 1":[["terms","Sebutan Serupa","Pekali, pemboleh ubah dan pemalar"],["expression","Ungkapan Algebra","Bina dan tafsir ungkapan"],["equation","Persamaan Linear","Persamaan satu langkah"],["pattern","Pola & Hubungan","Peraturan algebra mudah"]],
+ "Tingkatan 2":[["terms","Operasi Sebutan","Gabung dan ringkaskan"],["equation","Persamaan Linear","Pelbagai bentuk persamaan"],["twostep","Persamaan Dua Langkah","Songsangkan operasi mengikut urutan"],["word","Masalah Berayat","Modelkan situasi dengan persamaan"]]
+};
+const STAGE_DIFFICULTY={"Tahun 4":1,"Tahun 5":1,"Tahun 6":2,"Tingkatan 1":2,"Tingkatan 2":3};
+function openCurriculum(){showScreen("curriculum");renderCurriculum()}
+function setStage(stage){data.selectedStage=stage;saveGame();renderCurriculum();sound("click")}
+function renderCurriculum(){
+ const stage=data.selectedStage||"Tahun 4";
+ document.getElementById("stageSelector").innerHTML=STAGES.map(s=>`<button class="stageBtn ${s===stage?"active":""}" onclick="setStage('${s}')">${s}</button>`).join("");
+ const items=CURRICULUM[stage];
+ document.getElementById("curriculumPaths").innerHTML=`<h3 style="margin-top:22px">📚 Kandungan ${stage}</h3>`+items.map(([t,n,d],i)=>{
+  const rate=skillRate(t),tag=rate===null?"Belum dinilai":rate<60?`<span class="weakTag">Perlu pengukuhan ${rate}%</span>`:`<span class="strongTag">Dikuasai ${rate}%</span>`;
+  return `<div class="pathCard ${rate!==null&&rate<60?"recommend":""}"><h3>${i+1}. ${n}</h3><p>${d}</p><div>${tag}</div><button class="secondary" style="margin-top:10px" onclick="startCurriculumTopic('${t}')">MULA TOPIK</button></div>`
+ }).join("");
+ const rec=recommendedTopic(stage),meta=items.find(x=>x[0]===rec);
+ document.getElementById("smartRecommendation").textContent=meta?`Cadangan semasa: ${meta[1]}. Sistem memilih topik ini berdasarkan tahap dan prestasi latihan anda.`:"Mulakan topik pertama untuk membina profil kemahiran.";
+}
+function skillRate(t){const a=data.skillAttempts[t]||0;return a<3?null:Math.round((data.skillCorrect[t]||0)/a*100)}
+function recommendedTopic(stage=data.selectedStage||"Tahun 4"){
+ const topics=(CURRICULUM[stage]||CURRICULUM["Tahun 4"]).map(x=>x[0]);
+ return topics.slice().sort((a,b)=>(skillRate(a)??101)-(skillRate(b)??101))[0];
+}
+function startRecommended(){startCurriculumTopic(recommendedTopic())}
+function startCurriculumTopic(topic){
+ baseGame("Learning Path",topic,10);
+ game.difficulty=STAGE_DIFFICULTY[data.selectedStage||"Tahun 4"]||1;
+ game.stage=data.selectedStage;
+ game.lessonPhase=0;
+ document.getElementById("modeLabel").textContent=data.selectedStage.toUpperCase();
+}
+function phaseLabel(){
+ if(!game||game.mode!=="Learning Path")return "";
+ const phases=["CONCRETE","VISUAL","SYMBOLIC","APPLICATION"],idx=Math.min(3,Math.floor(game.index/3));
+ game.lessonPhase=idx;
+ return `<div class="lessonStep">${phases.map((p,i)=>`<span class="${i===idx?"on":""}">${p}</span>`).join("")}</div>`;
+}
+
+// ================= MINI GAMES =================
+function openMiniGames(){showScreen("minigames")}
+function startMini(kind){
+ const map={catch:"mystery",sorter:"terms",rescue:"balance",detective:"pattern"};
+ baseGame("Mini",map[kind],8);game.mini=kind;
+}
+function miniSorterQuestion(){
+ const bank=[
+  {text:"x + 5",answer:"Ungkapan",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]},
+  {text:"2x + 3 = 11",answer:"Persamaan",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]},
+  {text:"m",answer:"Pemboleh ubah",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]},
+  {text:"17",answer:"Pemalar",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]},
+  {text:"4a − 2",answer:"Ungkapan",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]},
+  {text:"y = 9",answer:"Persamaan",custom:["Ungkapan","Persamaan","Pemboleh ubah","Pemalar"]}
+ ];
+ const q={...pick(bank)};q.topic="terms";q.hints=["Lihat sama ada terdapat tanda sama dengan.","Persamaan mempunyai tanda =, ungkapan tidak.","Satu huruf sahaja ialah pemboleh ubah; nombor tetap ialah pemalar."];return q;
+}
+function miniRescueQuestion(){
+ const x=rnd(2,15),k=rnd(2,9),right=x+k;
+ return {topic:"balance",text:`x + ${k} = ${right}`,answer:`Tolak ${k} kedua-dua belah`,custom:[`Tolak ${k} kedua-dua belah`,`Tambah ${k} kedua-dua belah`,`Darab ${k} kedua-dua belah`,`Bahagi ${k} sebelah kiri sahaja`],visual:"rescue",hints:["Kita mahu x bersendirian.","Gunakan operasi lawan kepada +.","Apa yang dibuat di kiri mesti dibuat juga di kanan."]};
+}
+function renderMiniQuestion(){
+ if(game.mini==="sorter")game.q=unique(miniSorterQuestion);
+ if(game.mini==="rescue")game.q=unique(miniRescueQuestion);
+ if(game.mini==="detective")game.q=generateQuestion("pattern",game.difficulty);
+ if(game.mini==="catch")game.q=generateQuestion("mystery",game.difficulty);
+ renderQuestion();
+ if(game.mini==="catch"){
+  const q=game.q,opts=options(q.answer,q.custom),area=document.getElementById("answers");
+  area.className="bubbleArea";area.innerHTML=opts.map((o,i)=>`<button class="bubbleAnswer" style="left:${[5,55,20,68][i]}%;top:${[15,20,115,110][i]}px" data-value="${o}">${o}</button>`).join("");
+  area.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>checkAnswer(b.dataset.value,b)));
+ } else document.getElementById("answers").className="answers";
+}
+
+// ================= GAME MODES =================
+function baseGame(mode,topic,total=10){clearInterval(timerId);game={mode,topic,total,index:0,score:0,combo:0,lives:3,difficulty:1,recent:[],hintStep:0,hintsUsed:0,time:null,bossHP:100,playerHP:100,correct:0};showScreen("game");document.getElementById("modeLabel").textContent=mode.toUpperCase();nextQuestion()}
+function startStory(i){baseGame("Story",WORLDS[i].topic,10);game.world=i}
+function startQuick(i){baseGame("Quick",WORLDS[i].topic,10)}
+function startDaily(){const today=new Date().toISOString().slice(0,10);if(data.dailyChallenge.date===today&&data.dailyChallenge.done){showMessage("🏆","Challenge Selesai","Anda sudah menyelesaikan cabaran hari ini. Datang semula esok!",()=>document.getElementById("messageModal").classList.remove("show"));return}baseGame("Daily","mixed",10)}
+function startTime(){baseGame("Time Attack","mixed",999);game.time=60;document.getElementById("timer").textContent=60;timerId=setInterval(()=>{if(!game)return;game.time--;document.getElementById("timer").textContent=game.time;if(game.time<=0){clearInterval(timerId);finishGame()}},1000)}
+function startBoss(){baseGame("Boss","mixed",20);document.getElementById("modeLabel").textContent="👑 BOSS BATTLE"}
+function mixedTopic(){return pick(["mystery","variable","balance","terms","equation","twostep","pattern","word"])}
+function nextQuestion(){if(!game)return;if(game.mode!=="Time Attack"&&game.index>=game.total){finishGame();return}if(game.lives<=0||game.playerHP<=0){finishGame(false);return}const topic=game.topic==="mixed"?mixedTopic():game.topic;game.q=generateQuestion(topic,game.difficulty);game.hintStep=0;if(game.mode==="Boss")renderBossQuestion();else if(game.lab)renderLabQuestion();else if(game.mode==="Mini")renderMiniQuestion();else renderQuestion();updateHUD()}
+function renderQuestion(){const q=game.q;document.getElementById("topic").textContent=WORLDS.find(w=>w.topic===q.topic)?.name||"Algebra Challenge";document.getElementById("question").innerHTML=(game&&game.mode==="Learning Path"?phaseLabel():"")+`<div>${q.text}</div>`;document.getElementById("feedback").textContent="";const v=document.getElementById("visual");if(q.visual==="scale")v.innerHTML=`<div class="scaleInteractive balanced"><div class="beam"></div><div class="pans"><div class="pan">x + nilai</div><div class="pan">jumlah</div></div><span class="curriculumTag">Visual → Symbolic</span></div>`;else if(q.visual==="rescue")v.innerHTML=`<div class="scaleInteractive"><div class="beam"></div><div class="pans"><div class="pan">x + k</div><div class="pan">jumlah</div></div><span class="curriculumTag">Pilih operasi untuk menyelamatkan keseimbangan</span></div>`;else if(q.visual==="tiles")v.innerHTML=`<span class="tile">x</span><span class="tile">x</span><span class="tile unit">+1</span><span class="tile unit">+1</span>`;else if(q.visual==="machine")v.innerHTML=`<span class="tile">INPUT</span> ➜ <span class="tile unit">RULE ?</span> ➜ <span class="tile">OUTPUT</span>`;else v.innerHTML="";
+ const opts=options(q.answer,q.custom);document.getElementById("answers").className="answers";document.getElementById("answers").innerHTML=opts.map(o=>`<button class="answer" data-value="${String(o).replace(/"/g,"&quot;")}">${o}</button>`).join("");document.querySelectorAll(".answer").forEach(b=>b.addEventListener("click",()=>checkAnswer(b.dataset.value,b)))}
+function checkAnswer(value,btn){if(game.locked)return;game.locked=true;const correct=String(value)===String(game.q.answer);data.questionsAnswered++;data.skillAttempts[game.q.topic]=(data.skillAttempts[game.q.topic]||0)+1;if(correct)data.skillCorrect[game.q.topic]=(data.skillCorrect[game.q.topic]||0)+1;game.recent.push(correct);if(game.recent.length>5)game.recent.shift();
+ if(game.mode==="Boss")bossAttackAnimation(correct);
+ if(correct){data.correctAnswers++;data.coins=(data.coins||0)+2;game.correct++;game.combo++;data.bestCombo=Math.max(data.bestCombo,game.combo);let gain=10+(game.combo>=5?25:game.combo>=3?10:0);game.score+=gain;data.xp+=10;data.skills[game.q.topic]=Math.min(100,(data.skills[game.q.topic]||0)+4);btn.classList.add("correct");document.getElementById("feedback").textContent=pick(["Hebat! ✨","Tepat! 🎯","Algebra Power! ⚡","Combo! 🔥","Bijak! 🧠"]);sound("correct");burst();if(game.mode==="Boss"){game.bossHP=Math.max(0,game.bossHP-20);sound("hit")}}
+ else{game.combo=0;game.lives--;btn.classList.add("wrong");document.getElementById("feedback").innerHTML=pick(["Cuba lagi! 🌟","Hampir tepat! 💪","Gunakan petunjuk 💡"])+`<div class="explainBox">${game.q.hints?.[0]||"Semak operasi dan cuba operasi songsang."}</div>`;sound("wrong");document.getElementById("questionCard").classList.add("shake");setTimeout(()=>document.getElementById("questionCard").classList.remove("shake"),350);if(game.mode==="Boss")game.playerHP=Math.max(0,game.playerHP-20)}
+ adaptDifficulty();saveGame();updateHUD();setTimeout(()=>{game.index++;game.locked=false;if(game.mode==="Boss"&&game.bossHP<=0)finishGame(true);else nextQuestion()},correct?850:1200)}
+function adaptDifficulty(){if(game.recent.length<5)return;const c=game.recent.filter(Boolean).length;if(c===5)game.difficulty=Math.min(3,game.difficulty+1);else if(c<=2)game.difficulty=Math.max(1,game.difficulty-1)}
+function useHint(){if(!game||game.locked)return;const hs=game.q.hints;const i=Math.min(game.hintStep,hs.length-1);document.getElementById("feedback").textContent="💡 "+hs[i];game.hintStep++;game.hintsUsed++;game.score=Math.max(0,game.score-3);updateHUD();tone(520,.1)}
+function updateHUD(){if(!game)return;document.getElementById("lives").textContent=game.lives;document.getElementById("score").textContent=game.score;document.getElementById("combo").textContent=game.combo;document.getElementById("timer").textContent=game.time===null?"—":game.time;document.getElementById("levelProgress").style.width=`${Math.min(100,(game.index/game.total)*100)}%`}
+function finishGame(win=true){clearInterval(timerId);if(!game)return;const g=game,acc=g.index?Math.round(g.correct/Math.max(1,g.index)*100):0;let stars=acc>=90?3:acc>=70?2:1;
+ if(win){data.coins=(data.coins||0)+20}
+ if(g.mode==="Story"&&win){const old=data.worldProgress[g.world]?.stars||0;data.totalStars+=Math.max(0,stars-old);data.worldProgress[g.world]={stars,score:g.score};data.unlockedWorlds=Math.max(data.unlockedWorlds,Math.min(10,g.world+2));unlockForTopic(g.topic)}
+ if(g.mode==="Learning Path"&&win){data.xp+=50;unlockForTopic(g.topic)}
+ if(g.mode==="Daily"){data.dailyChallenge={date:new Date().toISOString().slice(0,10),done:true};data.streak++}
+ if(g.mode==="Time Attack")data.highScores.time=Math.max(data.highScores.time,g.score);
+ if(g.mode==="Boss"&&win){unlockBadge("master");data.xp+=100}
+ saveGame();game=null;sound(win?"win":"wrong");if(win)confetti();
+ showMessage(win?"🏆":"💪",win?"Misi Selesai!":"Cubaan Tamat",`Skor: ${g.score} · Ketepatan: ${acc}% · ${"⭐".repeat(stars)}`,()=>{document.getElementById("messageModal").classList.remove("show");showScreen("home")})}
+function quitGame(){clearInterval(timerId);game=null;showScreen("home")}
+function unlockForTopic(t){if(["mystery","variable","balance","pattern","equation"].includes(t))unlockBadge(t);if(data.bestCombo>=5)unlockBadge("combo")}
+function unlockBadge(id){if(!data.badges.includes(id))data.badges.push(id)}
+
+// ================= PROGRESS =================
+function showProgress(){showScreen("progressScreen");const acc=data.questionsAnswered?Math.round(data.correctAnswers/data.questionsAnswered*100):0;const l=levelInfo();document.getElementById("progressContent").innerHTML=`
+<div class="grid"><div class="panel"><b>⚡ Total XP</b><h2>${data.xp}</h2></div><div class="panel"><b>🎖️ Level</b><h3>${l.name}</h3></div><div class="panel"><b>⭐ Stars</b><h2>${data.totalStars}</h2></div><div class="panel"><b>🎯 Accuracy</b><h2>${acc}%</h2></div><div class="panel"><b>🔥 Best Combo</b><h2>${data.bestCombo}</h2></div><div class="panel"><b>🗺️ Worlds Open</b><h2>${data.unlockedWorlds}/10</h2></div></div>
+<div class="panel"><h3>🧠 Skill Mastery</h3>${Object.entries({mystery:"Mystery Numbers",variable:"Variables",balance:"Balance",expression:"Expressions",terms:"Like Terms",equation:"Equations",twostep:"Two-Step",pattern:"Patterns",word:"Word Problems"}).map(([k,n])=>{const r=skillRate(k);return `<div class="mastery"><label><span>${n}</span><span>${r===null?"Belum dinilai":r+"%"}</span></label><div class="progress"><i style="width:${r===null?0:r}%"></i></div></div>`}).join("")}<button class="primary" onclick="openCurriculum()">BUKA LALUAN BELAJAR</button></div>
+<div class="panel"><h3>🏅 Badges</h3><div class="grid">${BADGES.map(([id,ic,n])=>`<div class="badge" style="opacity:${data.badges.includes(id)?1:.25}">${ic}<div style="font-size:13px">${n}</div></div>`).join("")}</div></div>
+<div class="panel"><h3>⏱️ Time Attack</h3><p>Jawab sebanyak mungkin dalam 60 saat. Rekod: <b>${data.highScores.time}</b></p><button class="primary" onclick="startTime()">MULA TIME ATTACK</button></div>`}
+
+// ================= EFFECTS =================
+function burst(){for(let i=0;i<10;i++){const s=document.createElement("span");s.style.cssText=`position:fixed;left:${45+rnd(-8,8)}%;top:45%;font-size:${rnd(14,28)}px;z-index:25;transition:.7s`;s.textContent=pick(["✨","⭐","⚡"]);document.body.appendChild(s);requestAnimationFrame(()=>{s.style.transform=`translate(${rnd(-120,120)}px,${rnd(-150,80)}px) scale(.2)`;s.style.opacity=0});setTimeout(()=>s.remove(),800)}}
+function confetti(){for(let i=0;i<45;i++){const c=document.createElement("i");c.className="confetti";c.style.left=rnd(0,100)+"vw";c.style.animationDelay=(Math.random()*.7)+"s";c.style.transform=`rotate(${rnd(0,360)}deg)`;c.style.background=pick(["#FFD93D","#22C55E","#FF5A5F","#7C3AED","#2563EB"]);document.body.appendChild(c);setTimeout(()=>c.remove(),2600)}}
+
+// ================= TUTORIAL =================
+const TUTORIAL=[["🏰","Selamat datang ke Algebra Quest!","Mulakan perjalanan ke Variable Kingdom dan kuasai Algebra."],["⚡","Cari nilai & kumpul XP","Jawab soalan, bina combo dan buka dunia baharu."],["💡","Petunjuk Pintar","Gunakan Hint jika perlukan bantuan. Petunjuk mengajar langkah, bukan terus memberi jawapan."],["👑","Kuasai semua dunia!","Kumpul bintang dan kalahkan Equation Guardian di Final Boss Tower."]];
+function showTutorial(){tutorialStep=0;renderTutorial();document.getElementById("tutorial").classList.add("show")}
+function renderTutorial(){const t=TUTORIAL[tutorialStep];document.getElementById("tIcon").textContent=t[0];document.getElementById("tTitle").textContent=t[1];document.getElementById("tText").textContent=t[2];document.getElementById("tNext").textContent=tutorialStep===3?"MULA":"NEXT"}
+function nextTutorial(){if(tutorialStep<3){tutorialStep++;renderTutorial()}else finishTutorial()}
+function finishTutorial(){data.tutorialDone=true;saveGame();document.getElementById("tutorial").classList.remove("show")}
+
+// ================= INIT =================
+recordLogin();updateSound();renderHome();if(!data.tutorialDone)setTimeout(showTutorial,400);
+</script>
+</body>
+</html>

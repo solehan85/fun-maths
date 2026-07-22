@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Master - Kuasai Masa & Waktu</title>
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --light-blue: #3b82f6;
+            --orange: #f97316;
+            --white: #ffffff;
+            --green: #10b981;
+            --dark-gray: #1f2937;
+            --light-gray: #f3f4f6;
+            --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+
+        * {
+            box-shadow: none;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 15px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Skrin Pengurusan View */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Animasi */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        /* Typography & Butang */
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .subtitle {
+            color: var(--orange);
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 12px auto;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--white);
+            background-color: var(--light-blue);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.04);
+            background-color: var(--primary-blue);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-orange {
+            background-color: var(--orange);
+            box-shadow: 0 4px 6px rgba(249, 115, 22, 0.3);
+        }
+        .btn-orange:hover { background-color: #ea580c; }
+
+        .btn-green {
+            background-color: var(--green);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+        .btn-green:hover { background-color: #059669; }
+
+        .btn-back {
+            background-color: #6b7280;
+            margin-top: 20px;
+        }
+        .btn-back:hover { background-color: #4b5563; }
+
+        /* Grid Pilihan */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 450px;
+            margin: 20px auto;
+        }
+
+        /* Panel Info Game (Header Soalan) */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+            font-weight: bold;
+        }
+
+        .timer-box {
+            color: var(--orange);
+            font-size: 1.2rem;
+            background: #fff7ed;
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid #ffedd5;
+        }
+
+        /* Jam Canvas & Paparan Digital */
+        .clock-wrapper {
+            margin: 15px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px;
+        }
+
+        #analogClock {
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .digital-clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.2rem;
+            background: #1f2937;
+            color: #10b981;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 15px auto;
+            letter-spacing: 2px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Bahagian Soalan & Jawapan */
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            padding: 12px 15px;
+            font-size: 1.05rem;
+            text-align: left;
+            background: var(--light-gray);
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #e0f2fe;
+            border-color: var(--light-blue);
+        }
+
+        /* Input Isi Tempat Kosong */
+        .input-container {
+            margin: 20px auto;
+        }
+        .text-input {
+            width: 80%;
+            max-width: 250px;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            outline: none;
+        }
+        .text-input:focus {
+            border-color: var(--light-blue);
+        }
+
+        /* Tetapan Bunyi & Arahan */
+        .card-box {
+            text-align: left;
+            background: var(--light-gray);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Jadual Rekod Skor */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        th { background-color: var(--primary-blue); color: var(--white); }
+
+        /* Confetti/Bintang Pop Effect Canvas */
+        #effectCanvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Input Nama Murid */
+        .input-nama {
+            padding: 12px;
+            font-size: 1.1rem;
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Responsif Media Queries */
+        @media (max-width: 500px) {
+            h1 { font-size: 2rem; }
+            .grid-container { grid-template-columns: 1fr; gap: 8px; }
+            .game-container { padding: 15px; }
+            .option-btn { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+
+    <div class="game-container" id="mainContainer">
+        <canvas id="effectCanvas"></canvas>
+
+        <div id="screenMenu" class="screen active">
+            <h1>⏰ CLOCK MASTER</h1>
+            <p class="subtitle">"Kuasai Masa & Waktu Dengan Cara Yang Menyeronokkan!"</p>
+            
+            <input type="text" id="playerName" class="input-nama" placeholder="Masukkan nama anda..." value="Pemain Bijak">
+            
+            <button class="btn btn-orange" onclick="goToSelectYear()">▶ Mula Bermain</button>
+            <button class="btn" onclick="showScreen('screenHowTo')">📖 Cara Bermain</button>
+            <button class="btn" onclick="showScoresScreen()">🏆 Rekod Skor</button>
+            <button class="btn btn-green" onclick="showScreen('screenSettings')">⚙️ Tetapan Bunyi</button>
+        </div>
+
+        <div id="screenYear" class="screen">
+            <h2>Pilih Tahun Pengajian</h2>
+            <p class="subtitle">Silibus KSSR Matematik Malaysia</p>
+            <div class="grid-container">
+                <button class="btn" onclick="selectYear(1)">Tahun 1</button>
+                <button class="btn" onclick="selectYear(2)">Tahun 2</button>
+                <button class="btn" onclick="selectYear(3)">Tahun 3</button>
+                <button class="btn" onclick="selectYear(4)">Tahun 4</button>
+                <button class="btn" onclick="selectYear(5)">Tahun 5</button>
+                <button class="btn" onclick="selectYear(6)">Tahun 6</button>
+            </div>
+            <button class="btn btn-back" onclick="showScreen('screenMenu')">Kembali</button>
+        </div>
+
+        <div id="screenQuestionCount" class="screen">
+            <h2>Pilih Bilangan Soalan</h2>
+            <p id="selectedYearInfo" class="subtitle">Tahun X</p>
+            <div style="margin: 30px 0;">
+                <button class="btn btn-orange" onclick="setupGameLength(10)">10 Soalan (12 Minit)</button>
+                <button class="btn btn-orange" onclick="setupGameLength(20)">20 Soalan (25 Minit)</button>
+            </div>
+            <button class="btn btn-back" onclick="showScreen('screenYear')">Kembali</button>
+        </div>
+
+        <div id="screenGame" class="screen">
+            <div class="game-header">
+                <div>Soalan: <span id="currentQuestionNum">1</span>/<span id="totalQuestionsNum">10</span></div>
+                <div>Skor: <span id="liveScore">0</span></div>
+                <div class="timer-box">⏱ <span id="countdownTimer">00:00</span></div>
+            </div>
+
+            <div class="clock-wrapper" id="analogClockWrapper" style="display:none;">
+                <canvas id="analogClock" width="180" height="180"></canvas>
+            </div>
+            <div id="digitalClockWrapper" style="display:none;">
+                <div class="digital-clock" id="digitalClockText">12:00</div>
+            </div>
+
+            <div class="question-text" id="questionText">Sila tunggu, memuatkan soalan...</div>
+
+            <div class="options-container" id="optionsContainer" style="display:none;">
+            </div>
+
+            <div class="input-container" id="inputContainer" style="display:none;">
+                <input type="text" id="blankAnswerInput" class="text-input" placeholder="Jawapan anda">
+                <br><br>
+                <button class="btn btn-green" onclick="submitBlankAnswer()">Hantar Jawapan</button>
+            </div>
+        </div>
+
+        <div id="screenResult" class="screen">
+            <h2 id="resultGradeBadge" style="font-size: 2.5rem; margin-bottom: 5px;">🥇</h2>
+            <h2 id="resultGradeText">Cemerlang</h2>
+            <p id="resultFeedback" class="card-box" style="text-align:center;">Ulasan automatik.</p>
+            
+            <div class="card-box" style="background:#fff; border: 1px solid #e5e7eb;">
+                <p>Nama: <strong id="resName">-</strong></p>
+                <p>Tahap: <strong id="resYear">-</strong></p>
+                <p>Masa Diambil: <strong id="resTime">-</strong></p>
+                <p>Betul / Salah: <span style="color:var(--green); font-weight:bold;" id="resCorrect">0</span> / <span style="color:var(--orange); font-weight:bold;" id="resWrong">0</span></p>
+                <h3 style="margin-top:10px; font-size:1.4rem;">Markah Akhir: <span id="resScore" style="color:var(--light-blue)">0</span> (<span id="resPercent">0%</span>)</h3>
+            </div>
+
+            <button class="btn btn-orange" onclick="restartGame()">Main Semula</button>
+            <button class="btn btn-back" onclick="showScreen('screenMenu')">Menu Utama</button>
+        </div>
+
+        <div id="screenHowTo" class="screen">
+            <h2>📖 Cara Bermain</h2>
+            <div class="card-box">
+                <p>1. Masukkan nama anda di menu utama.</p>
+                <p>2. Pilih <strong>Tahun Pengajian (Tahun 1 hingga 6)</strong> mengikut kesesuaian silibus anda.</p>
+                <p>3. Pilih bilangan soalan sama ada <strong>10 soalan</strong> atau <strong>20 soalan</strong>.</p>
+                <p>4. Jawab soalan yang dipaparkan sebelum masa tamat! Jam analog atau digital akan dipaparkan bagi membantu anda mengecam waktu.</p>
+                <p>5. Kumpul markah maksimum untuk mendapatkan pingat <strong>Cemerlang</strong>!</p>
+            </div>
+            <button class="btn btn-back" onclick="showScreen('screenMenu')">Faham & Kembali</button>
+        </div>
+
+        <div id="screenScores" class="screen">
+            <h2>🏆 Rekod Skor Tertinggi</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Tahun</th>
+                            <th>Soalan</th>
+                            <th>Markah</th>
+                            <th>Masa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoresTableBody">
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-orange" onclick="clearScores()">Padam Rekod</button>
+            <button class="btn btn-back" onclick="showScreen('screenMenu')">Kembali</button>
+        </div>
+
+        <div id="screenSettings" class="screen">
+            <h2>⚙️ Tetapan Audio</h2>
+            <div class="card-box" style="text-align: center;">
+                <p style="margin-bottom: 15px;">Permainan ini menggunakan <strong>Web Audio API asli</strong>.</p>
+                <button class="btn btn-green" id="btnToggleSound" onclick="toggleSound()">Bunyi: AKTIF</button>
+                <p style="margin-top:10px; font-size:0.8rem; color: #6b7280;">Sila uji audio dengan menekan butang di atas.</p>
+            </div>
+            <button class="btn btn-back" onclick="showScreen('screenMenu')">Kembali</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Firebase Configuration Dummy Holder ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqCRjnN4yDCaBi2cSs_vT88JV3bOI8_-I",
+            authDomain: "clockmaster-c6aa6.firebaseapp.com",
+            databaseURL: "https://clockmaster-c6aa6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "clockmaster-c6aa6",
+            storageBucket: "clockmaster-c6aa6.firebasestorage.app",
+            messagingSenderId: "819172680735",
+            appId: "1:819172680735:web:66e3d645ead91a30c0612a"
+        };
+
+        // --- Variabel Keadaan Global (Game State) ---
+        let currentYear = 1;
+        let totalQuestionsConfig = 10;
+        let gameQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        
+        let timerInterval = null;
+        let totalTimeSeconds = 0;
+        let timeRemainingSeconds = 0;
+        let timeElapsedSeconds = 0;
+        let soundEnabled = true;
+
+        const HARI_MELAYU = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
+        const BULAN_MELAYU = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
+        const BILANGAN_HARI_BULAN = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        // --- PENGURUSAN VIEW / SKRIN ---
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            playSound('click');
+        }
+
+        function goToSelectYear() {
+            const nameInput = document.getElementById('playerName').value.trim();
+            if (!nameInput) {
+                alert('Sila masukkan nama anda terlebih dahulu!');
+                return;
+            }
+            showScreen('screenYear');
+        }
+
+        function selectYear(year) {
+            currentYear = year;
+            document.getElementById('selectedYearInfo').innerText = "Tahun " + year + " (KSSR)";
+            showScreen('screenQuestionCount');
+        }
+
+        function setupGameLength(count) {
+            totalQuestionsConfig = count;
+            if(count === 10) {
+                totalTimeSeconds = 12 * 60;
+            } else {
+                totalTimeSeconds = 25 * 60;
+            }
+            startGame();
+        }
+
+        // ========================================================================
+        // AUDIO GENERATOR (Web Audio API)
+        // ========================================================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'tahniah') {
+                osc.type = 'sine';
+                [440, 554, 659, 880].forEach((f, i) => {
+                    let oscSeq = audioCtx.createOscillator();
+                    let gainSeq = audioCtx.createGain();
+                    oscSeq.connect(gainSeq);
+                    gainSeq.connect(audioCtx.destination);
+                    oscSeq.frequency.setValueAtTime(f, now + (i * 0.1));
+                    gainSeq.gain.setValueAtTime(0.1, now + (i * 0.1));
+                    gainSeq.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.1) + 0.3);
+                    oscSeq.start(now + (i * 0.1));
+                    oscSeq.stop(now + (i * 0.1) + 0.3);
+                });
+            } else if (type === 'gameover') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.6);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btnToggleSound');
+            if(soundEnabled) {
+                btn.innerText = "Bunyi: AKTIF";
+                btn.style.backgroundColor = "var(--green)";
+                playSound('click');
+            } else {
+                btn.innerText = "Bunyi: SENYAP";
+                btn.style.backgroundColor = "#6b7280";
+            }
+        }
+
+        // ========================================================================
+        // CANVAS ANALOG CLOCK
+        // ========================================================================
+        function drawAnalogClock(hours, minutes) {
+            const canvas = document.getElementById('analogClock');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const radius = canvas.height / 2;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(radius, radius);
+            const r = radius * 0.9;
+
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'var(--primary-blue)';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 6, 0, 2 * Math.PI);
+            ctx.fillStyle = 'var(--dark-gray)';
+            ctx.fill();
+
+            ctx.font = "bold 14px 'Segoe UI'";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "var(--dark-gray)";
+            for (let num = 1; num <= 12; num++) {
+                let ang = num * Math.PI / 6;
+                ctx.rotate(ang);
+                ctx.translate(0, -r * 0.78);
+                ctx.rotate(-ang);
+                ctx.fillText(num.toString(), 0, 0);
+                ctx.rotate(ang);
+                ctx.translate(0, r * 0.78);
+                ctx.rotate(-ang);
+            }
+
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) {
+                    let ang = i * Math.PI / 30;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.sin(ang) * (r - 6), -Math.cos(ang) * (r - 6));
+                    ctx.lineTo(Math.sin(ang) * r, -Math.cos(ang) * r);
+                    ctx.strokeStyle = '#9ca3af';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+
+            const hourAng = ((hours % 12) * Math.PI / 6) + (minutes * Math.PI / (6 * 60));
+            drawClockHand(ctx, hourAng, r * 0.5, 5, 'var(--dark-gray)');
+
+            const minAng = (minutes * Math.PI / 30);
+            drawClockHand(ctx, minAng, r * 0.75, 3.5, 'var(--light-blue)');
+
+            ctx.restore();
+        }
+
+        function drawClockHand(ctx, pos, length, width, color) {
+            ctx.beginPath();
+            ctx.lineWidth = width;
+            ctx.lineCap = "round";
+            ctx.moveTo(0, 0);
+            ctx.rotate(pos);
+            ctx.lineTo(0, -length);
+            ctx.strokeStyle = color;
+            ctx.stroke();
+            ctx.rotate(-pos);
+        }
+
+        // ========================================================================
+        // QUESTION GENERATOR ENGINE
+        // ========================================================================
+        function generateGameQuestions(year, count) {
+            let pool = [];
+            
+            for (let i = 0; i < count * 3; i++) {
+                let q = null;
+                
+                if (year === 1) {
+                    let type = i % 5;
+                    if (type === 0) {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        q = {
+                            type: "obj", visual: "analog", h: h, m: 0,
+                            question: `Pukul berapakah yang ditunjukkan oleh jam di bawah?`,
+                            ans: `Pukul ${h}.00`,
+                            opts: [`Pukul ${h}.00`, `Pukul ${h === 12 ? 1 : h + 1}.30`, `Pukul ${h}.30`, `Pukul ${h === 1 ? 12 : h - 1}.00`]
+                        };
+                    } else if (type === 1) {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        q = {
+                            type: "obj", visual: "analog", h: h, m: 30,
+                            question: `Apakah waktu yang digambarkan oleh jam analog berikut?`,
+                            ans: `Pukul ${h}.30`,
+                            opts: [`Pukul ${h}.30`, `Pukul ${h}.00`, `Pukul ${h === 12 ? 1 : h + 1}.30`, `Pukul ${h}.15`]
+                        };
+                    } else if (type === 2) {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        let m = Math.random() > 0.5 ? "00" : "30";
+                        q = {
+                            type: "obj", visual: "digital", h: parseInt(h), m: parseInt(m),
+                            question: `Tukarkan paparan jam digital berikut kepada perkataan bahasa Melayu yang betul.`,
+                            ans: m === "00" ? `Pukul ${h}.00` : `Pukul ${h}.30`,
+                            opts: [
+                                m === "00" ? `Pukul ${h}.00` : `Pukul ${h}.30`,
+                                m === "00" ? `Pukul ${h}.30` : `Pukul ${h}.00`,
+                                `Pukul ${h === 12 ? 1 : h + 1}.00`,
+                                `Pukul ${h}.15`
+                            ]
+                        };
+                    } else if (type === 3) {
+                        let dayIdx = Math.floor(Math.random() * 7);
+                        let target = (dayIdx + 1) % 7;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Jika hari ini ialah hari **${HARI_MELAYU[dayIdx]}**, apakah hari esok?`,
+                            ans: HARI_MELAYU[target],
+                            opts: [HARI_MELAYU[target], HARI_MELAYU[(dayIdx + 2) % 7], HARI_MELAYU[(dayIdx + 6) % 7], "Hari Kelepasan"]
+                        };
+                    } else {
+                        let dayIdx = Math.floor(Math.random() * 7);
+                        let target = (dayIdx + 6) % 7;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Hari sebelum hari **${HARI_MELAYU[dayIdx]}** ialah hari...`,
+                            ans: HARI_MELAYU[target],
+                            opts: [HARI_MELAYU[target], HARI_MELAYU[(dayIdx + 1) % 7], HARI_MELAYU[(dayIdx + 2) % 7], "Sabtu Sahaja"]
+                        };
+                    }
+                }
+                
+                else if (year === 2) {
+                    let type = i % 5;
+                    if (type === 0 || type === 1) {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        let m = Math.random() > 0.5 ? 15 : 45;
+                        let formatM = m === 15 ? ".15" : ".45";
+                        q = {
+                            type: "obj", visual: "analog", h: h, m: m,
+                            question: `Sila padankan jam berikut dengan padanan sebutan yang betul.`,
+                            ans: `Pukul ${h}${formatM}`,
+                            opts: [
+                                `Pukul ${h}${formatM}`, 
+                                `Pukul ${h}.00`, 
+                                `Pukul ${h === 12 ? 1 : h + 1}.15`, 
+                                `Pukul ${h}.30`
+                            ]
+                        };
+                    } else if (type === 2) {
+                        let bIdx = Math.floor(Math.random() * 12);
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Berapakah bilangan hari bagi bulan **${BULAN_MELAYU[bIdx]}**?`,
+                            ans: `${BILANGAN_HARI_BULAN[bIdx]} hari`,
+                            opts: [`${BILANGAN_HARI_BULAN[bIdx]} hari`, `${BILANGAN_HARI_BULAN[bIdx] === 30 ? 31 : 30} hari`, `29 hari`, `35 hari`]
+                        };
+                    } else if (type === 3) {
+                        let bIdx = Math.floor(Math.random() * 10) + 1;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Apakah nama bulan selepas bulan **${BULAN_MELAYU[bIdx]}**?`,
+                            ans: BULAN_MELAYU[bIdx + 1],
+                            opts: [BULAN_MELAYU[bIdx + 1], BULAN_MELAYU[bIdx - 1], BULAN_MELAYU[(bIdx + 2) % 12], "Januari"]
+                        };
+                    } else {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        let mArr = [5, 10, 20, 25, 35, 40, 50, 55];
+                        let m = mArr[Math.floor(Math.random() * mArr.length)];
+                        q = {
+                            type: "obj", visual: "analog", h: h, m: m,
+                            question: `Padankan muka jam analog ini kepada sistem jam digital yang betul.`,
+                            ans: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`,
+                            opts: [
+                                `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`,
+                                `${String(h).padStart(2,'0')}:${String(m === 50 ? 40 : m + 5).padStart(2,'0')}`,
+                                `${String(h === 12 ? 1 : h + 1).padStart(2,'0')}:${String(m).padStart(2,'0')}`,
+                                `12:00`
+                            ]
+                        };
+                    }
+                }
+
+                else if (year === 3) {
+                    let type = i % 4;
+                    if (type === 0) {
+                        let h = Math.floor(Math.random() * 12) + 1;
+                        let m = Math.floor(Math.random() * 59) + 1;
+                        q = {
+                            type: "obj", visual: "analog", h: h, m: m,
+                            question: `Baca masa minit terperinci dengan tepat yang ditunjukkan oleh jam ini.`,
+                            ans: `Pukul ${h}.${String(m).padStart(2, '0')}`,
+                            opts: [`Pukul ${h}.${String(m).padStart(2, '0')}`, `Pukul ${h}.${m === 59 ? 50 : m + 1}`, `Pukul ${h === 12 ? 1 : h + 1}.${String(m).padStart(2, '0')}`, `Pukul ${h}.10`]
+                        };
+                    } else if (type === 1) {
+                        let startH = Math.floor(Math.random() * 3) + 7;
+                        let duration = Math.floor(Math.random() * 3) + 1;
+                        let endH = startH + duration;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Amin mula mengulang kaji pelajaran pada pukul ${startH}.00 pagi dan selesai pada pukul ${endH}.00 pagi. Berapakah tempoh masa dia belajar?`,
+                            ans: `${duration} jam`,
+                            opts: [`${duration} jam`, `${duration + 1} jam`, `${duration - 1 || 4} jam`, `30 minit`]
+                        };
+                    } else if (type === 2) {
+                        let jam = Math.floor(Math.random() * 4) + 2;
+                        q = {
+                            type: "blank", visual: "none",
+                            question: `Tukarkan unit masa berikut kepada minit: **${jam} jam = _______ minit**. (Tulis jawapan angka sahaja)`,
+                            ans: (jam * 60).toString()
+                        };
+                    } else {
+                        let minit = Math.floor(Math.random() * 5) + 2;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sebuah video pendek dimainkan selama ${minit} minit. Hitung tempoh tayangan ini dalam unit saat.`,
+                            ans: `${minit * 60} saat`,
+                            opts: [`${minit * 60} saat`, `${minit * 100} saat`, `${minit * 60 + 30} saat`, `120 saat`]
+                        };
+                    }
+                }
+
+                else if (year === 4) {
+                    let type = i % 4;
+                    if (type === 0) {
+                        let h = Math.floor(Math.random() * 6) + 1;
+                        let pmH = h + 12;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Tukarkan waktu **Pukul ${h}.30 petang** kepada Sistem 24 Jam.`,
+                            ans: `Jam ${pmH}30`,
+                            opts: [`Jam ${pmH}30`, `Jam 0${h}30`, `Jam ${pmH}:30 PM`, `Jam 2230`]
+                        };
+                    } else if (type === 1) {
+                        let h = Math.floor(Math.random() * 4) + 20;
+                        let ampmH = h - 12;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sistem 24 Jam menunjukkan **Jam ${h}15**. Nyatakan waktu ini dalam Sistem 12 Jam.`,
+                            ans: `Pukul ${ampmH}.15 malam`,
+                            opts: [`Pukul ${ampmH}.15 malam`, `Pukul ${ampmH}.15 pagi`, `Pukul ${h}.15 malam`, `Jam 0${ampmH}15`]
+                        };
+                    } else if (type === 2) {
+                        let dekad = Math.floor(Math.random() * 5) + 2;
+                        q = {
+                            type: "blank", visual: "none",
+                            question: `Satu penempatan purba berusia **${dekad} dekad**. Berapakah usia penempatan itu dalam unit **tahun**?`,
+                            ans: (dekad * 10).toString()
+                        };
+                    } else {
+                        let abad = Math.floor(Math.random() * 3) + 2;
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sebuah bangunan bersejarah dibina ${abad} abad yang lalu. Berapakah tempoh tersebut dalam nilai **tahun**?`,
+                            ans: `${abad * 100} tahun`,
+                            opts: [`${abad * 100} tahun`, `${abad * 10} tahun`, `${abad * 1000} tahun`, `50 tahun`]
+                        };
+                    }
+                }
+
+                else if (year === 5) {
+                    let type = i % 4;
+                    if (type === 0) {
+                        let rand = Math.floor(Math.random() * 3);
+                        let textQuestion = "";
+                        let correctAns = 0;
+                        let fake1 = 0, fake2 = 0, fake3 = 0;
+
+                        if (rand === 0) {
+                            textQuestion = "½ jam + ¼ jam";
+                            correctAns = 45; fake1 = 30; fake2 = 15; fake3 = 75;
+                        } else if (rand === 1) {
+                            textQuestion = "¾ jam + 10 minit";
+                            correctAns = 55; fake1 = 45; fake2 = 35; fake3 = 60;
+                        } else {
+                            textQuestion = "1⅕ jam + 15 minit";
+                            correctAns = 87; fake1 = 75; fake2 = 90; fake3 = 65;
+                        }
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Berapakah nilai dalam unit minit bagi **${textQuestion}**?`,
+                            ans: `${correctAns} minit`,
+                            opts: [`${correctAns} minit`, `${fake1} minit`, `${fake2} minit`, `${fake3} minit`]
+                        };
+                    } else if (type === 1) {
+                        let hoursArr = [1.2, 1.5, 2.5, 3.4, 0.5];
+                        let val = hoursArr[Math.floor(Math.random() * hoursArr.length)];
+                        let totalMin = val * 60;
+                        let hPart = Math.floor(totalMin / 60);
+                        let mPart = totalMin % 60;
+                        
+                        let ansStr = hPart > 0 ? `${hPart} jam ${mPart} minit` : `${mPart} minit`;
+                        let fakeStr1 = `${hPart + 1} jam ${mPart} minit`;
+                        let fakeStr2 = `${hPart} jam ${mPart + 10} minit`;
+                        let fakeStr3 = `${totalMin + 20} minit`;
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sebuah aktiviti mengambil masa **${val} jam**. Nyatakan masa tersebut dalam jam dan minit yang tepat.`,
+                            ans: ansStr,
+                            opts: [ansStr, fakeStr1, fakeStr2, fakeStr3]
+                        };
+                    } else if (type === 2) {
+                        let multiplier = Math.floor(Math.random() * 6) + 3; // 3 hingga 8
+                        let baseMin = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
+                        q = {
+                            type: "blank", visual: "none",
+                            question: `Kira hasil darab operasi masa berikut: **${multiplier} x ${baseMin} minit = _______ minit**.`,
+                            ans: (multiplier * baseMin).toString()
+                        };
+                    } else {
+                        let dayVal = [0.25, 0.5, 1.5, 2.25][Math.floor(Math.random() * 4)];
+                        let totalHours = dayVal * 24;
+                        let fakeHours1 = totalHours + 6;
+                        let fakeHours2 = totalHours * 2;
+                        let fakeHours3 = totalHours - 2;
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sebuah mesin cetak beroperasi selama **${dayVal} hari** tanpa henti. Berapakah jumlah **jam** ia beroperasi?`,
+                            ans: `${totalHours} jam`,
+                            opts: [`${totalHours} jam`, `${fakeHours1} jam`, `${fakeHours2} jam`, `${fakeHours3} jam`]
+                        };
+                    }
+                }
+
+                else {
+                    // --- REBAIK / RANDOMISASI SILIBUS TAHUN 6 ---
+                    let type = i % 4;
+                    
+                    // Senarai Data Bandar Variasi (Zon Masa KSSR)
+                    const bandarUtama = [
+                        { nama: "Kuala Lumpur", gmt: 8 }, { nama: "Singapura", gmt: 8 },
+                        { nama: "Tokyo", gmt: 9 }, { nama: "Seoul", gmt: 9 },
+                        { nama: "London", gmt: 0 }, { nama: "Reykjavik", gmt: 0 },
+                        { nama: "Makkah", gmt: 3 }, { nama: "Baghdad", gmt: 3 },
+                        { nama: "Sydney", gmt: 10 }, { nama: "Melbourne", gmt: 10 },
+                        { nama: "New York", gmt: -5 }, { nama: "Washington", gmt: -5 },
+                        { nama: "Jakarta", gmt: 7 }, { nama: "Bangkok", gmt: 7 }
+                    ];
+
+                    if (type === 0) {
+                        // Sub-topik: Hubungan Zon Masa & Waktu Tempatan (Mudah)
+                        let b1 = bandarUtama[Math.floor(Math.random() * (bandarUtama.length / 2))]; 
+                        let b2 = bandarUtama[Math.floor(Math.random() * (bandarUtama.length / 2)) + Math.floor(bandarUtama.length / 2)];
+                        if(b1.nama === b2.nama) b2 = bandarUtama[(bandarUtama.indexOf(b1)+3)%bandarUtama.length];
+
+                        let jamAsal = Math.floor(Math.random() * 5) + 6; // 6 hingga 10 pagi
+                        let bezaGmt = b2.gmt - b1.gmt;
+                        let jamHasil = jamAsal + bezaGmt;
+                        
+                        let formatWaktu = "pagi";
+                        let paparanJam = jamHasil;
+                        if(jamHasil >= 12) {
+                            formatWaktu = "petang";
+                            if(jamHasil > 12) paparanJam = jamHasil - 12;
+                        } else if(jamHasil <= 0) {
+                            formatWaktu = "malam (hari sebelumnya)";
+                            paparanJam = jamHasil + 12;
+                        }
+
+                        let ansText = `Pukul ${paparanJam}.00 ${formatWaktu}`;
+                        let fake1 = `Pukul ${(paparanJam + 2) % 12 || 12}.00 pagi`;
+                        let fake2 = `Pukul ${paparanJam}.00 malam`;
+                        let fake3 = `Pukul ${(paparanJam + 4) % 12 || 12}.00 petang`;
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Bandar **${b1.nama}** berada di zon masa GMT${b1.gmt >= 0 ? '+' + b1.gmt : b1.gmt} manakala **${b2.nama}** berada di GMT${b2.gmt >= 0 ? '+' + b2.gmt : b2.gmt}. Jika waktu di ${b1.nama} ialah pukul ${jamAsal}.00 pagi, berapakah waktu di ${b2.nama}?`,
+                            ans: ansText,
+                            opts: [ansText, fake1, fake2, fake3]
+                        };
+                    } 
+                    else if (type === 1) {
+                        // Sub-topik: Tempoh Perjalanan Melibatkan Rentas Zon Masa (Sistem 24 Jam)
+                        let bMula = { nama: "Kuala Lumpur", gmt: 8 };
+                        let bTiba = bandarUtama[Math.floor(Math.random() * bandarUtama.length)];
+                        if(bTiba.nama === "Kuala Lumpur") bTiba = bandarUtama[2]; // Tukar ke Tokyo jika bertaut
+
+                        let jamBertolak = Math.floor(Math.random() * 4) + 10; // Jam 1000 hingga 1300
+                        let tempohTerbang = Math.floor(Math.random() * 4) + 5; // 5 hingga 8 jam
+                        
+                        // Kira waktu mendarat dalam waktu Kuala Lumpur
+                        let jamMendaratKL = jamBertolak + tempohTerbang;
+                        // Tukar ke waktu tempatan destinasi
+                        let jamMendaratDestinasi = jamMendaratKL + (bTiba.gmt - bMula.gmt);
+                        if(jamMendaratDestinasi >= 24) jamMendaratDestinasi -= 24;
+                        if(jamMendaratDestinasi < 0) jamMendaratDestinasi += 24;
+
+                        let ansText = `Jam ${String(jamMendaratDestinasi).padStart(2,'0')}00`;
+                        let fake1 = `Jam ${String((jamMendaratDestinasi + 2) % 24).padStart(2,'0')}00`;
+                        let fake2 = `Jam ${String((jamMendaratDestinasi + 22) % 24).padStart(2,'0')}00`;
+                        let fake3 = `Jam 1200`;
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Sebuah pesawat bertolak dari **${bMula.nama} (GMT+8)** pada jam ${jamBertolak}00. Penerbangan ke **${bTiba.nama} (GMT${bTiba.gmt >= 0 ? '+' + bTiba.gmt : bTiba.gmt})** mengambil masa ${tempohTerbang} jam. Pukul berapakah waktu tempatan di ${bTiba.nama} apabila pesawat itu mendarat?`,
+                            ans: ansText,
+                            opts: [ansText, fake1, fake2, fake3]
+                        };
+                    } 
+                    else if (type === 2) {
+                        // Sub-topik: Pengiraan Tempoh Hari / Kalendar (Isi Tempat Kosong)
+                        let tahunRawak = [2023, 2024, 2025, 2026][Math.floor(Math.random() * 4)];
+                        let hariMula = Math.floor(Math.random() * 5) + 3; // Contoh: 3hb hingga 7hb
+                        let hariTamat = hariMula + Math.floor(Math.random() * 10) + 12; // 12 hingga 22 hari kemudian
+                        let totalHari = (hariTamat - hariMula) + 1; // Termasuk tarikh mula & akhir
+
+                        let bulanIdx = Math.floor(Math.random() * 11); // Jan hingga Dis
+                        let namaBulan = BULAN_MELAYU[bulanIdx];
+
+                        q = {
+                            type: "blank", visual: "none",
+                            question: `Satu projek sekolah bermula dari **${hariMula} ${namaBulan} ${tahunRawak}** sehingga **${hariTamat} ${namaBulan} ${tahunRawak}**. Hitung jumlah tempoh hari bagi projek tersebut (termasuk tarikh mula dan tamat).`,
+                            ans: totalHari.toString()
+                        };
+                    } 
+                    else {
+                        // Sub-topik: Pengiraan Tempoh Masa Melibatkan Hari dan Jam (Objektif)
+                        let hariKira = Math.floor(Math.random() * 3) + 2; // 2 hingga 4 hari
+                        let jamKira = Math.floor(Math.random() * 10) + 2; // 2 hingga 11 jam
+                        let totalJam = (hariKira * 24) + jamKira;
+
+                        let ansText = `${hariKira} hari ${jamKira} jam`;
+                        let fake1 = `${hariKira + 1} hari ${jamKira} jam`;
+                        let fake2 = `${hariKira} hari ${jamKira + 4} jam`;
+                        let fake3 = `${Math.floor(totalJam / 12)} hari 6 jam`;
+
+                        q = {
+                            type: "obj", visual: "none",
+                            question: `Seorang angkasawan menjalankan satu eksperimen biologi di stesen angkasa selama **${totalJam} jam**. Nyatakan tempoh masa ini dalam unit hari dan jam.`,
+                            ans: ansText,
+                            opts: [ansText, fake1, fake2, fake3]
+                        };
+                    }
+                }
+
+                if (q.type === "obj" && q.opts) {
+                    q.opts = shuffleArray(q.opts);
+                }
+
+                pool.push(q);
+            }
+
+            pool = shuffleArray(pool);
+            return pool.slice(0, count);
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ========================================================================
+        // KAWALAN PERMAINAN & ALIRAN UTAMA
+        // ========================================================================
+        function startGame() {
+            score = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            currentQuestionIndex = 0;
+            timeRemainingSeconds = totalTimeSeconds;
+            timeElapsedSeconds = 0;
+            
+            document.getElementById('liveScore').innerText = score;
+            gameQuestions = generateGameQuestions(currentYear, totalQuestionsConfig);
+            
+            showScreen('screenGame');
+            startTimer();
+            displayQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                timeElapsedSeconds++;
+                updateTimerDisplay();
+
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    triggerTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemainingSeconds / 60);
+            const secs = timeRemainingSeconds % 60;
+            document.getElementById('countdownTimer').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function triggerTimeout() {
+            playSound('gameover');
+            alert("⏰ TAMAT MASA! Masa yang diperuntukkan telah habis.");
+            endGame();
+        }
+
+        function displayQuestion() {
+            document.getElementById('analogClockWrapper').style.display = 'none';
+            document.getElementById('digitalClockWrapper').style.display = 'none';
+            document.getElementById('optionsContainer').style.display = 'none';
+            document.getElementById('inputContainer').style.display = 'none';
+            document.getElementById('blankAnswerInput').value = '';
+
+            document.getElementById('currentQuestionNum').innerText = currentQuestionIndex + 1;
+            document.getElementById('totalQuestionsNum').innerText = totalQuestionsConfig;
+
+            let currentQ = gameQuestions[currentQuestionIndex];
+
+            document.getElementById('questionText').innerHTML = formatQuestionText(currentQ.question);
+
+            if (currentQ.visual === "analog") {
+                document.getElementById('analogClockWrapper').style.display = 'block';
+                setTimeout(() => { drawAnalogClock(currentQ.h, currentQ.m); }, 50);
+            } else if (currentQ.visual === "digital") {
+                document.getElementById('digitalClockWrapper').style.display = 'block';
+                document.getElementById('digitalClockText').innerText = 
+                    `${String(currentQ.h).padStart(2,'0')}:${String(currentQ.m).padStart(2,'0')}`;
+            }
+
+            if (currentQ.type === "obj") {
+                const optContainer = document.getElementById('optionsContainer');
+                optContainer.innerHTML = '';
+                optContainer.style.display = 'grid';
+                
+                currentQ.opts.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(opt);
+                    optContainer.appendChild(btn);
+                });
+            } else if (currentQ.type === "blank") {
+                document.getElementById('inputContainer').style.display = 'block';
+                document.getElementById('blankAnswerInput').focus();
+            }
+        }
+
+        function formatQuestionText(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
+        function checkAnswer(playerAns) {
+            let currentQ = gameQuestions[currentQuestionIndex];
+            let isCorrect = false;
+
+            if (currentQ.type === "obj") {
+                isCorrect = (playerAns === currentQ.ans);
+            }
+
+            processAnswerOutcome(isCorrect);
+        }
+
+        function submitBlankAnswer() {
+            let currentQ = gameQuestions[currentQuestionIndex];
+            let playerAns = document.getElementById('blankAnswerInput').value.trim();
+            
+            if(!playerAns) {
+                alert("Sila isi jawapan anda sebelum menghantar!");
+                return;
+            }
+
+            let isCorrect = (playerAns.toLowerCase() === currentQ.ans.toLowerCase());
+            processAnswerOutcome(isCorrect);
+        }
+
+        function processAnswerOutcome(isCorrect) {
+            const container = document.getElementById('mainContainer');
+
+            if (isCorrect) {
+                score += 10;
+                correctCount++;
+                document.getElementById('liveScore').innerText = score;
+                playSound('correct');
+                triggerStarsEffect();
+            } else {
+                wrongCount++;
+                playSound('wrong');
+                container.classList.add('shake');
+                setTimeout(() => { container.classList.remove('shake'); }, 400);
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestionsConfig) {
+                displayQuestion();
+            } else {
+                clearInterval(timerInterval);
+                endGame();
+            }
+        }
+
+        function endGame() {
+            let totalPossible = totalQuestionsConfig * 10;
+            let percent = totalPossible > 0 ? Math.round((score / totalPossible) * 100) : 0;
+            
+            let name = document.getElementById('playerName').value || "Pemain Bijak";
+            let timeStr = formatTimeStrings(timeElapsedSeconds);
+
+            document.getElementById('resName').innerText = name;
+            document.getElementById('resYear').innerText = "Tahun " + currentYear;
+            document.getElementById('resTime').innerText = timeStr;
+            document.getElementById('resCorrect').innerText = correctCount;
+            document.getElementById('resWrong').innerText = wrongCount;
+            document.getElementById('resScore').innerText = score;
+            document.getElementById('resPercent').innerText = percent + "%";
+
+            let badge = "📘";
+            let gradeText = "Perlu Latihan";
+            let feedback = "Jangan putus asa. Cuba lagi!";
+
+            if (percent >= 90) {
+                badge = "🥇";
+                gradeText = "Cemerlang";
+                feedback = "Cemerlang! Anda benar-benar menguasai topik Masa dan Waktu.";
+                playSound('tahniah');
+                triggerConfettiEffect();
+            } else if (percent >= 70) {
+                badge = "🥈";
+                gradeText = "Baik";
+                feedback = "Syabas! Teruskan berlatih.";
+                playSound('tahniah');
+            } else if (percent >= 50) {
+                badge = "🥉";
+                gradeText = "Memuaskan";
+                feedback = "Baik, tetapi masih boleh dipertingkatkan.";
+            }
+
+            document.getElementById('resultGradeBadge').innerText = badge;
+            document.getElementById('resultGradeText').innerText = gradeText;
+            document.getElementById('resultFeedback').innerText = feedback;
+
+            saveScoreRecord(name, currentYear, totalQuestionsConfig, score, timeStr);
+            showScreen('screenResult');
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        function formatTimeStrings(sec) {
+            let m = Math.floor(sec / 60);
+            let s = sec % 60;
+            return `${m} minit ${s} saat`;
+        }
+
+        // ========================================================================
+        // ANIMASI & KESAN VISUAL (Canvas Particles)
+        // ========================================================================
+        const fxCanvas = document.getElementById('effectCanvas');
+        const fxCtx = fxCanvas.getContext('2d');
+        let particles = [];
+        let fxAnimationId = null;
+
+        function resizeFxCanvas() {
+            const box = document.getElementById('mainContainer');
+            fxCanvas.width = box.clientWidth;
+            fxCanvas.height = box.clientHeight;
+        }
+        window.addEventListener('resize', resizeFxCanvas);
+        setTimeout(resizeFxCanvas, 500);
+
+        function triggerStarsEffect() {
+            resizeFxCanvas();
+            particles = [];
+            const centerX = fxCanvas.width / 2;
+            const centerY = fxCanvas.height / 3;
+
+            for (let i = 0; i < 25; i++) {
+                particles.push({
+                    x: centerX,
+                    y: centerY,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    size: Math.random() * 5 + 4,
+                    color: `gold`,
+                    alpha: 1,
+                    decay: Math.random() * 0.03 + 0.01
+                });
+            }
+            animateParticles();
+        }
+
+        function triggerConfettiEffect() {
+            resizeFxCanvas();
+            particles = [];
+            const colors = ['#3b82f6', '#f97316', '#10b981', '#ff007f', '#ffff00'];
+            
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * fxCanvas.width,
+                    y: -10,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * 5 + 3,
+                    size: Math.random() * 6 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1,
+                    decay: 0.005
+                });
+            }
+            animateParticles();
+        }
+
+        function animateParticles() {
+            cancelAnimationFrame(fxAnimationId);
+            
+            function loop() {
+                fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= p.decay;
+
+                    if (p.alpha > 0) {
+                        alive = true;
+                        fxCtx.save();
+                        fxCtx.globalAlpha = p.alpha;
+                        fxCtx.fillStyle = p.color;
+                        fxCtx.beginPath();
+                        fxCtx.arc(p.x, p.y, p.size, 0, 2 * Math.PI);
+                        fxCtx.fill();
+                        fxCtx.restore();
+                    }
+                });
+
+                if (alive) {
+                    fxAnimationId = requestAnimationFrame(loop);
+                } else {
+                    fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+                }
+            }
+            loop();
+        }
+
+        // ========================================================================
+        // LOCAL STORAGE SYSTEM
+        // ========================================================================
+        function saveScoreRecord(name, year, qCount, finalScore, timeStr) {
+            let scores = [];
+            try {
+                const existing = localStorage.getItem('clock_master_scores');
+                if (existing) scores = JSON.parse(existing);
+            } catch (e) { console.error("Ralat membaca localStorage", e); }
+
+            const newRecord = {
+                name: name,
+                year: "Tahun " + year,
+                questions: qCount,
+                score: finalScore,
+                time: timeStr,
+                date: new Date().toLocaleDateString('ms-MY')
+            };
+
+            scores.push(newRecord);
+            scores.sort((a, b) => b.score - a.score);
+            scores = scores.slice(0, 10);
+
+            try {
+                localStorage.setItem('clock_master_scores', JSON.stringify(scores));
+            } catch (e) { console.error("Ralat menyimpan ke localStorage", e); }
+        }
+
+        function showScoresScreen() {
+            const tbody = document.getElementById('scoresTableBody');
+            tbody.innerHTML = '';
+
+            let scores = [];
+            try {
+                const existing = localStorage.getItem('clock_master_scores');
+                if (existing) scores = JSON.parse(existing);
+            } catch (e) { console.error(e); }
+
+            if(scores.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:#6b7280; font-style:italic;">Tiada rekod skor lagi. Ayuh mulakan permainan!</td></tr>`;
+            } else {
+                scores.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${escapeHtml(row.name)}</strong></td>
+                        <td>${row.year}</td>
+                        <td>${row.questions}</td>
+                        <td style="color:var(--light-blue); font-weight:bold;">${row.score}</td>
+                        <td><small>${row.date}<br>${row.time}</small></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            showScreen('screenScores');
+        }
+
+        function clearScores() {
+            if(confirm("Adakah anda pasti mahu pemadam semua rekod skor tertinggi?")) {
+                localStorage.removeItem('clock_master_scores');
+                showScoresScreen();
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        window.onload = () => {
+            resizeFxCanvas();
+        };
+    </script>
+</body>
+</html>

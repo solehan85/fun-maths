@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#FFD93D">
+<title>LOGICAL IQ — Fikir Pantas. Cari Corak. Jadi Genius!</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+  --red:#ff4d5a;
+  --yellow:#ffd93d;
+  --blue:#3489ff;
+  --orange:#ff922b;
+  --green:#34c77b;
+  --purple:#9254de;
+  --ink:#24304a;
+  --muted:#68748f;
+  --white:#fff;
+  --cream:#fffaf0;
+  --shadow:0 10px 0 rgba(48,58,92,.10),0 18px 40px rgba(48,58,92,.14);
+  --radius:26px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{
+  font-family:"Nunito",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,217,61,.48),transparent 28%),
+    radial-gradient(circle at 90% 15%,rgba(52,137,255,.20),transparent 28%),
+    radial-gradient(circle at 85% 90%,rgba(146,84,222,.18),transparent 25%),
+    linear-gradient(150deg,#fff8db,#f4fbff 50%,#fff2f6);
+  min-height:100dvh;
+  overscroll-behavior:none;
+}
+button,input{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{
+  outline:4px solid rgba(52,137,255,.35);
+  outline-offset:3px;
+}
+button:disabled{cursor:default}
+.hidden{display:none!important}
+.screen{
+  display:none;
+  min-height:100dvh;
+  padding:
+    max(18px,env(safe-area-inset-top))
+    max(14px,env(safe-area-inset-right))
+    max(20px,env(safe-area-inset-bottom))
+    max(14px,env(safe-area-inset-left));
+  position:relative;
+  z-index:2;
+}
+.screen.active{display:flex;flex-direction:column}
+.bg-decor{
+  position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0
+}
+.float{
+  position:absolute;
+  font-family:"Fredoka";
+  font-weight:700;
+  opacity:.12;
+  animation:float 7s ease-in-out infinite;
+  user-select:none
+}
+.float:nth-child(1){left:4%;top:12%;font-size:50px;color:var(--red)}
+.float:nth-child(2){right:5%;top:20%;font-size:62px;color:var(--blue);animation-delay:-2s}
+.float:nth-child(3){left:8%;bottom:10%;font-size:54px;color:var(--purple);animation-delay:-4s}
+.float:nth-child(4){right:8%;bottom:15%;font-size:46px;color:var(--orange);animation-delay:-1s}
+@keyframes float{50%{transform:translateY(-18px) rotate(8deg)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+@keyframes bounce{50%{transform:translateY(-9px) scale(1.02)}}
+@keyframes shake{
+  20%,60%{transform:translateX(-7px)}
+  40%,80%{transform:translateX(7px)}
+}
+@keyframes pulse{50%{transform:scale(1.05)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes confettiFall{
+  to{transform:translate(var(--dx),110vh) rotate(720deg);opacity:0}
+}
+.wrap{width:min(100%,780px);margin:auto}
+.center{text-align:center}
+.logo{
+  font-family:"Fredoka",sans-serif;
+  font-size:clamp(2.5rem,12vw,5.5rem);
+  font-weight:700;
+  line-height:.9;
+  letter-spacing:-2px;
+  text-shadow:0 5px 0 #fff,0 9px 0 rgba(36,48,74,.14);
+}
+.logo span:nth-child(1){color:var(--red)}
+.logo span:nth-child(2){color:var(--orange)}
+.logo span:nth-child(3){color:var(--yellow)}
+.logo span:nth-child(4){color:var(--green)}
+.logo span:nth-child(5){color:var(--blue)}
+.logo span:nth-child(6){color:var(--purple)}
+.logo .iq{color:var(--blue)!important;margin-left:10px}
+.logo-icon{
+  width:92px;height:92px;margin:0 auto 20px;border-radius:30px;
+  display:grid;place-items:center;font-size:48px;
+  background:linear-gradient(145deg,var(--yellow),var(--orange));
+  border:5px solid #fff;box-shadow:var(--shadow);
+  transform:rotate(-5deg)
+}
+.tagline{
+  font-family:"Fredoka";font-size:clamp(1rem,4vw,1.35rem);
+  margin:20px 0;color:#52617e
+}
+.card{
+  background:rgba(255,255,255,.94);
+  border:3px solid rgba(255,255,255,.95);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.primary,.secondary,.danger,.icon-btn{
+  border:0;border-radius:18px;font-weight:900;min-height:54px;
+  padding:14px 20px;transition:.18s transform,.18s box-shadow
+}
+.primary:active,.secondary:active,.icon-btn:active{transform:translateY(4px)}
+.primary{
+  color:#24304a;background:linear-gradient(#ffe66d,#ffd43b);
+  box-shadow:0 7px 0 #e8b923
+}
+.secondary{
+  color:#fff;background:linear-gradient(#5aa2ff,#3489ff);
+  box-shadow:0 7px 0 #2166c9
+}
+.danger{
+  color:#fff;background:var(--red);box-shadow:0 7px 0 #c93242
+}
+.full{width:100%}
+.small{min-height:46px;padding:10px 15px}
+.top-actions{display:flex;gap:10px;justify-content:flex-end}
+.icon-btn{
+  width:52px;height:52px;padding:0;
+  display:grid;place-items:center;background:#fff;color:var(--ink);
+  box-shadow:0 5px 0 rgba(36,48,74,.13)
+}
+
+/* splash */
+#splash{justify-content:center;align-items:center;text-align:center}
+#splash .brain{animation:pulse 1.2s ease-in-out infinite}
+.loader{
+  width:180px;height:13px;border-radius:20px;background:#fff;
+  margin:28px auto 0;overflow:hidden;box-shadow:inset 0 2px 5px #ccd3e0
+}
+.loader::after{
+  content:"";display:block;height:100%;width:45%;
+  border-radius:20px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green),var(--blue));
+  animation:load 1.8s ease-in-out infinite
+}
+@keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+/* login */
+#login{justify-content:center}
+.login-card{padding:28px 22px;text-align:center}
+.login-card h1{font-family:"Fredoka";font-size:2rem;margin:8px 0}
+.input-wrap{position:relative;margin:24px 0}
+.input-wrap i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--blue)}
+.input-wrap input{
+  width:100%;height:60px;border:3px solid #dfe8f5;border-radius:18px;
+  padding:0 18px 0 50px;font-size:1.1rem;font-weight:800;color:var(--ink)
+}
+.error{color:var(--red);font-weight:900;min-height:24px}
+
+/* home */
+.home-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.player-row{display:flex;gap:12px;align-items:center}
+.avatar{
+  width:58px;height:58px;border-radius:20px;display:grid;place-items:center;
+  font-size:30px;background:linear-gradient(145deg,#fff,#e7f4ff);
+  border:3px solid var(--blue);box-shadow:0 5px 0 rgba(52,137,255,.2)
+}
+.player-row h2{margin:0;font-family:"Fredoka";font-size:clamp(1.15rem,5vw,1.6rem)}
+.player-row p{margin:2px 0;color:var(--muted);font-size:.85rem}
+.mini-logo{font-family:"Fredoka";font-size:2rem;text-align:center;margin:8px 0 20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.stat{
+  padding:13px 5px;text-align:center;background:#fff;border-radius:18px;
+  box-shadow:0 5px 0 rgba(36,48,74,.09)
+}
+.stat strong{display:block;font-family:"Fredoka";font-size:1.25rem}
+.stat span{font-size:.7rem;color:var(--muted);font-weight:900}
+.hero-card{
+  padding:22px;background:linear-gradient(135deg,#fff3b5,#fff);
+  border:3px solid var(--yellow);margin-bottom:18px;position:relative;overflow:hidden
+}
+.hero-card h2{font-family:"Fredoka";font-size:1.8rem;margin:0 0 5px}
+.hero-card p{margin:0 0 16px;color:var(--muted)}
+.home-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* level */
+.section-title{text-align:center;font-family:"Fredoka";font-size:2rem;margin:10px 0 18px}
+.levels{display:grid;gap:14px}
+.level-card{
+  position:relative;width:100%;border:0;text-align:left;padding:18px;
+  border-radius:24px;color:#fff;box-shadow:0 8px 0 rgba(36,48,74,.15);
+  display:grid;grid-template-columns:62px 1fr auto;align-items:center;gap:12px
+}
+.level-card.locked{filter:grayscale(.45);opacity:.65}
+.level-num{
+  width:58px;height:58px;background:rgba(255,255,255,.25);
+  border:3px solid rgba(255,255,255,.75);border-radius:20px;
+  display:grid;place-items:center;font:700 1.8rem "Fredoka"
+}
+.level-card h3{margin:0;font-family:"Fredoka";font-size:1.2rem}
+.level-card p{margin:4px 0 0;font-size:.76rem}
+.l1{background:linear-gradient(135deg,#34c77b,#20a866)}
+.l2{background:linear-gradient(135deg,#3489ff,#286ed1)}
+.l3{background:linear-gradient(135deg,#9254de,#7038b5)}
+.l4{background:linear-gradient(135deg,#ff922b,#ef6c18)}
+.l5{background:linear-gradient(135deg,#ff4d5a,#d72f54)}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+.back-row h2{margin:0;font-family:"Fredoka"}
+
+/* game */
+#game{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+.game-shell{width:min(100%,700px);margin:0 auto}
+.hud{display:grid;grid-template-columns:1fr auto auto auto;gap:7px;align-items:center;margin-bottom:10px}
+.hud-pill{
+  min-height:42px;background:#fff;border-radius:15px;padding:7px 10px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-weight:900;box-shadow:0 4px 0 rgba(36,48,74,.1);font-size:.85rem
+}
+.progress{
+  height:12px;background:#e4e9f2;border-radius:20px;overflow:hidden;margin-bottom:12px
+}
+.progress-bar{
+  height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--yellow),var(--orange));
+  border-radius:20px;transition:width .35s ease
+}
+.timer-wrap{
+  width:58px;height:58px;border-radius:50%;background:conic-gradient(var(--blue) var(--timer),#e5e9f0 0);
+  display:grid;place-items:center;margin:0 auto 10px
+}
+.timer-inner{
+  width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;
+  font-family:"Fredoka";font-weight:700
+}
+.question-card{
+  padding:18px 14px 16px;min-height:170px;text-align:center;margin-bottom:13px;
+  border:3px solid #dceaff;position:relative;animation:pop .3s ease
+}
+.category{
+  display:inline-block;background:#eef5ff;color:var(--blue);
+  border-radius:30px;padding:5px 12px;font-size:.72rem;font-weight:900;margin-bottom:8px
+}
+.question-card h2{
+  font-family:"Fredoka";font-size:clamp(1.25rem,5vw,1.8rem);margin:5px 0 12px;line-height:1.25
+}
+.visual{
+  min-height:58px;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:8px;font-size:clamp(1.6rem,8vw,3rem);font-family:"Fredoka";
+  font-weight:700
+}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{
+  min-height:62px;border:3px solid #dce5f2;border-radius:18px;
+  background:#fff;color:var(--ink);font-weight:900;font-size:clamp(1rem,4.5vw,1.3rem);
+  padding:10px;box-shadow:0 5px 0 #cdd7e6;transition:.15s
+}
+.answer:active{transform:translateY(4px);box-shadow:0 1px 0 #cdd7e6}
+.answer.correct{
+  background:#dff9eb;border-color:var(--green);box-shadow:0 5px 0 #20a866;
+  animation:bounce .45s
+}
+.answer.wrong{
+  background:#ffe5e8;border-color:var(--red);box-shadow:0 5px 0 #c93242;
+  animation:shake .4s
+}
+.answer.dim{opacity:.55}
+.feedback{
+  min-height:65px;margin-top:10px;padding:10px 14px;border-radius:18px;
+  text-align:center;font-weight:800;background:rgba(255,255,255,.82)
+}
+.feedback strong{font-family:"Fredoka";font-size:1.2rem}
+.adaptive{
+  position:fixed;top:max(15px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  z-index:30;background:var(--ink);color:#fff;padding:10px 16px;border-radius:30px;
+  font-weight:900;box-shadow:var(--shadow);animation:pop .3s
+}
+
+/* result */
+.result-card{text-align:center;padding:24px 18px}
+.trophy{font-size:72px;animation:bounce 1.2s infinite}
+.result-card h1{font-family:"Fredoka";font-size:2.2rem;margin:5px}
+.score-big{font:700 clamp(2.8rem,14vw,5rem) "Fredoka";color:var(--blue)}
+.stars{font-size:38px;letter-spacing:4px;margin:5px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0}
+.result-item{background:#f4f8ff;padding:12px;border-radius:16px}
+.result-item strong{display:block;font-family:"Fredoka";font-size:1.25rem}
+.result-actions{display:grid;gap:10px}
+
+/* modal */
+.modal{
+  position:fixed;inset:0;z-index:100;background:rgba(36,48,74,.55);
+  display:flex;align-items:center;justify-content:center;padding:18px;
+  backdrop-filter:blur(5px)
+}
+.modal.hidden{pointer-events:none}
+.modal-card{
+  width:min(100%,560px);max-height:86dvh;overflow:auto;
+  background:#fff;border-radius:28px;padding:22px;box-shadow:var(--shadow);
+  animation:pop .25s
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-head h2{font-family:"Fredoka";margin:0}
+.close-btn{
+  width:44px;height:44px;border:0;border-radius:14px;background:#edf2f8;font-size:1.2rem
+}
+.rules{padding-left:22px;line-height:1.65;font-weight:700}
+.leader-row{
+  display:grid;grid-template-columns:42px 1fr auto;gap:9px;align-items:center;
+  padding:11px;border-radius:15px;margin:7px 0;background:#f4f7fb
+}
+.leader-row.me{background:#fff2b9;border:2px solid var(--yellow)}
+.medal{font-size:24px;text-align:center}
+.loading{text-align:center;padding:30px;color:var(--muted);font-weight:900}
+.spinner{font-size:30px;animation:spin 1s linear infinite}
+.toast{
+  position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%);z-index:200;width:min(90%,450px);
+  padding:13px 16px;border-radius:16px;background:var(--ink);color:#fff;
+  text-align:center;font-weight:900;box-shadow:var(--shadow)
+}
+.memory-flash{
+  font-size:clamp(1.8rem,8vw,3rem);
+  letter-spacing:8px;
+  padding:15px;
+  border-radius:18px;
+  background:#f1f7ff
+}
+.confetti{
+  position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;
+  z-index:999;pointer-events:none;animation:confettiFall 1.2s linear forwards
+}
+@media(max-width:350px){
+  .hud-pill{font-size:.72rem;padding:6px}
+  .question-card{padding:13px 9px}
+  .answer{min-height:56px}
+}
+@media(min-width:700px){
+  .levels{grid-template-columns:1fr 1fr}
+  .levels .level-card:last-child{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
+    <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
+    <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
+    <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
+    <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+  </div>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+<div class="bg-decor" aria-hidden="true">
+  <span class="float">7</span>
+  <span class="float">✦</span>
+  <span class="float">×</span>
+  <span class="float">🧩</span>
+</div>
+
+<section id="splash" class="screen active">
+  <div class="wrap center">
+    <div class="logo-icon brain">🧠</div>
+    <div class="logo" aria-label="Logical IQ">
+      <span>L</span><span>O</span><span>G</span><span>I</span><span>C</span><span>AL</span>
+      <span class="iq">IQ</span>
+    </div>
+    <p class="tagline">Fikir Pantas. Cari Corak. Jadi Genius!</p>
+    <div class="loader" aria-label="Memuatkan permainan"></div>
+  </div>
+</section>
+
+<section id="login" class="screen">
+  <div class="wrap">
+    <div class="card login-card">
+      <div class="logo-icon">⚡</div>
+      <h1>Selamat Datang!</h1>
+      <p>Masukkan nama dan mulakan cabaran otak kamu.</p>
+      <div class="input-wrap">
+        <i class="fa-solid fa-user"></i>
+        <input id="playerNameInput" maxlength="24" autocomplete="nickname"
+               aria-label="Nama pemain" placeholder="Nama Pemain">
+      </div>
+      <div id="loginError" class="error" role="alert"></div>
+      <button id="loginBtn" class="primary full">🚀 MULA BERMAIN</button>
+    </div>
+  </div>
+</section>
+
+<section id="home" class="screen">
+  <div class="wrap">
+    <div class="home-head">
+      <div class="player-row">
+        <div class="avatar">🧠</div>
+        <div>
+          <h2 id="helloName">Hai!</h2>
+          <p>Genius kecil sudah bersedia?</p>
+        </div>
+      </div>
+      <button id="soundBtn" class="icon-btn" aria-label="Tukar bunyi">🔊</button>
+    </div>
+
+    <div class="mini-logo">🧩 LOGICAL <span style="color:var(--blue)">IQ</span> ⚡</div>
+
+    <div class="stats">
+      <div class="stat"><strong id="homeBest">0</strong><span>SKOR TERBAIK</span></div>
+      <div class="stat"><strong id="homeGames">0</strong><span>PERMAINAN</span></div>
+      <div class="stat"><strong id="homeStreak">0</strong><span>STREAK</span></div>
+    </div>
+
+    <div class="card hero-card">
+      <h2>🌟 Cabar Otak Kamu!</h2>
+      <p>10 puzzle pantas. Corak, nombor, logik dan memori!</p>
+      <button id="playBtn" class="primary full">🎮 PLAY</button>
+    </div>
+
+    <div class="home-buttons">
+      <button id="leaderBtn" class="secondary">🏆 LEADERBOARD</button>
+      <button id="howBtn" class="secondary">❓ CARA MAIN</button>
+      <button id="changePlayerBtn" class="primary">👤 TUKAR PEMAIN</button>
+      <button id="levelBtn" class="primary">🗺️ PILIH LEVEL</button>
+    </div>
+  </div>
+</section>
+
+<section id="levels" class="screen">
+  <div class="wrap">
+    <div class="back-row">
+      <button class="icon-btn backHome" aria-label="Kembali">←</button>
+      <h2>Pilih Cabaran</h2>
+    </div>
+    <h1 class="section-title">🗺️ DUNIA LOGICAL IQ</h1>
+    <div id="levelList" class="levels"></div>
+  </div>
+</section>
+
+<section id="game" class="screen">
+  <div class="game-shell">
+    <div class="hud">
+      <div class="hud-pill">⭐ <span id="score">0</span></div>
+      <div class="hud-pill">🔥 <span id="streak">0</span></div>
+      <div class="hud-pill" id="hearts">❤️❤️❤️</div>
+      <button id="quitBtn" class="icon-btn" aria-label="Keluar permainan">✕</button>
+    </div>
+
+    <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+
+    <div id="timerWrap" class="timer-wrap" style="--timer:100%">
+      <div class="timer-inner"><span id="timer">20</span></div>
+    </div>
+
+    <article id="questionCard" class="card question-card">
+      <span id="category" class="category">LOGIK</span>
+      <h2 id="questionText"></h2>
+      <div id="visual" class="visual"></div>
+    </article>
+
+    <div id="answers" class="answers" role="group" aria-label="Pilihan jawapan"></div>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="result" class="screen">
+  <div class="wrap">
+    <div class="card result-card">
+      <div class="trophy">🏆</div>
+      <h1 id="resultTitle">Hebat!</h1>
+      <p id="resultName"></p>
+      <div id="resultScore" class="score-big">0</div>
+      <div id="resultStars" class="stars">⭐⭐⭐</div>
+      <p id="resultMessage"></p>
+
+      <div class="result-grid">
+        <div class="result-item"><strong id="rCorrect">0</strong><span>Betul</span></div>
+        <div class="result-item"><strong id="rWrong">0</strong><span>Salah</span></div>
+        <div class="result-item"><strong id="rAccuracy">0%</strong><span>Ketepatan</span></div>
+        <div class="result-item"><strong id="rStreak">0</strong><span>Streak Terbaik</span></div>
+        <div class="result-item" style="grid-column:1/-1"><strong id="rTime">0s</strong><span>Purata Masa Menjawab</span></div>
+      </div>
+
+      <div class="result-actions">
+        <button id="againBtn" class="primary">🔄 MAIN LAGI</button>
+        <button id="nextLevelBtn" class="secondary">🚀 LEVEL SETERUSNYA</button>
+        <button id="resultHomeBtn" class="secondary">🏠 MENU UTAMA</button>
+        <button id="resultLeaderBtn" class="primary">🏆 LEADERBOARD</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="howModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="howTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="howTitle">🧠 Cara Main</h2>
+      <button class="close-btn closeModal" aria-label="Tutup">✕</button>
+    </div>
+    <ol class="rules">
+      <li>Pilih level yang telah dibuka.</li>
+      <li>Jawab 10 cabaran logik dan matematik.</li>
+      <li>Jawapan pantas memberi bonus masa sehingga 50 mata.</li>
+      <li>3 jawapan betul berturut-turut memberi bonus combo.</li>
+      <li>Kamu mempunyai 3 hati. Gunakan logik dengan bijak!</li>
+      <li>Kesukaran akan berubah mengikut prestasi kamu.</li>
+    </ol>
+    <p><strong>Nota:</strong> LOGICAL IQ ialah permainan pendidikan dan hiburan, bukan alat diagnosis atau pengukuran IQ klinikal.</p>
+  </div>
+</div>
+
+<div id="leaderModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="leaderTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="leaderTitle">🏆 Top 10 Genius</h2>
+      <button class="close-btn closeModal" aria-label="Tutup">✕</button>
+    </div>
+    <div id="leaderContent" class="loading">Memuatkan...</div>
+  </div>
+</div>
+
+<div id="quitModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card center">
+    <h2>Keluar dari permainan?</h2>
+    <p>Skor sesi semasa tidak akan disimpan.</p>
+    <div style="display:grid;gap:10px">
+      <button id="confirmQuit" class="danger">YA, KELUAR</button>
+      <button id="cancelQuit" class="secondary">TERUSKAN BERMAIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden" role="status"></div>
+<div id="adaptive" class="adaptive hidden"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+"use strict";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDzyLTMik3xovqgtWhGwlqYCvctf00yoO8",
+  authDomain: "logicaliqmath.firebaseapp.com",
+  databaseURL: "https://logicaliqmath-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "logicaliqmath",
+  storageBucket: "logicaliqmath.firebasestorage.app",
+  messagingSenderId: "543339462656",
+  appId: "1:543339462656:web:6ec0192c091ab3f3e418e5"
+};
+
+let db = null;
+let firebaseReady = false;
+
+try{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  firebaseReady = true;
+}catch(err){
+  console.warn("Firebase unavailable:",err);
+}
+
+const $ = id => document.getElementById(id);
+const screens = [...document.querySelectorAll(".screen")];
+
+const LEVELS = [
+  {id:1,name:"PEMANASAN OTAK",icon:"🌞",difficulty:"MUDAH",class:"l1"},
+  {id:2,name:"DETEKTIF CORAK",icon:"🔍",difficulty:"SEDERHANA",class:"l2"},
+  {id:3,name:"MASTER LOGIK",icon:"🧩",difficulty:"MENCABAR",class:"l3"},
+  {id:4,name:"SUPER BRAIN",icon:"⚡",difficulty:"SUKAR",class:"l4"},
+  {id:5,name:"GENIUS CHALLENGE",icon:"👑",difficulty:"PAKAR",class:"l5"}
+];
+
+const state = {
+  playerId:"",
+  playerName:"",
+  currentLevel:1,
+  unlockedLevel:1,
+  score:0,
+  questionIndex:0,
+  correct:0,
+  wrong:0,
+  streak:0,
+  bestSessionStreak:0,
+  hearts:3,
+  complexity:1,
+  consecutiveWrong:0,
+  sessionSeen:new Set(),
+  seenHistory:new Set(),
+  currentQuestion:null,
+  answered:false,
+  timerId:null,
+  timeoutIds:new Set(),
+  timeLeft:20,
+  questionStart:0,
+  responseTimes:[],
+  sound:true,
+  gameActive:false,
+  runToken:0,
+  localStats:{bestScore:0,totalGames:0,bestStreak:0,highestLevel:1}
+};
+
+const GENERATORS = [];
+
+function randInt(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
+function pick(arr){
+  return arr[randInt(0,arr.length-1)];
+}
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=randInt(0,i);
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function uniqueOptions(correct,candidates,count=4){
+  const key=v=>String(v);
+  const pool=[];
+  for(const c of candidates){
+    if(key(c)!==key(correct) && !pool.some(x=>key(x)===key(c))) pool.push(c);
+  }
+  let guard=0;
+  while(pool.length<count-1 && guard++<50){
+    const n=typeof correct==="number" ? Math.max(0,correct+randInt(-10,10)) : String(randInt(1,99));
+    if(key(n)!==key(correct) && !pool.some(x=>key(x)===key(n))) pool.push(n);
+  }
+  return shuffle([correct,...shuffle(pool).slice(0,count-1)]);
+}
+function makeQ(gen,category,text,visual,correct,options,explanation,level,type="choice"){
+  return {gen,category,text,visual:String(visual||""),correct,options,type,explanation,level};
+}
+function signature(q){
+  return [q.gen,q.text,q.visual,q.correct].join("|");
+}
+function addGen(id,minLevel,maxLevel,fn){
+  GENERATORS.push({id,minLevel,maxLevel,fn});
+}
+
+/* 1 Arithmetic sequence */
+addGen("arith",1,5,(L,C)=>{
+  const step=randInt(1,Math.min(3+L+C,10));
+  const start=randInt(1,15+L*4);
+  const seq=Array.from({length:5},(_,i)=>start+i*step);
+  const correct=seq[4];
+  return makeQ("arith","NUMBER PATTERN","Nombor apakah seterusnya?",seq.slice(0,4).join(" → "),correct,
+    uniqueOptions(correct,[correct-step,correct+step,correct+1,correct-1]),
+    `Pola bertambah ${step} setiap langkah.`,L);
+});
+
+/* 2 descending */
+addGen("desc",1,4,(L,C)=>{
+  const step=randInt(2,5+L);
+  const end=randInt(2,15);
+  const start=end+step*4;
+  const seq=Array.from({length:5},(_,i)=>start-i*step);
+  return makeQ("desc","NUMBER PATTERN","Cari nombor seterusnya.",seq.slice(0,4).join(" → "),seq[4],
+    uniqueOptions(seq[4],[seq[4]+step,seq[4]-1,seq[4]+1,seq[4]+step*2]),
+    `Setiap nombor berkurang ${step}.`,L);
+});
+
+/* 3 alternating sequence */
+addGen("alternate",2,5,(L,C)=>{
+  const a=randInt(1,5+L), b=randInt(1,4+L), s=randInt(2,12);
+  const seq=[s,s+a,s+a-b,s+2*a-b,s+2*a-2*b,s+3*a-2*b];
+  const correct=seq[5];
+  return makeQ("alternate","PATTERN COMPLETION","Lengkapkan pola dua peraturan.",seq.slice(0,5).join(" → "),correct,
+    uniqueOptions(correct,[correct-a,correct+b,correct+a,correct-b]),
+    `Pola berselang-seli: +${a}, kemudian −${b}.`,L);
+});
+
+/* 4 multiplication */
+addGen("multiply",2,5,(L,C)=>{
+  const m=randInt(2,Math.min(2+L,5)), start=randInt(1,3);
+  const seq=[start];
+  for(let i=1;i<5;i++) seq.push(seq[i-1]*m);
+  return makeQ("multiply","NUMBER PATTERN","Apakah nombor seterusnya?",seq.slice(0,4).join(" → "),seq[4],
+    uniqueOptions(seq[4],[seq[3]+m,seq[4]-m,seq[4]+m,seq[3]*2]),
+    `Setiap nombor didarab ${m}.`,L);
+});
+
+/* 5 missing operation */
+addGen("missingAdd",1,4,(L,C)=>{
+  const a=randInt(2,20),b=randInt(2,10+L*3),c=a+b;
+  return makeQ("missingAdd","MISSING NUMBER","Cari nombor yang hilang.",`${a} + ? = ${c}`,b,
+    uniqueOptions(b,[b+1,b-1,a,c]),`${c} − ${a} = ${b}.`,L);
+});
+
+/* 6 missing multiplication */
+addGen("missingMul",2,5,(L,C)=>{
+  const a=randInt(2,4+L),b=randInt(2,5+L),c=a*b;
+  return makeQ("missingMul","MISSING NUMBER","Apakah nilai yang hilang?",`${a} × ? = ${c}`,b,
+    uniqueOptions(b,[a,b+1,Math.max(1,b-1),c]),`${c} ÷ ${a} = ${b}.`,L);
+});
+
+/* 7 odd number */
+addGen("oddNumber",1,3,(L,C)=>{
+  const parity=randInt(0,1);
+  const base=randInt(1,10)*2+parity;
+  const normal=[base,base+2,base+4];
+  let odd=base+randInt(1,3)*2+1;
+  while(normal.includes(odd)) odd++;
+  const opts=shuffle([...normal,odd]);
+  return makeQ("oddNumber","ODD ONE OUT","Tap nombor yang berbeza daripada kumpulan.",opts.join("   "),odd,opts,
+    `Tiga nombor mempunyai sifat ${parity?"ganjil":"genap"}, tetapi ${odd} tidak.`,L);
+});
+
+/* 8 shape odd */
+addGen("shapeOdd",1,3,(L,C)=>{
+  const sets=[
+    ["●","●","●","▲"],["■","■","◆","■"],["⭐","⭐","❤️","⭐"],
+    ["🔵","🔵","🟢","🔵"],["⬆️","⬆️","⬇️","⬆️"]
+  ];
+  const set=shuffle(pick(sets));
+  const counts={};set.forEach(x=>counts[x]=(counts[x]||0)+1);
+  const correct=Object.keys(counts).find(k=>counts[k]===1);
+  return makeQ("shapeOdd","ODD ONE OUT","Yang manakah berbeza?",set.join(" "),correct,shuffle([...new Set(set), "⬡","○"]).slice(0,4),
+    `${correct} tidak sama dengan bentuk atau arah majoriti.`,L);
+});
+
+/* 9 alternating shapes */
+addGen("shapePattern",1,4,(L,C)=>{
+  const pairs=shuffle(["🔵","🟨","🔺","🟢","⭐","🟣"]).slice(0,2);
+  const seq=[pairs[0],pairs[1],pairs[0],pairs[1],pairs[0]];
+  return makeQ("shapePattern","SHAPE PATTERN","Bentuk apakah seterusnya?",seq.join(" "),pairs[1],
+    shuffle([pairs[1],...shuffle(["🔵","🟨","🔺","🟢","⭐","🟣"].filter(x=>!pairs.includes(x))).slice(0,3)]),
+    `Bentuk bergilir antara ${pairs[0]} dan ${pairs[1]}.`,L);
+});
+
+/* 10 growing visual */
+addGen("growShape",1,3,(L,C)=>{
+  const icon=pick(["⭐","🔵","▲","🍎"]);
+  const counts=[1,2,3,4];
+  const visual=counts.slice(0,3).map(n=>icon.repeat(n)).join("  →  ");
+  const correct=icon.repeat(4);
+  return makeQ("growShape","VISUAL SEQUENCE","Pilih kumpulan seterusnya.",visual,correct,
+    shuffle([icon.repeat(4),icon.repeat(2),icon.repeat(5),icon.repeat(1)]),
+    "Bilangan objek bertambah satu pada setiap langkah.",L);
+});
+
+/* 11 number analogy */
+addGen("numAnalogy",2,5,(L,C)=>{
+  const op=pick(["add","mul"]);
+  if(op==="add"){
+    const d=randInt(2,8),a=randInt(1,15),b=a+d,c=randInt(2,20),ans=c+d;
+    return makeQ("numAnalogy","NUMBER ANALOGY","Gunakan hubungan yang sama.",`${a} : ${b}  =  ${c} : ?`,ans,
+      uniqueOptions(ans,[c-d,ans+1,ans+d,b]),`Pasangan pertama menggunakan +${d}. Gunakan +${d} pada ${c}.`,L);
+  }
+  const m=randInt(2,4),a=randInt(2,6),b=a*m,c=randInt(2,7),ans=c*m;
+  return makeQ("numAnalogy","NUMBER ANALOGY","Gunakan hubungan yang sama.",`${a} : ${b}  =  ${c} : ?`,ans,
+    uniqueOptions(ans,[c+m,ans-m,ans+m,b]),`Hubungannya ialah ×${m}.`,L);
+});
+
+/* 12 word analogy */
+addGen("wordAnalogy",1,5,(L,C)=>{
+  const data=[
+    ["Burung","Langit","Ikan","Air","Tanah","Pokok","Rumah"],
+    ["Mata","Melihat","Telinga","Mendengar","Berjalan","Makan","Tidur"],
+    ["Pagi","Sarapan","Malam","Makan malam","Bermain","Sekolah","Buku"],
+    ["Pensel","Menulis","Gunting","Memotong","Membaca","Berlari","Melompat"],
+    ["Anak kucing","Kucing","Anak ayam","Ayam","Itik","Burung","Harimau"]
+  ];
+  const d=pick(data);
+  return makeQ("wordAnalogy","WORD ANALOGY","Lengkapkan hubungan perkataan.",`${d[0]} : ${d[1]} = ${d[2]} : ?`,d[3],
+    shuffle([d[3],d[4],d[5],d[6]]),`Hubungan pasangan kedua sama seperti ${d[0]} dengan ${d[1]}.`,L);
+});
+
+/* 13 classification */
+addGen("classify",1,4,(L,C)=>{
+  const sets=[
+    {group:["Epal","Mangga","Pisang"],odd:"Kereta",why:"Tiga item ialah buah."},
+    {group:["Segi tiga","Bulatan","Segi empat"],odd:"Kucing",why:"Tiga item ialah bentuk."},
+    {group:["Isnin","Selasa","Rabu"],odd:"Januari",why:"Tiga item ialah hari."},
+    {group:["2","4","6"],odd:"7",why:"Tiga nombor ialah nombor genap."},
+    {group:["Bas","Kereta","Motosikal"],odd:"Pisang",why:"Tiga item ialah kenderaan."}
+  ];
+  const d=pick(sets),opts=shuffle([...d.group,d.odd]);
+  return makeQ("classify","CLASSIFICATION","Yang manakah tidak termasuk dalam kumpulan?",opts.join(" • "),d.odd,opts,d.why,L);
+});
+
+/* 14 hidden operation */
+addGen("hiddenOp",2,5,(L,C)=>{
+  const k=randInt(1,5+L),a=randInt(2,9),b=randInt(2,9),x=randInt(2,9),y=randInt(2,9);
+  const r1=a+b+k,r2=x+y+k;
+  return makeQ("hiddenOp","MATHEMATICAL LOGIC","Cari nilai ? menggunakan peraturan yang sama.",
+    `${a} ◇ ${b} = ${r1}<br>${x} ◇ ${y} = ?`,r2,
+    uniqueOptions(r2,[x+y,r2+k,r2-1,r2+1]),`Peraturannya: tambah kedua-dua nombor, kemudian tambah ${k}.`,L);
+});
+
+/* 15 symbol equation */
+addGen("symbolEq",2,5,(L,C)=>{
+  const a=randInt(2,9),b=randInt(1,8);
+  const total=a*2+b;
+  return makeQ("symbolEq","SYMBOL EQUATION","Jika ★ = "+a+" dan ● = "+b+", berapakah nilainya?",
+    `★ + ● + ★ = ?`,total,uniqueOptions(total,[a+b,total-a,total+b,total+1]),
+    `${a} + ${b} + ${a} = ${total}.`,L);
+});
+
+/* 16 balance */
+addGen("balance",2,5,(L,C)=>{
+  const ball=randInt(2,8), boxes=randInt(2,4), total=ball*boxes;
+  return makeQ("balance","BALANCE PUZZLE","Penimbang seimbang. Berapakah nilai satu 🔵?",
+    `${"🔵".repeat(boxes)}  ⚖️  ${total}`,ball,
+    uniqueOptions(ball,[ball+1,Math.max(1,ball-1),boxes,total]),`${total} ÷ ${boxes} = ${ball}.`,L);
+});
+
+/* 17 matrix addition */
+addGen("matrixAdd",3,5,(L,C)=>{
+  const a=randInt(1,8),b=randInt(1,8),c=randInt(1,8),d=randInt(1,8);
+  const r1=a+b,r2=c+d;
+  return makeQ("matrixAdd","VISUAL MATRIX","Dalam setiap baris, kotak ketiga ialah jumlah dua kotak pertama.",
+    `${a} │ ${b} │ ${r1}<br>────────<br>${c} │ ${d} │ ?`,r2,
+    uniqueOptions(r2,[c*d,r2+1,Math.abs(c-d),r1]),`${c} + ${d} = ${r2}.`,L);
+});
+
+/* 18 numerical matrix */
+addGen("matrixMul",3,5,(L,C)=>{
+  const a=randInt(2,6),b=randInt(2,5),c=randInt(2,6),d=randInt(2,5);
+  return makeQ("matrixMul","NUMERICAL MATRIX","Peraturan setiap baris adalah sama.",
+    `${a} │ ${b} │ ${a*b}<br>────────<br>${c} │ ${d} │ ?`,c*d,
+    uniqueOptions(c*d,[c+d,c*d+1,c*d-d,a*b]),`${c} × ${d} = ${c*d}.`,L);
+});
+
+/* 19 rotation */
+addGen("rotation",3,5,(L,C)=>{
+  const dirs=["⬆️","➡️","⬇️","⬅️"];
+  const start=randInt(0,3),seq=[0,1,2].map(i=>dirs[(start+i)%4]);
+  const correct=dirs[(start+3)%4];
+  return makeQ("rotation","SPATIAL ROTATION","Anak panah berpusing 90° mengikut arah jam. Pilih seterusnya.",
+    seq.join(" → "),correct,shuffle(dirs),
+    "Setiap langkah berpusing 90° mengikut arah jam.",L);
+});
+
+/* 20 direction */
+addGen("direction",2,5,(L,C)=>{
+  const turns=randInt(1,3);
+  const dirs=["Utara","Timur","Selatan","Barat"];
+  const icons=["⬆️","➡️","⬇️","⬅️"];
+  const start=randInt(0,3),ans=(start+turns)%4;
+  return makeQ("direction","DIRECTION CHALLENGE",`Robot menghadap ${dirs[start]} dan berpusing kanan ${turns} kali. Ke mana ia menghadap?`,
+    `${icons[start]}  🤖`,dirs[ans],shuffle(dirs),
+    `Setiap pusingan kanan ialah 90°. Jawapannya ${dirs[ans]}.`,L);
+});
+
+/* 21 counting */
+addGen("counting",1,3,(L,C)=>{
+  const icon=pick(["🍎","⭐","🔵","🐟","🧩"]);
+  const n=randInt(4,8+L*2);
+  return makeQ("counting","COUNTING CHALLENGE","Berapa banyak objek di bawah?",icon.repeat(n),n,
+    uniqueOptions(n,[n-1,n+1,n+2,Math.max(1,n-2)]),`Terdapat ${n} objek semuanya.`,L);
+});
+
+/* 22 comparison */
+addGen("compare",1,4,(L,C)=>{
+  const a=randInt(1,50+L*20),b=randInt(1,50+L*20);
+  if(a===b) return GENERATORS.find(g=>g.id==="compare").fn(L,C);
+  const correct=a>b?">":"<";
+  return makeQ("compare","COMPARISON REASONING","Pilih simbol yang betul.",`${a}  ?  ${b}`,correct,
+    shuffle([">","<","=","≠"]),`${a} ${correct} ${b}.`,L);
+});
+
+/* 23 mystery */
+addGen("mystery",3,5,(L,C)=>{
+  const x=randInt(2,12),m=randInt(2,5),add=randInt(1,9),total=x*m+add;
+  return makeQ("mystery","MATHEMATICAL MYSTERY","Saya fikir satu nombor. Saya darabkannya dan kemudian tambah. Apakah nombor asal?",
+    `? × ${m} + ${add} = ${total}`,x,
+    uniqueOptions(x,[x+1,x-1,m,total-add]),`Tolak ${add}: ${total-add}. Kemudian bahagi ${m}: ${x}.`,L);
+});
+
+/* 24 story logic */
+addGen("story",2,5,(L,C)=>{
+  const stories=[
+    {q:"Aina lebih tinggi daripada Bina. Bina lebih tinggi daripada Cici. Siapa paling tinggi?",a:"Aina",o:["Aina","Bina","Cici","Tidak pasti"],e:"Aina > Bina > Cici."},
+    {q:"Ali tiba sebelum Bala. Bala tiba sebelum Chan. Siapa tiba terakhir?",a:"Chan",o:["Ali","Bala","Chan","Tidak pasti"],e:"Urutannya Ali, Bala, kemudian Chan."},
+    {q:"Kotak merah lebih berat daripada biru. Kotak biru lebih berat daripada hijau. Mana paling ringan?",a:"Hijau",o:["Merah","Biru","Hijau","Sama berat"],e:"Hijau lebih ringan daripada biru dan merah."},
+    {q:"Sara membaca lebih banyak buku daripada Mia. Mia membaca lebih banyak daripada Lili. Siapa membaca paling sedikit?",a:"Lili",o:["Sara","Mia","Lili","Tidak pasti"],e:"Susunannya Sara > Mia > Lili."}
+  ];
+  const d=pick(stories);
+  return makeQ("story","LOGICAL STORY PROBLEM",d.q,"📖",d.a,shuffle(d.o),d.e,L);
+});
+
+/* 25 true false */
+addGen("trueFalse",1,5,(L,C)=>{
+  const a=randInt(2,20),b=randInt(2,20),shown=a+b+(Math.random()<.5?0:pick([-2,-1,1,2]));
+  const correct=(a+b===shown)?"BENAR":"PALSU";
+  return makeQ("trueFalse","QUICK CHALLENGE","Benar atau palsu?",`${a} + ${b} = ${shown}`,correct,
+    ["BENAR","PALSU"],`${a} + ${b} sebenarnya ialah ${a+b}.`,L,"truefalse");
+});
+
+/* 26 code breaking */
+addGen("code",4,5,(L,C)=>{
+  const k=randInt(2,8),a=randInt(1,9),b=randInt(1,9);
+  const ca=a+k,cb=b+k;
+  return makeQ("code","CODE BREAKING","Setiap nombor kod ditambah nilai rahsia yang sama. Pecahkan kod.",
+    `${a} → ${ca}<br>${b} → ?`,cb,uniqueOptions(cb,[b-k,b+k+1,b+k-1,a+k]),
+    `Kunci kod ialah +${k}. Jadi ${b} + ${k} = ${cb}.`,L);
+});
+
+/* 27 square sequence */
+addGen("squares",3,5,(L,C)=>{
+  const s=randInt(1,4),seq=Array.from({length:5},(_,i)=>(s+i)**2);
+  return makeQ("squares","ADVANCED NUMBER PATTERN","Apakah nombor seterusnya?",seq.slice(0,4).join(" → "),seq[4],
+    uniqueOptions(seq[4],[seq[3]+2,seq[4]-1,seq[4]+1,seq[3]*2]),
+    `Ini ialah kuasa dua berturutan: ${s}², ${s+1}², ${s+2}² dan seterusnya.`,L);
+});
+
+/* 28 fibonacci-like */
+addGen("sumPrevious",4,5,(L,C)=>{
+  const a=randInt(1,5),b=randInt(2,7),seq=[a,b];
+  for(let i=2;i<6;i++) seq.push(seq[i-1]+seq[i-2]);
+  return makeQ("sumPrevious","MULTI-RULE SEQUENCE","Setiap nombor menggunakan dua nombor sebelumnya.",seq.slice(0,5).join(" → "),seq[5],
+    uniqueOptions(seq[5],[seq[4]+seq[3]+1,seq[4]*2,seq[5]-2,seq[4]+seq[2]]),
+    `${seq[3]} + ${seq[4]} = ${seq[5]}.`,L);
+});
+
+/* 29 grid row difference */
+addGen("gridDiff",3,5,(L,C)=>{
+  const a=randInt(8,20),b=randInt(1,a-1),c=randInt(8,20),d=randInt(1,c-1);
+  return makeQ("gridDiff","GRID PUZZLE","Dalam setiap baris, nombor ketiga ialah beza dua nombor pertama.",
+    `${a} │ ${b} │ ${a-b}<br>────────<br>${c} │ ${d} │ ?`,c-d,
+    uniqueOptions(c-d,[c+d,Math.abs(c-d)+1,c-d-1,a-b]),
+    `${c} − ${d} = ${c-d}.`,L);
+});
+
+/* 30 double plus */
+addGen("doublePlus",4,5,(L,C)=>{
+  const add=randInt(1,5),start=randInt(1,5),seq=[start];
+  for(let i=1;i<5;i++) seq.push(seq[i-1]*2+add);
+  return makeQ("doublePlus","GENIUS PATTERN","Cari peraturan tersembunyi dan nombor seterusnya.",
+    seq.slice(0,4).join(" → "),seq[4],
+    uniqueOptions(seq[4],[seq[3]*2,seq[4]+add,seq[4]-add,seq[3]+add]),
+    `Setiap langkah: darab 2, kemudian tambah ${add}.`,L);
+});
+
+/* 31 memory sequence */
+addGen("memory",2,5,(L,C)=>{
+  const len=Math.min(3+L,7);
+  const digits=Array.from({length:len},()=>randInt(1,9));
+  const correct=digits.join("");
+  const opts=uniqueOptions(correct,[
+    [...digits].reverse().join(""),
+    [...digits.slice(1),digits[0]].join(""),
+    digits.map((x,i)=>i===len-1?(x%9)+1:x).join("")
+  ]);
+  return makeQ("memory","MEMORY SEQUENCE","Ingat urutan ini. Ia akan hilang!",correct,correct,opts,
+    `Urutan asal ialah ${correct}.`,L,"memory");
+});
+
+/* 32 working memory reverse */
+addGen("reverseMemory",3,5,(L,C)=>{
+  const len=Math.min(3+L,7);
+  const digits=Array.from({length:len},()=>randInt(1,9));
+  const shown=digits.join(" ");
+  const correct=[...digits].reverse().join("");
+  return makeQ("reverseMemory","WORKING MEMORY","Ingat nombor ini dan pilih urutan TERBALIK.",shown,correct,
+    uniqueOptions(correct,[
+      digits.join(""),
+      [...digits].reverse().map((x,i)=>i===0?(x%9)+1:x).join(""),
+      [...digits.slice(1),digits[0]].reverse().join("")
+    ]),`Urutan ${digits.join("")} apabila diterbalikkan menjadi ${correct}.`,L,"memory");
+});
+
+/* 33 deduction */
+addGen("deduction",3,5,(L,C)=>{
+  const d=[
+    {
+      q:"Semua Zupi berwarna biru. Miko ialah Zupi. Apakah yang pasti?",
+      a:"Miko biru",
+      o:["Miko biru","Miko merah","Miko besar","Miko boleh terbang"],
+      e:"Jika semua Zupi biru dan Miko ialah Zupi, Miko mesti biru."
+    },
+    {
+      q:"Tiada Kori boleh terbang. Piko ialah Kori. Apakah yang pasti?",
+      a:"Piko tidak terbang",
+      o:["Piko tidak terbang","Piko terbang","Piko hijau","Piko kecil"],
+      e:"Piko ialah Kori, jadi Piko tidak boleh terbang."
+    }
+  ];
+  const x=pick(d);
+  return makeQ("deduction","LOGIC DEDUCTION",x.q,"🔎",x.a,shuffle(x.o),x.e,L);
+});
+
+/* 34 pair pattern */
+addGen("pairPattern",2,5,(L,C)=>{
+  const a=randInt(1,8),b=randInt(2,6);
+  const seq=[a,a+b,a+1,a+1+b,a+2];
+  const correct=a+2+b;
+  return makeQ("pairPattern","PATTERN COMPLETION","Nombor muncul dalam pasangan dengan beza yang sama.",
+    seq.join(" → "),correct,
+    uniqueOptions(correct,[correct-1,correct+1,a+3,a+b+3]),
+    `Pasangan ialah (${a},${a+b}), (${a+1},${a+1+b}), jadi (${a+2},${correct}).`,L);
+});
+
+/* 35 remainder logic */
+addGen("logicElimination",4,5,(L,C)=>{
+  const answer=pick([6,12,18,24,30]);
+  const options=shuffle([answer,answer+2,answer+3,answer+5]);
+  return makeQ("logicElimination","LOGIC ELIMINATION","Pilih nombor yang boleh dibahagi tepat dengan 2 DAN 3.",
+    options.join(" • "),answer,options,
+    `${answer} ialah gandaan 6, jadi boleh dibahagi tepat dengan 2 dan 3.`,L);
+});
+
+function initApp(){
+  state.sound = localStorage.getItem("logicalIQ_sound") !== "off";
+  $("soundBtn").textContent = state.sound ? "🔊" : "🔇";
+
+  state.playerName = localStorage.getItem("logicalIQ_playerName") || "";
+  state.playerId = localStorage.getItem("logicalIQ_playerId") || "";
+  $("playerNameInput").value = state.playerName;
+
+  loadLocalData();
+  loadSeenHistory();
+  bindEvents();
+  renderLevels();
+
+  setTimeout(()=>{
+    if(state.playerName && state.playerId) showHome();
+    else showScreen("login");
+  },1800);
+}
+
+function bindEvents(){
+  $("loginBtn").addEventListener("click",loginPlayer);
+  $("playerNameInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter") loginPlayer();
+  });
+
+  $("playBtn").addEventListener("click",()=>{
+    audio.click();
+    showScreen("levels");
+  });
+  $("levelBtn").addEventListener("click",()=>showScreen("levels"));
+  document.querySelectorAll(".backHome").forEach(b=>b.addEventListener("click",showHome));
+
+  $("soundBtn").addEventListener("click",toggleSound);
+  $("leaderBtn").addEventListener("click",openLeaderboard);
+  $("resultLeaderBtn").addEventListener("click",openLeaderboard);
+  $("howBtn").addEventListener("click",()=>openModal("howModal"));
+
+  $("changePlayerBtn").addEventListener("click",()=>{
+    $("playerNameInput").value="";
+    $("loginError").textContent="";
+    showScreen("login");
+  });
+
+  document.querySelectorAll(".closeModal").forEach(btn=>{
+    btn.addEventListener("click",()=>btn.closest(".modal").classList.add("hidden"));
+  });
+
+  $("quitBtn").addEventListener("click",()=>{
+    pauseTimer();
+    openModal("quitModal");
+  });
+  $("cancelQuit").addEventListener("click",()=>{
+    $("quitModal").classList.add("hidden");
+    if(state.gameActive && !state.answered) startTimer(state.timeLeft);
+  });
+  $("confirmQuit").addEventListener("click",()=>{
+    $("quitModal").classList.add("hidden");
+    state.runToken++;
+    clearGameTimers();
+    state.gameActive=false;
+    showHome();
+  });
+
+  $("againBtn").addEventListener("click",()=>startGame(state.currentLevel));
+  $("nextLevelBtn").addEventListener("click",()=>{
+    startGame(Math.min(5,state.currentLevel+1));
+  });
+  $("resultHomeBtn").addEventListener("click",showHome);
+
+  window.addEventListener("beforeunload",clearGameTimers);
+}
+
+function showScreen(id){
+  screens.forEach(s=>s.classList.toggle("active",s.id===id));
+  window.scrollTo(0,0);
+}
+
+function loginPlayer(){
+  const name=$("playerNameInput").value.trim().replace(/\s+/g," ");
+  if(name.length<2){
+    $("loginError").textContent="Masukkan nama sekurang-kurangnya 2 aksara.";
+    audio.wrong();
+    return;
+  }
+  $("loginError").textContent="";
+  audio.click();
+
+  const oldName=localStorage.getItem("logicalIQ_playerName");
+  if(!state.playerId || oldName!==name){
+    state.playerId=createPlayerId();
+    state.localStats={bestScore:0,totalGames:0,bestStreak:0,highestLevel:1};
+    state.unlockedLevel=1;
+  }
+
+  state.playerName=name;
+  localStorage.setItem("logicalIQ_playerName",name);
+  localStorage.setItem("logicalIQ_playerId",state.playerId);
+  loadLocalData();
+  renderLevels();
+  syncPlayerBase();
+  showHome();
+}
+
+function createPlayerId(){
+  if(firebaseReady){
+    try{return db.ref("players").push().key;}
+    catch(e){}
+  }
+  return "local_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);
+}
+
+function localKey(){
+  return "logicalIQ_stats_"+state.playerId;
+}
+
+function loadLocalData(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(localKey())||"null");
+    if(saved) state.localStats={...state.localStats,...saved};
+  }catch(e){}
+  state.unlockedLevel=Math.max(1,Math.min(5,state.localStats.highestLevel||1));
+}
+
+function saveLocalData(){
+  localStorage.setItem(localKey(),JSON.stringify(state.localStats));
+}
+
+function loadSeenHistory(){
+  try{
+    const arr=JSON.parse(localStorage.getItem("logicalIQ_seen")||"[]");
+    state.seenHistory=new Set(Array.isArray(arr)?arr.slice(-500):[]);
+  }catch(e){
+    state.seenHistory=new Set();
+  }
+}
+
+function persistSeen(sig){
+  state.seenHistory.add(sig);
+  const arr=[...state.seenHistory].slice(-500);
+  localStorage.setItem("logicalIQ_seen",JSON.stringify(arr));
+}
+
+function showHome(){
+  clearGameTimers();
+  state.gameActive=false;
+  $("helloName").textContent=`Hai, ${state.playerName}!`;
+  $("homeBest").textContent=state.localStats.bestScore||0;
+  $("homeGames").textContent=state.localStats.totalGames||0;
+  $("homeStreak").textContent=state.localStats.bestStreak||0;
+  showScreen("home");
+}
+
+function renderLevels(){
+  $("levelList").innerHTML="";
+  LEVELS.forEach(level=>{
+    const locked=level.id>state.unlockedLevel;
+    const btn=document.createElement("button");
+    btn.className=`level-card ${level.class} ${locked?"locked":""}`;
+    btn.disabled=locked;
+    btn.setAttribute("aria-label",locked?`${level.name} terkunci`:`Main ${level.name}`);
+    btn.innerHTML=`
+      <span class="level-num">${level.id}</span>
+      <span>
+        <h3>${level.icon} ${level.name}</h3>
+        <p>${level.difficulty} • 10 CABARAN</p>
+      </span>
+      <span>${locked?"🔒":"▶️"}</span>`;
+    if(!locked) btn.addEventListener("click",()=>startGame(level.id));
+    $("levelList").appendChild(btn);
+  });
+}
+
+function resetGameState(){
+  state.runToken++;
+  clearGameTimers();
+  state.score=0;
+  state.questionIndex=0;
+  state.correct=0;
+  state.wrong=0;
+  state.streak=0;
+  state.bestSessionStreak=0;
+  state.hearts=3;
+  state.complexity=1;
+  state.consecutiveWrong=0;
+  state.sessionSeen=new Set();
+  state.currentQuestion=null;
+  state.answered=false;
+  state.responseTimes=[];
+  state.gameActive=true;
+  $("feedback").innerHTML="";
+}
+
+function startGame(level){
+  audio.click();
+  resetGameState();
+  state.currentLevel=Math.max(1,Math.min(5,level));
+  updateHUD();
+  showScreen("game");
+  nextQuestion();
+}
+
+function restartGame(){
+  startGame(state.currentLevel);
+}
+
+function generateQuestion(){
+  const eligible=GENERATORS.filter(g=>g.minLevel<=state.currentLevel && g.maxLevel>=state.currentLevel);
+  let fallback=null;
+
+  for(let attempt=0;attempt<70;attempt++){
+    const g=pick(eligible);
+    let q;
+    try{q=g.fn(state.currentLevel,state.complexity);}
+    catch(e){continue;}
+    if(!q) continue;
+
+    const sig=signature(q);
+    q.signature=sig;
+    fallback=q;
+
+    if(!state.sessionSeen.has(sig) && !state.seenHistory.has(sig)){
+      state.sessionSeen.add(sig);
+      persistSeen(sig);
+      return q;
+    }
+  }
+
+  for(let attempt=0;attempt<30;attempt++){
+    const g=pick(eligible);
+    const q=g.fn(state.currentLevel,state.complexity);
+    const sig=signature(q);
+    q.signature=sig;
+    if(!state.sessionSeen.has(sig)){
+      state.sessionSeen.add(sig);
+      persistSeen(sig);
+      return q;
+    }
+  }
+
+  if(fallback){
+    fallback.signature=signature(fallback)+"|"+Date.now();
+    return fallback;
+  }
+
+  return makeQ("safe","QUICK CHALLENGE","Berapakah 2 + 2?","2 + 2",4,[3,4,5,6],"2 + 2 = 4.",1);
+}
+
+function renderQuestion(){
+  const q=state.currentQuestion;
+  const token=state.runToken;
+
+  $("questionCard").style.animation="none";
+  void $("questionCard").offsetWidth;
+  $("questionCard").style.animation="pop .3s ease";
+
+  $("category").textContent=q.category;
+  $("questionText").innerHTML=q.text;
+  $("visual").innerHTML=q.visual;
+  $("answers").innerHTML="";
+  $("feedback").innerHTML="";
+  state.answered=false;
+
+  const renderAnswers=()=>{
+    if(token!==state.runToken || !state.gameActive) return;
+    $("answers").innerHTML="";
+    q.options.forEach(option=>{
+      const btn=document.createElement("button");
+      btn.className="answer";
+      btn.type="button";
+      btn.textContent=option;
+      btn.setAttribute("aria-label","Jawapan "+option);
+      btn.addEventListener("click",()=>handleAnswer(option,btn),{once:true});
+      $("answers").appendChild(btn);
+    });
+    state.questionStart=performance.now();
+    startTimer(getTimeLimit());
+  };
+
+  if(q.type==="memory"){
+    $("answers").innerHTML=`<div style="grid-column:1/-1;text-align:center;font-weight:900;color:var(--muted)">👀 Ingat baik-baik...</div>`;
+    $("visual").classList.add("memory-flash");
+    state.questionStart=performance.now();
+
+    const timeout=setTimeout(()=>{
+      state.timeoutIds.delete(timeout);
+      if(token!==state.runToken || !state.gameActive) return;
+      $("visual").classList.remove("memory-flash");
+      $("visual").innerHTML="❓❓❓";
+      renderAnswers();
+    },Math.max(1800,3200-state.currentLevel*200));
+    state.timeoutIds.add(timeout);
+  }else{
+    $("visual").classList.remove("memory-flash");
+    renderAnswers();
+  }
+}
+
+function getTimeLimit(){
+  const base=[22,21,20,22,24][state.currentLevel-1];
+  return Math.max(12,base-(state.complexity-1)*2);
+}
+
+function startTimer(seconds){
+  clearInterval(state.timerId);
+  state.timeLeft=seconds;
+  const max=seconds;
+  updateTimer(max);
+
+  state.timerId=setInterval(()=>{
+    if(!state.gameActive || state.answered){
+      clearInterval(state.timerId);
+      state.timerId=null;
+      return;
+    }
+    state.timeLeft--;
+    updateTimer(max);
+    if(state.timeLeft<=5 && state.timeLeft>0) audio.countdown();
+    if(state.timeLeft<=0){
+      clearInterval(state.timerId);
+      state.timerId=null;
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimer(max){
+  $("timer").textContent=state.timeLeft;
+  const pct=Math.max(0,(state.timeLeft/max)*100);
+  $("timerWrap").style.setProperty("--timer",pct+"%");
+}
+
+function pauseTimer(){
+  if(state.timerId){
+    clearInterval(state.timerId);
+    state.timerId=null;
+  }
+}
+
+function handleTimeout(){
+  if(state.answered || !state.gameActive) return;
+  state.answered=true;
+  state.wrong++;
+  state.hearts--;
+  state.streak=0;
+  state.consecutiveWrong++;
+  disableAnswers();
+  revealCorrect();
+  $("feedback").innerHTML=`<strong>⏰ MASA TAMAT!</strong><br>${state.currentQuestion.explanation}`;
+  audio.wrong();
+  adaptDifficulty(false,getTimeLimit());
+  updateHUD();
+  scheduleNext();
+}
+
+function handleAnswer(selected,button){
+  if(state.answered || !state.gameActive) return;
+  state.answered=true;
+  pauseTimer();
+
+  const elapsed=Math.max(.1,(performance.now()-state.questionStart)/1000);
+  state.responseTimes.push(elapsed);
+
+  const correct=String(selected)===String(state.currentQuestion.correct);
+  disableAnswers();
+
+  if(correct){
+    state.correct++;
+    state.streak++;
+    state.consecutiveWrong=0;
+    state.bestSessionStreak=Math.max(state.bestSessionStreak,state.streak);
+
+    const timeBonus=Math.max(0,Math.min(50,Math.round(state.timeLeft*2.5)));
+    let combo=0;
+    if(state.streak>=5) combo=100;
+    else if(state.streak>=3) combo=50;
+
+    state.score+=100+timeBonus+combo;
+    button.classList.add("correct");
+    button.textContent="✓ "+button.textContent;
+
+    const cheers=["HEBAT!","BIJAK!","TEPAT!","SUPER!","LUAR BIASA!"];
+    $("feedback").innerHTML=`<strong>🎉 ${pick(cheers)}</strong><br>${state.currentQuestion.explanation}${combo?`<br>🔥 Bonus combo +${combo}!`:""}`;
+    audio.correct();
+    confetti(16);
+    adaptDifficulty(true,elapsed);
+  }else{
+    state.wrong++;
+    state.hearts--;
+    state.streak=0;
+    state.consecutiveWrong++;
+    button.classList.add("wrong");
+    button.textContent="✕ "+button.textContent;
+    revealCorrect();
+    $("feedback").innerHTML=`<strong>💡 CUBA LAGI NANTI!</strong><br>${state.currentQuestion.explanation}`;
+    audio.wrong();
+    adaptDifficulty(false,elapsed);
+  }
+
+  updateHUD();
+  scheduleNext();
+}
+
+function disableAnswers(){
+  document.querySelectorAll("#answers .answer").forEach(btn=>{
+    btn.disabled=true;
+  });
+}
+
+function revealCorrect(){
+  document.querySelectorAll("#answers .answer").forEach(btn=>{
+    const clean=btn.textContent.replace(/^[✓✕]\s*/,"");
+    if(clean===String(state.currentQuestion.correct)){
+      btn.classList.add("correct");
+      if(!btn.textContent.startsWith("✓")) btn.textContent="✓ "+btn.textContent;
+    }else if(!btn.classList.contains("wrong")){
+      btn.classList.add("dim");
+    }
+  });
+}
+
+function adaptDifficulty(correct,elapsed){
+  const old=state.complexity;
+
+  if(correct && state.streak>0 && state.streak%3===0){
+    state.complexity=Math.min(3,state.complexity+1);
+  }
+  if(!correct && state.consecutiveWrong>=2){
+    state.complexity=Math.max(1,state.complexity-1);
+    state.consecutiveWrong=0;
+  }
+  if(correct && elapsed<4 && state.streak>=2){
+    state.complexity=Math.min(3,state.complexity+1);
+  }
+
+  if(state.complexity>old) showAdaptive("⚡ Cabaran Meningkat!");
+  else if(state.streak===3) showAdaptive("🔥 Otak Sedang Panas!");
+}
+
+function showAdaptive(text){
+  const el=$("adaptive");
+  el.textContent=text;
+  el.classList.remove("hidden");
+  const t=setTimeout(()=>{
+    el.classList.add("hidden");
+    state.timeoutIds.delete(t);
+  },1500);
+  state.timeoutIds.add(t);
+}
+
+function scheduleNext(){
+  const token=state.runToken;
+  const t=setTimeout(()=>{
+    state.timeoutIds.delete(t);
+    if(token!==state.runToken || !state.gameActive) return;
+    if(state.hearts<=0 || state.questionIndex>=10) endGame();
+    else nextQuestion();
+  },1350);
+  state.timeoutIds.add(t);
+}
+
+function nextQuestion(){
+  if(!state.gameActive) return;
+  clearInterval(state.timerId);
+  state.timerId=null;
+
+  if(state.questionIndex>=10 || state.hearts<=0){
+    endGame();
+    return;
+  }
+
+  state.questionIndex++;
+  state.currentQuestion=generateQuestion();
+  updateHUD();
+  renderQuestion();
+}
+
+function updateHUD(){
+  $("score").textContent=state.score;
+  $("streak").textContent=state.streak;
+  $("hearts").textContent="❤️".repeat(Math.max(0,state.hearts))+"🖤".repeat(Math.max(0,3-state.hearts));
+  $("progressBar").style.width=`${(state.questionIndex/10)*100}%`;
+}
+
+function clearGameTimers(){
+  if(state.timerId){
+    clearInterval(state.timerId);
+    state.timerId=null;
+  }
+  state.timeoutIds.forEach(id=>clearTimeout(id));
+  state.timeoutIds.clear();
+}
+
+async function endGame(){
+  if(!state.gameActive) return;
+  state.gameActive=false;
+  clearGameTimers();
+
+  const accuracy=state.questionIndex ? Math.round((state.correct/state.questionIndex)*100) : 0;
+  const avg=state.responseTimes.length
+    ? state.responseTimes.reduce((a,b)=>a+b,0)/state.responseTimes.length
+    : 0;
+
+  const completed=state.questionIndex>=10 || state.hearts<=0;
+  if(completed && state.currentLevel===state.unlockedLevel && state.currentLevel<5){
+    state.unlockedLevel=Math.min(5,state.currentLevel+1);
+  }
+
+  state.localStats.bestScore=Math.max(state.localStats.bestScore||0,state.score);
+  state.localStats.totalGames=(state.localStats.totalGames||0)+1;
+  state.localStats.bestStreak=Math.max(state.localStats.bestStreak||0,state.bestSessionStreak);
+  state.localStats.highestLevel=Math.max(state.localStats.highestLevel||1,state.unlockedLevel);
+  saveLocalData();
+  renderLevels();
+
+  $("resultName").textContent=state.playerName;
+  $("resultScore").textContent=state.score;
+  $("rCorrect").textContent=state.correct;
+  $("rWrong").textContent=state.wrong;
+  $("rAccuracy").textContent=accuracy+"%";
+  $("rStreak").textContent=state.bestSessionStreak;
+  $("rTime").textContent=avg.toFixed(1)+"s";
+
+  let stars=1,title="Bagus!",msg="🌟 Terus berlatih. Otak kamu semakin kuat!";
+  if(accuracy>=80){
+    stars=3;title="Luar Biasa!";msg="🏆 Hebat! Cabaran seterusnya menanti!";
+  }else if(accuracy>=60){
+    stars=2;title="Super!";msg="🔥 Kamu seorang Detektif Corak yang hebat!";
+  }
+  $("resultTitle").textContent=title;
+  $("resultStars").textContent="⭐".repeat(stars)+"☆".repeat(3-stars);
+  $("resultMessage").textContent=msg;
+
+  const nextAvailable=state.currentLevel<5 && state.currentLevel+1<=state.unlockedLevel;
+  $("nextLevelBtn").classList.toggle("hidden",!nextAvailable);
+
+  showScreen("result");
+  audio.complete();
+  confetti(30);
+  saveScore();
+}
+
+async function syncPlayerBase(){
+  if(!firebaseReady || !state.playerId) return;
+  try{
+    await db.ref("players/"+state.playerId).update({
+      playerId:state.playerId,
+      playerName:state.playerName,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP
+    });
+  }catch(e){
+    showToast("☁️ Mod luar talian: permainan masih boleh dimainkan.");
+  }
+}
+
+async function saveScore(){
+  if(!firebaseReady || !state.playerId){
+    showToast("📱 Skor disimpan pada peranti ini.");
+    return;
+  }
+
+  const ref=db.ref("players/"+state.playerId);
+  try{
+    await ref.transaction(current=>{
+      current=current||{};
+      return {
+        playerId:state.playerId,
+        playerName:state.playerName,
+        bestScore:Math.max(Number(current.bestScore)||0,state.localStats.bestScore||0),
+        totalGames:Math.max(Number(current.totalGames)||0,state.localStats.totalGames||0),
+        bestStreak:Math.max(Number(current.bestStreak)||0,state.localStats.bestStreak||0),
+        highestLevel:Math.max(Number(current.highestLevel)||1,state.localStats.highestLevel||1),
+        updatedAt:Date.now()
+      };
+    });
+  }catch(e){
+    showToast("☁️ Sambungan Firebase gagal. Skor selamat disimpan secara lokal.");
+  }
+}
+
+function openModal(id){
+  audio.click();
+  $(id).classList.remove("hidden");
+}
+
+function openLeaderboard(){
+  openModal("leaderModal");
+  loadLeaderboard();
+}
+
+async function loadLeaderboard(){
+  const box=$("leaderContent");
+  box.className="loading";
+  box.innerHTML='<div class="spinner">🧠</div><p>Memuatkan genius...</p>';
+
+  if(!firebaseReady){
+    box.innerHTML="<p>☁️ Leaderboard tidak dapat dihubungi sekarang.</p>";
+    return;
+  }
+
+  try{
+    const snap=await db.ref("players").orderByChild("bestScore").limitToLast(10).once("value");
+    const rows=[];
+    snap.forEach(child=>{
+      const v=child.val();
+      if(v && typeof v.bestScore!=="undefined") rows.push(v);
+    });
+    rows.sort((a,b)=>(b.bestScore||0)-(a.bestScore||0));
+
+    if(!rows.length){
+      box.innerHTML="<p>Belum ada rekod. Jadilah genius pertama!</p>";
+      return;
+    }
+
+    box.className="";
+    box.innerHTML="";
+    rows.forEach((p,i)=>{
+      const row=document.createElement("div");
+      row.className="leader-row"+(p.playerId===state.playerId?" me":"");
+      const medals=["🥇","🥈","🥉"];
+      row.innerHTML=`
+        <div class="medal">${medals[i]||"#"+(i+1)}</div>
+        <div><strong>${escapeHTML(p.playerName||"Player")}</strong><br><small>Level ${p.highestLevel||1}</small></div>
+        <strong>${Number(p.bestScore)||0} ⭐</strong>`;
+      box.appendChild(row);
+    });
+  }catch(e){
+    box.innerHTML="<p>☁️ Leaderboard tidak dapat dimuatkan. Cuba lagi kemudian.</p>";
+  }
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function toggleSound(){
+  state.sound=!state.sound;
+  localStorage.setItem("logicalIQ_sound",state.sound?"on":"off");
+  $("soundBtn").textContent=state.sound?"🔊":"🔇";
+  if(state.sound) audio.click();
+}
+
+let audioCtx=null;
+function getAudio(){
+  if(!state.sound) return null;
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended") audioCtx.resume();
+    return audioCtx;
+  }catch(e){return null;}
+}
+function tone(freq,duration,type="sine",volume=.05,delay=0){
+  const ctx=getAudio();
+  if(!ctx) return;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type=type;
+  osc.frequency.value=freq;
+  gain.gain.setValueAtTime(volume,ctx.currentTime+delay);
+  gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+delay+duration);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start(ctx.currentTime+delay);
+  osc.stop(ctx.currentTime+delay+duration);
+}
+const audio={
+  click(){tone(420,.08,"sine",.035)},
+  correct(){
+    tone(523,.12,"sine",.05);
+    tone(659,.14,"sine",.05,.1);
+    tone(784,.2,"sine",.05,.2);
+  },
+  wrong(){
+    tone(280,.14,"sine",.035);
+    tone(220,.18,"sine",.025,.12);
+  },
+  countdown(){tone(600,.07,"square",.018)},
+  complete(){
+    [523,659,784,1047].forEach((f,i)=>tone(f,.25,"sine",.05,i*.12));
+  }
+};
+
+function confetti(count=15){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors=["#ff4d5a","#ffd93d","#3489ff","#34c77b","#9254de","#ff922b"];
+  for(let i=0;i<count;i++){
+    const el=document.createElement("span");
+    el.className="confetti";
+    el.style.left=randInt(5,95)+"vw";
+    el.style.background=pick(colors);
+    el.style.setProperty("--dx",randInt(-80,80)+"px");
+    el.style.animationDelay=(Math.random()*.25)+"s";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1700);
+  }
+}
+
+function showToast(message){
+  const el=$("toast");
+  el.textContent=message;
+  el.classList.remove("hidden");
+  const t=setTimeout(()=>{
+    el.classList.add("hidden");
+    state.timeoutIds.delete(t);
+  },2800);
+  state.timeoutIds.add(t);
+}
+
+initApp();
+</script>
+</body>
+</html>

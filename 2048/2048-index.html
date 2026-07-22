@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ff4d6d">
+<title>2048 Math — FUN MATHS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#24304a;--card:#fff;--red:#ff4d6d;--yellow:#ffd43b;--blue:#3a86ff;--green:#2ecf88;--purple:#9b5de5;--cyan:#00d4ff;--orange:#ff922b;--gap:clamp(7px,2.1vw,11px);--board:min(92vw,480px)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Nunito,Arial,sans-serif;color:var(--ink)}
+body{min-height:100dvh;background:linear-gradient(145deg,#ff477e 0%,#ff9f1c 26%,#ffd43b 48%,#20c997 70%,#3a86ff 100%);background-attachment:fixed;overflow-x:hidden}
+button,input{font:inherit}button{cursor:pointer;border:0}.app{width:min(100%,560px);margin:auto;min-height:100dvh;padding:max(12px,env(safe-area-inset-top)) 12px max(18px,env(safe-area-inset-bottom))}
+.screen{display:none}.screen.active{display:block}.brand{text-align:center;color:white;text-shadow:0 3px 0 rgba(65,38,100,.18)}.badge{display:inline-block;background:#fff;color:#ff477e;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900;letter-spacing:1.2px;box-shadow:0 5px 0 rgba(70,40,100,.15)}h1{font-family:Fredoka,sans-serif;font-size:clamp(40px,13vw,72px);line-height:.95;margin:15px 0 7px}.tag{font-size:clamp(16px,4.7vw,22px);font-weight:900;margin:0}
+.welcome{padding-top:8vh}.login-card,.panel{background:rgba(255,255,255,.95);border:3px solid rgba(255,255,255,.65);border-radius:28px;padding:20px;box-shadow:0 14px 0 rgba(61,39,91,.16),0 22px 45px rgba(50,20,70,.18);margin-top:28px}.mascot{font-size:60px;text-align:center;filter:drop-shadow(0 5px 0 rgba(0,0,0,.1));animation:float 2.3s ease-in-out infinite}.label{font-weight:900;display:block;margin:10px 0 7px}.name-input{width:100%;border:3px solid #dce4ff;background:#f8faff;border-radius:17px;padding:14px 16px;outline:0;font-weight:900;font-size:18px;color:var(--ink)}.name-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px #3a86ff22}
+.btn{min-height:48px;border-radius:16px;padding:11px 15px;font-weight:900;color:white;box-shadow:0 5px 0 rgba(49,40,82,.22);transition:.14s transform,.14s filter}.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(49,40,82,.22)}.btn-primary{width:100%;margin-top:13px;background:linear-gradient(135deg,#ff477e,#ff6b35);font-size:18px}.btn-blue{background:var(--blue)}.btn-purple{background:var(--purple)}.btn-green{background:#20b979}.btn-orange{background:var(--orange)}.btn-yellow{background:#f2b600;color:#563d00}.btn-ghost{background:#eef2ff;color:#53607d;box-shadow:none}.error{min-height:22px;color:#e03131;font-weight:900;font-size:13px;margin:6px 2px 0}.welcome-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.game-head{display:flex;justify-content:space-between;align-items:center;color:white;margin:4px 2px 10px}.mini-title{font-family:Fredoka;font-size:28px;font-weight:700;text-shadow:0 3px 0 #0002}.player-line{font-size:13px;font-weight:900}.status{font-size:11px;background:#fff;color:#2b3856;padding:5px 8px;border-radius:999px;font-weight:900}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.stat{background:#fff;border-radius:16px;padding:8px 5px;text-align:center;box-shadow:0 5px 0 #0000001c}.stat b{display:block;font-family:Fredoka;font-size:clamp(18px,5.2vw,26px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat span{font-size:10px;font-weight:900;letter-spacing:.8px;color:#7b86a4}
+.board-wrap{position:relative;margin:auto;width:var(--board)}.board{width:100%;aspect-ratio:1;background:rgba(40,44,75,.28);border:5px solid rgba(255,255,255,.5);border-radius:23px;padding:var(--gap);display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);touch-action:none;box-shadow:0 10px 0 #27304d33,0 20px 40px #27203e2e;user-select:none}.cell{border-radius:15px;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;aspect-ratio:1;font-family:Fredoka;font-weight:700;font-size:clamp(25px,8vw,45px);color:white;text-shadow:0 2px 0 #0002;transition:transform .12s ease,filter .15s}.cell.spawn{animation:pop .18s ease}.cell.merge{animation:bump .22s ease}.v2{background:#00cfe8}.v4{background:#20c997}.v8{background:#ffd43b;color:#5b4300;text-shadow:none}.v16{background:#ff922b}.v32{background:#ff5d5d}.v64{background:#f72585}.v128{background:#9b5de5}.v256{background:#4361ee}.v512{background:#37b24d}.v1024{background:linear-gradient(135deg,#7b2cff,#00d4ff);font-size:clamp(19px,6.2vw,34px)}.v2048{background:linear-gradient(135deg,#ffd43b,#ff6b35,#f72585,#4361ee);font-size:clamp(19px,6.2vw,34px);animation:glow 1.2s ease-in-out infinite alternate}.vbig{background:linear-gradient(135deg,#111827,#7c3aed);font-size:clamp(16px,5vw,28px)}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.controls .btn{font-size:12px;padding:8px 5px}.controls .wide{grid-column:span 2}.feedback{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:30;background:#fff;color:#ff477e;border-radius:999px;padding:10px 16px;font-family:Fredoka;font-weight:700;box-shadow:0 8px 25px #0003;pointer-events:none;animation:toast 1.6s ease forwards;white-space:nowrap}
+.modal-back{position:fixed;inset:0;background:#17213caa;backdrop-filter:blur(5px);z-index:50;display:none;align-items:center;justify-content:center;padding:18px}.modal-back.show{display:flex}.modal{width:min(100%,460px);max-height:88dvh;overflow:auto;background:white;border-radius:28px;padding:21px;box-shadow:0 18px 0 #202a4844;text-align:center}.modal h2{font-family:Fredoka;font-size:30px;margin:4px 0 8px;color:#ff477e}.modal p{font-weight:800;color:#64708c}.modal-actions{display:grid;gap:9px;margin-top:14px}.how-list{text-align:left;background:#f5f7ff;border-radius:18px;padding:13px 17px;font-weight:800;line-height:1.7}.leader-list{display:grid;gap:7px;text-align:left;margin:12px 0}.leader-row{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;background:#f5f7ff;border-radius:14px;padding:9px}.leader-row.me{outline:3px solid #ffd43b;background:#fff9db}.rank{font-size:20px;text-align:center}.leader-name{font-weight:900;overflow:hidden;text-overflow:ellipsis}.leader-score{text-align:right;font-weight:900;font-size:13px}.small{font-size:11px;color:#7b86a4}.footer{text-align:center;color:white;font-size:11px;font-weight:900;margin:13px 0 0;text-shadow:0 2px 0 #0002}
+@keyframes pop{0%{transform:scale(.2)}80%{transform:scale(1.08)}100%{transform:scale(1)}}@keyframes bump{50%{transform:scale(1.13)}}@keyframes glow{from{filter:drop-shadow(0 0 2px #fff)}to{filter:drop-shadow(0 0 12px #fff)}}@keyframes float{50%{transform:translateY(-7px) rotate(2deg)}}@keyframes toast{0%{opacity:0;transform:translate(-50%,-15px) scale(.8)}15%,75%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-10px)}}@media(max-height:700px){.app{padding-top:7px}.game-head{margin-bottom:6px}.stats{margin-bottom:7px}.board{border-width:4px}.controls{margin-top:9px}.footer{margin-top:8px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<section id="welcome" class="screen active welcome">
+  <div class="brand"><span class="badge">A FUN MATHS GAME</span><h1>2048 MATH</h1><p class="tag">Gabung Nombor. Kuasai Matematik!</p></div>
+  <div class="login-card">
+    <div class="mascot">🧠✨</div><label class="label" for="playerName">Nama Pemain</label>
+    <input id="playerName" class="name-input" maxlength="20" autocomplete="nickname" placeholder="Masukkan nama kamu...">
+    <div id="nameError" class="error"></div>
+    <button id="startBtn" class="btn btn-primary">🚀 MULA BERMAIN</button>
+    <div class="welcome-actions"><button id="welcomeLeader" class="btn btn-purple">🏆 PAPAN JUARA</button><button id="welcomeHow" class="btn btn-blue">❓ CARA MAIN</button></div>
+  </div>
+</section>
+
+<section id="game" class="screen">
+ <div class="game-head"><div><div class="mini-title">2048 MATH</div><div class="player-line">Hai, <span id="playerLabel"></span>! <button id="changePlayer" style="border:0;background:#fff3;border-radius:8px;color:#fff;font-weight:900">Tukar</button></div></div><span id="status" class="status">● ONLINE</span></div>
+ <div class="stats"><div class="stat"><span>SCORE</span><b id="score">0</b></div><div class="stat"><span>BEST</span><b id="best">0</b></div><div class="stat"><span>TILE</span><b id="highest">2</b></div></div>
+ <div class="board-wrap"><div id="board" class="board" aria-label="Papan permainan 2048"></div></div>
+ <div class="controls">
+   <button id="newBtn" class="btn btn-orange">🔄 GAME BARU</button><button id="undoBtn" class="btn btn-yellow">↩️ UNDO</button><button id="leaderBtn" class="btn btn-purple">🏆 JUARA</button>
+   <button id="howBtn" class="btn btn-blue">❓ CARA MAIN</button><button id="soundBtn" class="btn btn-green wide">🔊 SOUND ON</button>
+   <button id="homeBtn" class="btn btn-primary" style="grid-column:1 / -1;margin-top:0">🏠 KEMBALI KE LAMAN UTAMA</button>
+ </div><p class="footer">SWIPE • GABUNG • JADI JUARA MATEMATIK!</p>
+</section>
+</main>
+
+<div id="modalBack" class="modal-back" role="dialog" aria-modal="true"><div id="modal" class="modal"></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script>
+(()=>{
+"use strict";
+const firebaseConfig={apiKey:"AIzaSyDzyLTMik3xovqgtWhGwlqYCvctf00yoO8",authDomain:"logicaliqmath.firebaseapp.com",databaseURL:"https://logicaliqmath-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"logicaliqmath",storageBucket:"logicaliqmath.firebasestorage.app",messagingSenderId:"543339462656",appId:"1:543339462656:web:e3b21dbdf230bb6ae418e5"};
+const $=s=>document.querySelector(s), boardEl=$("#board"), modalBack=$("#modalBack"), modal=$("#modal");
+let db=null, online=navigator.onLine, board=[],score=0,best=Number(localStorage.getItem("m2048_best")||0),highest=2,undo=null,won=false,over=false,milestones=new Set(),lastFeedback=0,session=0;
+let sound=localStorage.getItem("m2048_sound")!=="off",audioCtx=null, playerId=localStorage.getItem("m2048_pid")||cryptoId(), playerName=localStorage.getItem("m2048_name")||"";
+localStorage.setItem("m2048_pid",playerId);
+function cryptoId(){return (crypto.randomUUID?crypto.randomUUID():"p_"+Date.now()+"_"+Math.random().toString(36).slice(2))}
+function initFirebase(){try{firebase.initializeApp(firebaseConfig);db=firebase.database();db.ref(".info/connected").on("value",s=>{online=!!s.val();setStatus()})}catch(e){online=false;setStatus()}}
+function setStatus(){const el=$("#status");if(!el)return;el.textContent=online?"● ONLINE":"● MOD OFFLINE";el.style.color=online?"#168a57":"#d9480f"}
+function emptyBoard(){return Array.from({length:4},()=>Array(4).fill(0))}
+function clone(b){return b.map(r=>r.slice())}
+function addTile(){let empty=[];for(let r=0;r<4;r++)for(let c=0;c<4;c++)if(!board[r][c])empty.push([r,c]);if(!empty.length)return;let [r,c]=empty[Math.floor(Math.random()*empty.length)];board[r][c]=Math.random()<.9?2:4;return r+"-"+c}
+function newGame(count=true){session++;board=emptyBoard();score=0;highest=2;undo=null;won=false;over=false;milestones.clear();addTile();addTile();render();updateStats();closeModal();if(count)incrementGames();saveLocal()}
+function compressLine(line){const vals=line.filter(Boolean),out=[],merges=[];let gained=0;for(let i=0;i<vals.length;i++){if(vals[i]===vals[i+1]){let v=vals[i]*2;out.push(v);gained+=v;merges.push(v);i++}else out.push(vals[i])}while(out.length<4)out.push(0);return{line:out,gained,merges}}
+function same(a,b){return JSON.stringify(a)===JSON.stringify(b)}
+function move(dir){if(over||modalBack.classList.contains("show"))return;const before=clone(board),prevScore=score,prevHigh=highest;let next=emptyBoard(),gain=0,merges=[];
+ for(let i=0;i<4;i++){let line=[];for(let j=0;j<4;j++){if(dir==="left")line.push(board[i][j]);if(dir==="right")line.push(board[i][3-j]);if(dir==="up")line.push(board[j][i]);if(dir==="down")line.push(board[3-j][i])}
+ let res=compressLine(line);gain+=res.gained;merges.push(...res.merges);
+ for(let j=0;j<4;j++){if(dir==="left")next[i][j]=res.line[j];if(dir==="right")next[i][3-j]=res.line[j];if(dir==="up")next[j][i]=res.line[j];if(dir==="down")next[3-j][i]=res.line[j]}}
+ if(same(before,next))return;undo={board:before,score:prevScore,highest:prevHigh};board=next;score+=gain;highest=Math.max(...board.flat());const spawned=addTile();highest=Math.max(highest,...board.flat());render(spawned,merges.length>0);updateStats();soundFx(merges.length?"merge":"move");maybeFeedback(merges);checkMilestones();saveLocal();
+ if(!canMove()){over=true;setTimeout(gameOver,260)}}
+function canMove(){if(board.flat().includes(0))return true;for(let r=0;r<4;r++)for(let c=0;c<4;c++){if(c<3&&board[r][c]===board[r][c+1])return true;if(r<3&&board[r][c]===board[r+1][c])return true}return false}
+function render(spawned=null,merged=false){boardEl.replaceChildren();for(let r=0;r<4;r++)for(let c=0;c<4;c++){let d=document.createElement("div"),v=board[r][c];d.className="cell"+(v?" "+tileClass(v):"")+(spawned===r+"-"+c?" spawn":"")+(merged&&v>=8?" merge":"");d.textContent=v||"";boardEl.appendChild(d)}}
+function tileClass(v){return v<=2048?"v"+v:"vbig"}
+function updateStats(){best=Math.max(best,score);localStorage.setItem("m2048_best",best);$("#score").textContent=score.toLocaleString();$("#best").textContent=best.toLocaleString();$("#highest").textContent=highest;$("#undoBtn").disabled=!undo;$("#undoBtn").style.opacity=undo?1:.5;syncBest()}
+let syncTimer;
+function syncBest(){clearTimeout(syncTimer);syncTimer=setTimeout(async()=>{if(!db||!online)return;try{const ref=db.ref("2048Math/players/"+playerId),snap=await ref.once("value"),old=snap.val()||{};await ref.update({name:playerName,bestScore:Math.max(best,old.bestScore||0),highestTile:Math.max(highest,old.highestTile||0),lastPlayed:firebase.database.ServerValue.TIMESTAMP})}catch(e){online=false;setStatus()}},700)}
+async function incrementGames(){if(!db||!online)return;try{const ref=db.ref("2048Math/players/"+playerId+"/gamesPlayed");await ref.transaction(v=>(v||0)+1)}catch(e){}}
+function saveLocal(){try{localStorage.setItem("m2048_state",JSON.stringify({board,score,highest}))}catch(e){}}
+function loadLocal(){try{let s=JSON.parse(localStorage.getItem("m2048_state"));if(s&&Array.isArray(s.board)&&s.board.length===4&&s.board.every(r=>Array.isArray(r)&&r.length===4&&r.every(Number.isFinite))){board=s.board;score=Number(s.score)||0;highest=Number(s.highest)||2;render();updateStats();return true}}catch(e){}return false}
+function undoMove(){if(!undo)return;board=clone(undo.board);score=undo.score;highest=undo.highest;undo=null;over=false;render();updateStats();saveLocal();soundFx("move")}
+function maybeFeedback(merges){if(!merges.length||Date.now()-lastFeedback<3500)return;lastFeedback=Date.now();let v=merges[Math.floor(Math.random()*merges.length)];toast((Math.random()<.5?"Hebat! ":"")+v/2+" + "+v/2+" = "+v+" ✨")}
+function checkMilestones(){[128,256,512,1024,2048].forEach(v=>{if(highest>=v&&!milestones.has(v)){milestones.add(v);toast("🌟 Hebat! Tile "+v+" Dibuka!");soundFx(v===2048?"win":"big");if(v===2048&&!won){won=true;setTimeout(victory,500)}}})}
+function toast(t){let d=document.createElement("div");d.className="feedback";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1700)}
+function soundFx(type){if(!sound)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();let o=audioCtx.createOscillator(),g=audioCtx.createGain(),freq={move:220,merge:420,big:650,win:880,over:130,click:300}[type]||300;o.frequency.value=freq;o.type=type==="over"?"sawtooth":"sine";g.gain.setValueAtTime(.07,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.14);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.15)}catch(e){}}
+function showModal(content){modal.replaceChildren();content(modal);modalBack.classList.add("show")}
+function closeModal(){modalBack.classList.remove("show")}
+function title(t){let h=document.createElement("h2");h.textContent=t;return h}
+function p(t){let x=document.createElement("p");x.textContent=t;return x}
+function button(t,cls,fn){let b=document.createElement("button");b.className="btn "+cls;b.textContent=t;b.addEventListener("click",()=>{soundFx("click");fn()});return b}
+function actions(...bs){let d=document.createElement("div");d.className="modal-actions";bs.forEach(b=>d.appendChild(b));return d}
+function confirmNew(){showModal(m=>{m.append(title("Mulakan Game Baru?"),p("Permainan semasa akan dimulakan semula."),actions(button("YA, MULA BARU","btn-orange",()=>newGame(true)),button("SAMBUNG MAIN","btn-ghost",closeModal)))})}
+function victory(){showModal(m=>{m.append(title("🎉 HEBAT! TILE 2048 BERJAYA!"),p("Kamu memang Juara Matematik!"),actions(button("TERUSKAN BERMAIN","btn-green",closeModal),button("LIHAT SKOR","btn-purple",showLeaderboard)))})}
+function gameOver(){syncBest();soundFx("over");showModal(m=>{m.append(title("GAME OVER!"),p("Skor Kamu: "+score.toLocaleString()+" • Tile Tertinggi: "+highest));if(score>=best){let x=p("🎉 REKOD TERBAIK!");x.style.color="#f72585";m.append(x)}m.append(actions(button("MAIN LAGI","btn-green",()=>newGame(true)),button("PAPAN JUARA","btn-purple",showLeaderboard)))})}
+function showHow(){showModal(m=>{m.append(title("❓ Cara Bermain"));let d=document.createElement("div");d.className="how-list";["👆 Swipe untuk gerakkan semua tile.","➕ Gabungkan dua nombor yang sama.","🧮 2 + 2 menjadi 4.","🚀 Teruskan sehingga mencapai 2048.","🏆 Cuba pecahkan rekod skor tertinggi!"].forEach(t=>{let x=document.createElement("div");x.textContent=t;d.appendChild(x)});m.append(d,actions(button("FAHAM, JOM MAIN!","btn-blue",closeModal)))})}
+async function showLeaderboard(){showModal(m=>{m.append(title("🏆 PAPAN JUARA"),p("Memuatkan skor terbaik..."));let a=actions(button("TUTUP","btn-ghost",closeModal));m.append(a)});if(!db||!online){modal.querySelector("p").textContent="Leaderboard tidak tersedia dalam mod offline.";return}try{let snap=await db.ref("2048Math/players").orderByChild("bestScore").limitToLast(10).once("value"),arr=[];snap.forEach(s=>arr.push({id:s.key,...s.val()}));arr.sort((a,b)=>(b.bestScore||0)-(a.bestScore||0));modal.replaceChildren();modal.append(title("🏆 PAPAN JUARA"));let list=document.createElement("div");list.className="leader-list";if(!arr.length)list.append(p("Belum ada skor. Jadilah juara pertama!"));arr.forEach((x,i)=>{let row=document.createElement("div");row.className="leader-row"+(x.id===playerId?" me":"");let r=document.createElement("div");r.className="rank";r.textContent=["🥇","🥈","🥉"][i]||(i+1);let n=document.createElement("div");n.className="leader-name";n.textContent=x.name||"Player";let s=document.createElement("div");s.className="leader-score";s.textContent=(x.bestScore||0).toLocaleString();let sm=document.createElement("div");sm.className="small";sm.textContent="Tile "+(x.highestTile||2);s.appendChild(sm);row.append(r,n,s);list.append(row)});modal.append(list,actions(button("🔄 REFRESH","btn-blue",showLeaderboard),button("TUTUP","btn-ghost",closeModal)))}catch(e){modal.querySelector("p").textContent="Tidak dapat memuatkan leaderboard sekarang."}}
+function start(){let n=$("#playerName").value.trim().replace(/\s+/g," ").slice(0,20);if(!n){$("#nameError").textContent="Sila masukkan nama kamu dahulu.";return}playerName=n;localStorage.setItem("m2048_name",n);$("#playerLabel").textContent=n;$("#welcome").classList.remove("active");$("#game").classList.add("active");if(!loadLocal())newGame(true);else syncBest();setStatus()}
+function goHome(){showModal(m=>{m.append(title("Kembali ke Laman Utama?"),p("Permainan semasa akan disimpan pada peranti ini dan boleh disambung semula kemudian."),actions(button("🏠 YA, KE LAMAN UTAMA","btn-primary",()=>{$("#game").classList.remove("active");$("#welcome").classList.add("active");$("#playerName").value=playerName;closeModal()}),button("SAMBUNG MAIN","btn-ghost",closeModal)))})}
+function changePlayer(){localStorage.removeItem("m2048_name");playerName="";$("#playerName").value="";$("#game").classList.remove("active");$("#welcome").classList.add("active");closeModal()}
+$("#homeBtn").addEventListener("click",goHome);
+$("#startBtn").addEventListener("click",start);$("#playerName").addEventListener("keydown",e=>{if(e.key==="Enter")start()});$("#newBtn").addEventListener("click",confirmNew);$("#undoBtn").addEventListener("click",undoMove);$("#leaderBtn").addEventListener("click",showLeaderboard);$("#welcomeLeader").addEventListener("click",showLeaderboard);$("#howBtn").addEventListener("click",showHow);$("#welcomeHow").addEventListener("click",showHow);$("#changePlayer").addEventListener("click",changePlayer);
+$("#soundBtn").addEventListener("click",()=>{sound=!sound;localStorage.setItem("m2048_sound",sound?"on":"off");$("#soundBtn").textContent=sound?"🔊 SOUND ON":"🔇 SOUND OFF";if(sound)soundFx("click")});$("#soundBtn").textContent=sound?"🔊 SOUND ON":"🔇 SOUND OFF";
+modalBack.addEventListener("pointerdown",e=>{if(e.target===modalBack)closeModal()});
+document.addEventListener("keydown",e=>{if($("#game").classList.contains("active")&&!modalBack.classList.contains("show")){let map={ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right",ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down"};if(map[e.key]){e.preventDefault();move(map[e.key])}}});
+let sx=0,sy=0,pid=null;
+boardEl.addEventListener("pointerdown",e=>{pid=e.pointerId;sx=e.clientX;sy=e.clientY;boardEl.setPointerCapture(pid)});
+boardEl.addEventListener("pointerup",e=>{if(e.pointerId!==pid)return;let dx=e.clientX-sx,dy=e.clientY-sy;pid=null;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;move(Math.abs(dx)>Math.abs(dy)?(dx>0?"right":"left"):(dy>0?"down":"up"))});
+window.addEventListener("online",()=>{online=true;setStatus();syncBest()});window.addEventListener("offline",()=>{online=false;setStatus()});
+if(playerName)$("#playerName").value=playerName;initFirebase();
+})();
+</script>
+</body>
+</html>
