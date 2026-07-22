@@ -76,30 +76,20 @@
 
   <div class="divider">NOTA</div>
   <p style="font-size:0.8rem;">Akses penuh disimpan pada peranti/pelayar ini sahaja. Selepas dibuka, kembali ke mana-mana permainan FUN MATHS dan ia akan terbuka automatik.</p>
+  <a class="btn btn-secondary" href="index.html" style="margin-top:14px;display:block;text-decoration:none;">← Kembali ke Semua Permainan</a>
 </div>
 
+<script src="funmath-trial.js"></script>
 <script>
 (function(){
-  var UNLOCK_STORAGE_KEY = 'funmath_full_access';
-  // Satu kod dikongsi semua pembeli -- tukar di sini jika kod tersebar/bocor.
-  var UNLOCK_CODE = 'FUNMATH2026';
-
   function showStatus(msg, ok){
     var box = document.getElementById('statusBox');
     box.textContent = msg;
     box.className = 'status show ' + (ok ? 'ok' : 'err');
   }
 
-  function unlock(code){
-    if(code && code.trim().toUpperCase() === UNLOCK_CODE){
-      try{ localStorage.setItem(UNLOCK_STORAGE_KEY, 'true'); }catch(e){}
-      return true;
-    }
-    return false;
-  }
-
   function attemptUnlock(code, fromLink){
-    var ok = unlock(code);
+    var ok = window.FunMathTrial.unlock(code);
     if(ok){
       document.getElementById('titleText').textContent = 'Akses Penuh Berjaya Dibuka! 🎉';
       document.getElementById('introText').textContent = 'Terima kasih kerana membeli! Semua 14 permainan FUN MATHS kini terbuka pada peranti/pelayar ini.';

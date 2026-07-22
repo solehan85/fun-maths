@@ -29,21 +29,34 @@ button,input,a{font:inherit}.app{width:min(100%,760px);min-height:100vh;margin:a
 </style>
 </head>
 <body>
-<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
-  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
+<script>window.FUNMATH_GAME_ID = 'shoppingmaster';</script>
+<section class="screen" id="screen-locked" style="text-align:center;">
+  <div style="max-width:420px;width:100%;margin:0 auto;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);">
     <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
     <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
     <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
     <a href="https://solehanxdigital.bcl.my/form/kombo-math-dan-bahasa" target="_blank" rel="noopener" style="display:block;background:#16A34A;color:#fff;font-weight:800;padding:14px;border-radius:999px;text-decoration:none;box-shadow:0 4px 0 #14532d;margin-bottom:12px;">💳 Beli Versi Penuh Sekarang</a>
     <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
+    <a href="../index.html" style="display:block;margin-top:10px;color:#888;font-weight:700;font-size:.8rem;text-decoration:none;">← Kembali ke Semua Permainan</a>
   </div>
-</div>
-<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
+</section>
+<script>
+(function(){
+  var unlocked=false;
+  try{ unlocked = localStorage.getItem('funmath_full_access')==='true'; }catch(e){}
+  if(!unlocked){
+    var screens=document.querySelectorAll('.screen');
+    for(var i=0;i<screens.length;i++){ screens[i].classList.remove('active'); }
+    var ls=document.getElementById('screen-locked');
+    if(ls) ls.classList.add('active');
+  }
+})();
+</script>
 <div class="app">
 <section id="splash" class="screen active"><div class="hero"><span class="coin c1">🪙</span><span class="coin c2">✨</span><span class="coin c3">🪙</span><div class="cart">🛒</div><div class="logo">SHOPPING<br>MASTER</div><div class="tag">Beli. Kira. Jimat. Jadi Shopping Master!</div></div></section>
 <section id="login" class="screen"><div class="hero"><div class="cart">🛍️</div><div class="logo">SHOPPING<br>MASTER</div><div class="card" style="width:100%;margin-top:24px;text-align:left"><label for="playerName"><b>Nama Pemain</b></label><input id="playerName" class="input" maxlength="24" autocomplete="nickname" placeholder="Contoh: Aina"><button id="loginBtn" class="btn primary wide">MULA BERMAIN 🚀</button><div id="loginError" class="small" role="alert"></div></div></div></section>
 <section id="home" class="screen">
-<div class="topbar"><a class="btn blue" href="index.html" style="text-decoration:none">🏠 Laman Utama</a><button class="iconbtn audioBtn" aria-label="Togol audio">🔊</button></div>
+<div class="topbar"><a class="btn blue" href="../index.html" style="text-decoration:none">🏠 Laman Utama</a><button class="iconbtn audioBtn" aria-label="Togol audio">🔊</button></div>
 <div class="card center"><div style="font-size:58px">🧑‍🛒</div><div class="title">Hai, <span id="homeName"></span>!</div><div class="sub">Sedia untuk misi membeli-belah?</div><div class="stats"><div class="stat"><b id="bestScore">0</b>Skor Terbaik</div><div class="stat"><b id="totalGames">0</b>Jumlah Game</div></div><div class="menu"><button id="playBtn" class="btn primary">🛒 MAIN</button><button id="yearBtn" class="btn blue">🎒 PILIH TAHUN</button><button class="btn purple lbBtn">🏆 LEADERBOARD</button><button id="howBtn" class="btn green">❓ CARA BERMAIN</button></div></div></section>
 <section id="year" class="screen"><div class="topbar"><button class="iconbtn backHome" aria-label="Kembali">←</button><div class="title">Pilih Tahun</div><button class="iconbtn audioBtn" aria-label="Togol audio">🔊</button></div><div id="yearGrid" class="grid year-grid"></div></section>
 <section id="difficulty" class="screen"><div class="topbar"><button class="iconbtn" id="backYear">←</button><div><div class="title" style="margin:0">Pilih Tahap</div><div id="chosenYear" class="sub"></div></div><button class="iconbtn audioBtn">🔊</button></div><div class="grid"><button class="diff-card" data-diff="easy" style="background:linear-gradient(135deg,#22c55e,#5ee78b)"><b>🌱 MUDAH</b>Langkah ringkas • Masa lebih panjang</button><button class="diff-card" data-diff="medium" style="background:linear-gradient(135deg,#3a86ff,#22d3ee)"><b>⚡ SEDERHANA</b>Lebih banyak item • Operasi lebih mencabar</button><button class="diff-card" data-diff="hard" style="background:linear-gradient(135deg,#8b5cf6,#ff416c)"><b>🔥 SUKAR</b>Pelbagai langkah • Masa lebih pantas</button></div></section>

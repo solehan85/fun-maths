@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUN MATHS — Semua Permainan</title>
+<meta name="description" content="14 permainan interaktif Matematik untuk murid sekolah rendah — nombor, algebra, pecahan, wang, waktu & logik. Cuba percuma sekarang!">
+<meta property="og:type" content="website">
+<meta property="og:title" content="FUN MATHS — 14 Permainan Interaktif Matematik">
+<meta property="og:description" content="Belajar Matematik sambil bermain! 14 permainan interaktif — nombor, algebra, pecahan, wang, waktu & logik. Cuba percuma sekarang!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --shadow:rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif;
+    font-size:1.05rem;
+    color:#E8EDF4;
+    background:linear-gradient(180deg,#1e1b4b 0%, #10192C 100%);
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Fredoka',sans-serif; margin:0;}
+  a{text-decoration:none; color:inherit;}
+
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0) rotate(-3deg); }
+    50%{ transform:translateY(-10px) rotate(3deg); }
+  }
+  .floaty-emoji{
+    display:inline-block;
+    animation:floaty 3.2s ease-in-out infinite;
+  }
+
+  .hero{
+    position:relative;
+    padding:50px 20px 46px;
+    text-align:center;
+    color:#fff;
+    background:linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 100%);
+    overflow:hidden;
+  }
+  .hero-emoji{
+    font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:1.1rem; letter-spacing:1px; line-height:1;
+    color:#fff; background:rgba(255,255,255,0.15); backdrop-filter:blur(3px);
+    border:2px solid rgba(255,255,255,0.35); border-radius:999px;
+    padding:8px 20px; display:inline-block;
+  }
+  .hero h1{ margin-top:14px; font-size:clamp(2.6rem,9vw,4.4rem); line-height:0.95;
+    color:#ffd43b; -webkit-text-stroke:3px #7A4A00;
+    text-shadow:0 6px 0 #7A4A00, 0 12px 24px rgba(0,0,0,0.55);
+  }
+  .hero .ribbon{
+    display:inline-block; margin-top:14px;
+    background:linear-gradient(180deg,#F472B6,#DB2777);
+    color:#fff; font-family:'Fredoka',sans-serif; font-weight:700; font-size:0.85rem;
+    padding:8px 22px; border-radius:999px;
+    box-shadow:0 4px 0 #9d2d68;
+    border:2px solid rgba(255,255,255,0.35);
+  }
+  .hero .tagline{font-size:1.05rem; font-weight:600; margin-top:16px; max-width:540px; margin-left:auto; margin-right:auto; opacity:0.95; line-height:1.55;}
+  .hero .tagline .hl{color:#ffd43b; font-weight:800;}
+  .hero .stat-row{display:flex; justify-content:center; gap:14px; margin-top:24px; flex-wrap:wrap;}
+  .hero .stat{
+    display:flex; align-items:center; gap:10px;
+    color:#fff; border-radius:16px; padding:12px 20px; font-weight:700; font-size:0.92rem;
+    border:2px solid rgba(255,255,255,0.3);
+    box-shadow:0 4px 0 rgba(0,0,0,0.3), 0 0 20px var(--glow);
+  }
+  .hero .stat .e{font-size:1.5rem;}
+  .hero .stat b{display:block; font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.5rem; line-height:1;}
+  .stat.s1{background:linear-gradient(180deg,#A78BFA,#7C3AED); --glow:rgba(124,58,237,.55);}
+  .stat.s2{background:linear-gradient(180deg,#4ADE80,#16A34A); --glow:rgba(22,163,74,.55);}
+  .stat.s3{background:linear-gradient(180deg,#FB923C,#EA580C); --glow:rgba(234,88,12,.55);}
+
+  .unlock-link{
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:26px; background:linear-gradient(180deg,#4ADE80,#16A34A); color:#08350f;
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:1rem; padding:14px 28px;
+    border-radius:999px; border:2px solid rgba(255,255,255,0.4);
+    box-shadow:0 5px 0 #14532d, 0 0 24px rgba(74,222,128,.6);
+    transition:transform .1s ease;
+  }
+  .unlock-link:hover{transform:translateY(-3px) scale(1.03);}
+
+  .wrap{max-width:1100px; margin:0 auto; padding:20px 18px 60px;}
+
+  .grid{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:18px;
+  }
+  .game-card{
+    position:relative;
+    flex:1 1 230px;
+    max-width:260px;
+    background:rgba(14,22,38,0.82);
+    backdrop-filter:blur(3px);
+    border-radius:24px;
+    padding:20px 18px;
+    display:flex; flex-direction:column; gap:10px;
+    align-items:center; text-align:center;
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s ease;
+    border:3px solid var(--accent, #38BDF8);
+    box-shadow:0 6px 0 rgba(0,0,0,0.4), 0 0 18px var(--glow, rgba(56,189,248,.4));
+  }
+  .game-card:hover{transform:translateY(-6px) scale(1.02); box-shadow:0 10px 0 rgba(0,0,0,0.4), 0 0 30px var(--glow, rgba(56,189,248,.6));}
+  .game-card .icon{
+    font-size:1.9rem; width:54px; height:54px; border-radius:15px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--accent, #38BDF8);
+    box-shadow:inset 0 -4px 0 rgba(0,0,0,0.22);
+  }
+  .badge-free, .badge-paid{
+    position:absolute; top:-9px; right:14px;
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:0.68rem;
+    padding:5px 11px; border-radius:999px; letter-spacing:0.3px;
+    box-shadow:0 2px 0 rgba(0,0,0,0.3); border:2px solid rgba(255,255,255,0.4);
+  }
+  .badge-free{background:linear-gradient(180deg,#4ADE80,#16A34A); color:#08350f;}
+  .badge-paid{background:linear-gradient(180deg,#94A3B8,#475569); color:#fff;}
+  .game-card .name{font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.15rem; color:#fff; line-height:1.25;}
+  .game-card .tag{font-size:0.86rem; font-weight:600; color:#AAB8CC; line-height:1.4; flex:1;}
+  .game-card .play{
+    margin-top:4px; align-self:flex-start;
+    font-family:'Fredoka',sans-serif; font-weight:700; font-size:0.85rem; color:#08131f;
+    background:var(--accent, #38BDF8);
+    padding:8px 18px; border-radius:999px;
+    box-shadow:0 3px 0 rgba(0,0,0,0.35);
+    display:inline-flex; align-items:center; gap:6px;
+    transition:filter .12s ease;
+  }
+  .game-card:hover .play{filter:brightness(1.12);}
+
+  .game-card.c1{ --accent:#4ADE80; --glow:rgba(74,222,128,.5); }
+  .game-card.c2{ --accent:#38BDF8; --glow:rgba(56,189,248,.5); }
+  .game-card.c3{ --accent:#FB923C; --glow:rgba(251,146,60,.5); }
+  .game-card.c4{ --accent:#A78BFA; --glow:rgba(167,139,250,.5); }
+  .game-card.c5{ --accent:#F472B6; --glow:rgba(244,114,182,.5); }
+  .game-card.c6{ --accent:#FBBF24; --glow:rgba(251,191,36,.5); }
+  .game-card.c7{ --accent:#F87171; --glow:rgba(248,113,113,.5); }
+  .game-card.c8{ --accent:#2DD4BF; --glow:rgba(45,212,191,.5); }
+
+  .group-heading{
+    font-family:'Fredoka',sans-serif; font-weight:700; color:#fff;
+    font-size:1.05rem; letter-spacing:0.3px;
+    margin:38px 0 16px; padding:10px 22px;
+    display:inline-flex; align-items:center; gap:10px;
+    border-radius:14px; width:fit-content;
+    box-shadow:0 4px 0 rgba(0,0,0,0.35);
+    border:2px solid rgba(255,255,255,0.25);
+  }
+  .group-heading:first-of-type{margin-top:0;}
+  .group-heading.g1{background:linear-gradient(135deg,#3B82F6,#1D4ED8);}
+  .group-heading.g2{background:linear-gradient(135deg,#22C55E,#15803D);}
+  .group-heading.g3{background:linear-gradient(135deg,#F97316,#C2410C);}
+  .group-heading.g4{background:linear-gradient(135deg,#A855F7,#7E22CE);}
+
+  footer{
+    font-family:'Fredoka',sans-serif; font-weight:600; text-align:center; color:#AAB8CC;
+    font-size:0.9rem; padding:30px 18px 46px;
+  }
+  footer .bbb{
+    font-family:'Fredoka',sans-serif; font-weight:700; color:#ffd43b; font-size:1.1rem;
+    letter-spacing:1px; margin-bottom:8px;
+    text-shadow:0 2px 0 rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-emoji floaty-emoji">🧮 FUN MATHS</div>
+  <h1>FUN MATHS</h1>
+  <div class="ribbon">🎉 Belajar Matematik • Sambil Bermain • Lebih Seronok! 🎉</div>
+  <p class="tagline">14 permainan interaktif Matematik untuk murid sekolah rendah — <span class="hl">nombor, algebra, pecahan, wang, waktu &amp; logik</span>.</p>
+  <div class="stat-row">
+    <div class="stat s1"><span class="e floaty-emoji">🎮</span><div><b>14</b>Permainan</div></div>
+    <div class="stat s2"><span class="e floaty-emoji">✨</span><div><b>4</b>Percuma</div></div>
+    <div class="stat s3"><span class="e floaty-emoji">🏆</span><div><b>1</b>Kod, semua game</div></div>
+  </div>
+  <br>
+  <a class="unlock-link" href="buka-akses.html">🔓 Sudah Beli? Buka Akses Penuh →</a>
+</div>
+
+<div class="wrap">
+
+  <div class="group-heading g1">🔢 NOMBOR &amp; LOGIK</div>
+  <div class="grid">
+    <a class="game-card c1" href="2048/2048-index.html">
+      <span class="badge-free">✨ PERCUMA</span>
+      <div class="icon floaty-emoji">🔢</div>
+      <div class="name">2048 Math</div>
+      <div class="tag">Gabung nombor, kuasai matematik</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c2" href="Sudoku/sudoku-index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🧩</div>
+      <div class="name">Sudoku</div>
+      <div class="tag">Fikir, isi, selesaikan</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c3" href="Logical%20IQ/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🧠</div>
+      <div class="name">Logical IQ</div>
+      <div class="tag">Fikir pantas, cari corak</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c4" href="MysteryNumber/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🔍</div>
+      <div class="name">Mystery Number</div>
+      <div class="tag">Uji IQ matematik anda</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c5" href="Monster%20Number/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">👾</div>
+      <div class="name">Number Monster</div>
+      <div class="tag">Kira, suap, seronok</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+  </div>
+
+  <div class="group-heading g2">🧮 ARITMETIK &amp; ALGEBRA</div>
+  <div class="grid">
+    <a class="game-card c6" href="AlgebraQuest/algebra-index.html">
+      <span class="badge-free">✨ PERCUMA</span>
+      <div class="icon floaty-emoji">🧮</div>
+      <div class="name">Algebra Quest</div>
+      <div class="tag">Pengembaraan algebra</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c7" href="MathBingo/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🎯</div>
+      <div class="name">Math Bingo</div>
+      <div class="tag">Belajar matematik sambil bermain</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c8" href="WheelOfMath/wheel-index.html">
+      <span class="badge-free">✨ PERCUMA</span>
+      <div class="icon floaty-emoji">🎡</div>
+      <div class="name">Wheel of Math</div>
+      <div class="tag">Pusing roda, jawab soalan</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+  </div>
+
+  <div class="group-heading g3">🍕 PECAHAN, UKURAN &amp; MASA</div>
+  <div class="grid">
+    <a class="game-card c1" href="FractionPizza/pizza-index.html">
+      <span class="badge-free">✨ PERCUMA</span>
+      <div class="icon floaty-emoji">🍕</div>
+      <div class="name">Fraction Pizza</div>
+      <div class="tag">Belajar pecahan KSSR</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c2" href="MeasurementLab/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">📏</div>
+      <div class="name">Measurement Lab</div>
+      <div class="tag">Kuasai ukuran</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c3" href="ClockMaster/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🕐</div>
+      <div class="name">Clock Master</div>
+      <div class="tag">Kuasai masa &amp; waktu</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+  </div>
+
+  <div class="group-heading g4">💰 WANG &amp; PERMAINAN INGATAN</div>
+  <div class="grid">
+    <a class="game-card c4" href="ShoppingMaster/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🛒</div>
+      <div class="name">Shopping Master</div>
+      <div class="tag">Beli, kira, jimat</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c5" href="Jutawan/millionaire-index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">💰</div>
+      <div class="name">Millionaire Math</div>
+      <div class="tag">Kuiz jutawan matematik</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+    <a class="game-card c6" href="Padanan%20Memori/index.html">
+      <span class="badge-paid">🔒 Berbayar</span>
+      <div class="icon floaty-emoji">🃏</div>
+      <div class="name">Memory Match</div>
+      <div class="tag">Padan pasangan, kuatkan ingatan</div>
+      <div class="play">Main sekarang →</div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="bbb">⭐ BELAJAR • BERMAIN • BERJAYA ⭐</div>
+  FUN MATHS &middot; Dibina dengan ❤️ untuk murid-murid Malaysia
+</footer>
+
+</body>
+</html>
