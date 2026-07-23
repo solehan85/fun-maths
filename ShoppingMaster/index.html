@@ -30,8 +30,8 @@ button,input,a{font:inherit}.app{width:min(100%,760px);min-height:100vh;margin:a
 </head>
 <body>
 <script>window.FUNMATH_GAME_ID = 'shoppingmaster';</script>
-<section class="screen" id="screen-locked" style="text-align:center;">
-  <div style="max-width:420px;width:100%;margin:0 auto;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);">
+<div id="fmLockOverlay" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(145deg,#1e1b4b,#3730a3);font-family:Arial,sans-serif;">
+  <div style="max-width:420px;width:100%;background:#fff;border-radius:28px;padding:34px 26px;box-shadow:0 10px 0 rgba(0,0,0,.2);text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;">🔒</div>
     <h2 style="margin:0 0 10px;font-size:1.3rem;color:#222;">Permainan Ini Dalam Versi Penuh</h2>
     <p style="color:#666;line-height:1.6;margin:0 0 22px;font-size:.95rem;">Permainan ini sebahagian daripada <strong>Versi Penuh FUN MATHS</strong>. Anda sedang guna Versi Percubaan Percuma — beli versi penuh untuk buka semua 14 permainan.</p>
@@ -39,19 +39,8 @@ button,input,a{font:inherit}.app{width:min(100%,760px);min-height:100vh;margin:a
     <a href="../buka-akses.html" style="display:inline-block;margin-top:6px;color:#3730a3;font-weight:700;font-size:.85rem;text-decoration:none;">Sudah beli? Buka Akses Di Sini →</a>
     <a href="../index.html" style="display:block;margin-top:10px;color:#888;font-weight:700;font-size:.8rem;text-decoration:none;">← Kembali ke Semua Permainan</a>
   </div>
-</section>
-<script>
-(function(){
-  var unlocked=false;
-  try{ unlocked = localStorage.getItem('funmath_full_access')==='true'; }catch(e){}
-  if(!unlocked){
-    var screens=document.querySelectorAll('.screen');
-    for(var i=0;i<screens.length;i++){ screens[i].classList.remove('active'); }
-    var ls=document.getElementById('screen-locked');
-    if(ls) ls.classList.add('active');
-  }
-})();
-</script>
+</div>
+<script>(function(){try{if(localStorage.getItem('funmath_full_access')==='true'){var o=document.getElementById('fmLockOverlay');if(o)o.remove();}}catch(e){}})();</script>
 <div class="app">
 <section id="splash" class="screen active"><div class="hero"><span class="coin c1">🪙</span><span class="coin c2">✨</span><span class="coin c3">🪙</span><div class="cart">🛒</div><div class="logo">SHOPPING<br>MASTER</div><div class="tag">Beli. Kira. Jimat. Jadi Shopping Master!</div></div></section>
 <section id="login" class="screen"><div class="hero"><div class="cart">🛍️</div><div class="logo">SHOPPING<br>MASTER</div><div class="card" style="width:100%;margin-top:24px;text-align:left"><label for="playerName"><b>Nama Pemain</b></label><input id="playerName" class="input" maxlength="24" autocomplete="nickname" placeholder="Contoh: Aina"><button id="loginBtn" class="btn primary wide">MULA BERMAIN 🚀</button><div id="loginError" class="small" role="alert"></div></div></div></section>
